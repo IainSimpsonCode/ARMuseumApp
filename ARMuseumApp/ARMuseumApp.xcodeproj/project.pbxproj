@@ -1,0 +1,484 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */; };
+		2241F8932CA2682E00D8CA36 /* ScreenshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */; };
+		2241F8952CA2687A00D8CA36 /* PanelCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */; };
+		228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010452C53D2B3000D01B4 /* ARPanelController.swift */; };
+		228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010472C53D3FC000D01B4 /* ImageDetection.swift */; };
+		22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */; };
+		22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */; };
+		22B7EC322D4089B500C7FDFD /* EditModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC312D4089B500C7FDFD /* EditModeButton.swift */; };
+		22B7EC342D408A6D00C7FDFD /* ButtonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC332D408A6D00C7FDFD /* ButtonBar.swift */; };
+		22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC352D408E7700C7FDFD /* PanelMovementToggle.swift */; };
+		22B7EC382D41912A00C7FDFD /* ImageDetectionOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC372D41912A00C7FDFD /* ImageDetectionOverlay.swift */; };
+		22B7EC3A2D430C3A00C7FDFD /* ShadowPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC392D430C3A00C7FDFD /* ShadowPanel.swift */; };
+		22B7EC3C2D4312A300C7FDFD /* PanelTextNodeCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC3B2D4312A300C7FDFD /* PanelTextNodeCreator.swift */; };
+		22B7EC3E2D4842EE00C7FDFD /* MovingPanelButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC3D2D4842EE00C7FDFD /* MovingPanelButtons.swift */; };
+		22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */; };
+		22B7EC422D4A732700C7FDFD /* TutorialPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC412D4A732700C7FDFD /* TutorialPages.swift */; };
+		22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CDDF7A2D7E496D0099B223 /* MongoController.swift */; };
+		22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D12C512F5600609437 /* ARMuseumApp.swift */; };
+		22F271D42C512F5600609437 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D32C512F5600609437 /* ContentView.swift */; };
+		22F271D62C512F5800609437 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F271D52C512F5800609437 /* Assets.xcassets */; };
+		22F271E12C51319300609437 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271E02C51319300609437 /* ARViewContainer.swift */; };
+		22F271E32C5131CD00609437 /* GestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271E22C5131CD00609437 /* GestureHandler.swift */; };
+		22F271E52C5148A400609437 /* ARPanelClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271E42C5148A400609437 /* ARPanelClass.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARWebViewPanel.swift; sourceTree = "<group>"; };
+		2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotView.swift; sourceTree = "<group>"; };
+		2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelCreationView.swift; sourceTree = "<group>"; };
+		228010452C53D2B3000D01B4 /* ARPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPanelController.swift; sourceTree = "<group>"; };
+		228010472C53D3FC000D01B4 /* ImageDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetection.swift; sourceTree = "<group>"; };
+		22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonFunctions.swift; sourceTree = "<group>"; };
+		22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndSessionButton.swift; sourceTree = "<group>"; };
+		22B7EC312D4089B500C7FDFD /* EditModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeButton.swift; sourceTree = "<group>"; };
+		22B7EC332D408A6D00C7FDFD /* ButtonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonBar.swift; sourceTree = "<group>"; };
+		22B7EC352D408E7700C7FDFD /* PanelMovementToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelMovementToggle.swift; sourceTree = "<group>"; };
+		22B7EC372D41912A00C7FDFD /* ImageDetectionOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetectionOverlay.swift; sourceTree = "<group>"; };
+		22B7EC392D430C3A00C7FDFD /* ShadowPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowPanel.swift; sourceTree = "<group>"; };
+		22B7EC3B2D4312A300C7FDFD /* PanelTextNodeCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelTextNodeCreator.swift; sourceTree = "<group>"; };
+		22B7EC3D2D4842EE00C7FDFD /* MovingPanelButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingPanelButtons.swift; sourceTree = "<group>"; };
+		22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialButton.swift; sourceTree = "<group>"; };
+		22B7EC412D4A732700C7FDFD /* TutorialPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPages.swift; sourceTree = "<group>"; };
+		22CDDF7A2D7E496D0099B223 /* MongoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoController.swift; sourceTree = "<group>"; };
+		22F271CE2C512F5600609437 /* ARMuseumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMuseumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		22F271D12C512F5600609437 /* ARMuseumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMuseumApp.swift; sourceTree = "<group>"; };
+		22F271D32C512F5600609437 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		22F271D52C512F5800609437 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		22F271D72C512F5800609437 /* ARMuseumApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ARMuseumApp.entitlements; sourceTree = "<group>"; };
+		22F271E02C51319300609437 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
+		22F271E22C5131CD00609437 /* GestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureHandler.swift; sourceTree = "<group>"; };
+		22F271E42C5148A400609437 /* ARPanelClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPanelClass.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		22F271CB2C512F5600609437 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2241F88F2CA25B5500D8CA36 /* PanelTypes */ = {
+			isa = PBXGroup;
+			children = (
+				22F271E42C5148A400609437 /* ARPanelClass.swift */,
+				2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */,
+				22B7EC392D430C3A00C7FDFD /* ShadowPanel.swift */,
+				22B7EC3B2D4312A300C7FDFD /* PanelTextNodeCreator.swift */,
+			);
+			path = PanelTypes;
+			sourceTree = "<group>";
+		};
+		228010402C53C77F000D01B4 /* UIContent */ = {
+			isa = PBXGroup;
+			children = (
+				22F271D32C512F5600609437 /* ContentView.swift */,
+				2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */,
+				2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */,
+				22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */,
+				22B7EC312D4089B500C7FDFD /* EditModeButton.swift */,
+				22B7EC332D408A6D00C7FDFD /* ButtonBar.swift */,
+				22B7EC352D408E7700C7FDFD /* PanelMovementToggle.swift */,
+				22B7EC372D41912A00C7FDFD /* ImageDetectionOverlay.swift */,
+				22B7EC3D2D4842EE00C7FDFD /* MovingPanelButtons.swift */,
+				22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */,
+				22B7EC412D4A732700C7FDFD /* TutorialPages.swift */,
+			);
+			path = UIContent;
+			sourceTree = "<group>";
+		};
+		228010412C53C7AD000D01B4 /* ARViewController */ = {
+			isa = PBXGroup;
+			children = (
+				22F271E02C51319300609437 /* ARViewContainer.swift */,
+			);
+			path = ARViewController;
+			sourceTree = "<group>";
+		};
+		228010432C53C7E0000D01B4 /* InteractionContent */ = {
+			isa = PBXGroup;
+			children = (
+				2241F88F2CA25B5500D8CA36 /* PanelTypes */,
+				22F271E22C5131CD00609437 /* GestureHandler.swift */,
+				228010452C53D2B3000D01B4 /* ARPanelController.swift */,
+				228010472C53D3FC000D01B4 /* ImageDetection.swift */,
+				22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */,
+			);
+			path = InteractionContent;
+			sourceTree = "<group>";
+		};
+		228010442C53C8AE000D01B4 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		22F271C52C512F5600609437 = {
+			isa = PBXGroup;
+			children = (
+				22F271D02C512F5600609437 /* ARMuseumApp */,
+				22F271CF2C512F5600609437 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		22F271CF2C512F5600609437 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				22F271CE2C512F5600609437 /* ARMuseumApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		22F271D02C512F5600609437 /* ARMuseumApp */ = {
+			isa = PBXGroup;
+			children = (
+				22F271D12C512F5600609437 /* ARMuseumApp.swift */,
+				22CDDF7A2D7E496D0099B223 /* MongoController.swift */,
+				228010432C53C7E0000D01B4 /* InteractionContent */,
+				228010412C53C7AD000D01B4 /* ARViewController */,
+				228010402C53C77F000D01B4 /* UIContent */,
+				22F271D52C512F5800609437 /* Assets.xcassets */,
+				22F271D72C512F5800609437 /* ARMuseumApp.entitlements */,
+				228010442C53C8AE000D01B4 /* Preview Content */,
+			);
+			path = ARMuseumApp;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		22F271CD2C512F5600609437 /* ARMuseumApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22F271DD2C512F5800609437 /* Build configuration list for PBXNativeTarget "ARMuseumApp" */;
+			buildPhases = (
+				22F271CA2C512F5600609437 /* Sources */,
+				22F271CB2C512F5600609437 /* Frameworks */,
+				22F271CC2C512F5600609437 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ARMuseumApp;
+			packageProductDependencies = (
+			);
+			productName = ARMuseumApp;
+			productReference = 22F271CE2C512F5600609437 /* ARMuseumApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		22F271C62C512F5600609437 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					22F271CD2C512F5600609437 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 22F271C92C512F5600609437 /* Build configuration list for PBXProject "ARMuseumApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 22F271C52C512F5600609437;
+			packageReferences = (
+			);
+			productRefGroup = 22F271CF2C512F5600609437 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				22F271CD2C512F5600609437 /* ARMuseumApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		22F271CC2C512F5600609437 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22F271D62C512F5800609437 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		22F271CA2C512F5600609437 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2241F8952CA2687A00D8CA36 /* PanelCreationView.swift in Sources */,
+				2241F8932CA2682E00D8CA36 /* ScreenshotView.swift in Sources */,
+				22B7EC3C2D4312A300C7FDFD /* PanelTextNodeCreator.swift in Sources */,
+				22F271E32C5131CD00609437 /* GestureHandler.swift in Sources */,
+				22B7EC422D4A732700C7FDFD /* TutorialPages.swift in Sources */,
+				22B7EC342D408A6D00C7FDFD /* ButtonBar.swift in Sources */,
+				22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */,
+				22B7EC382D41912A00C7FDFD /* ImageDetectionOverlay.swift in Sources */,
+				22F271D42C512F5600609437 /* ContentView.swift in Sources */,
+				2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */,
+				22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */,
+				22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */,
+				22F271E52C5148A400609437 /* ARPanelClass.swift in Sources */,
+				228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */,
+				22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */,
+				22B7EC3A2D430C3A00C7FDFD /* ShadowPanel.swift in Sources */,
+				22F271E12C51319300609437 /* ARViewContainer.swift in Sources */,
+				22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */,
+				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
+				22B7EC3E2D4842EE00C7FDFD /* MovingPanelButtons.swift in Sources */,
+				228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */,
+				22B7EC322D4089B500C7FDFD /* EditModeButton.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		22F271DB2C512F5800609437 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		22F271DC2C512F5800609437 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		22F271DE2C512F5800609437 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ARMuseumApp/ARMuseumApp.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ARMuseumApp/Preview Content\"";
+				DEVELOPMENT_TEAM = FR88RP72BM;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"This app requires access to the camera for augmented reality features.\"";
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = UClanImaginarium.ARMuseumApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		22F271DF2C512F5800609437 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ARMuseumApp/ARMuseumApp.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ARMuseumApp/Preview Content\"";
+				DEVELOPMENT_TEAM = FR88RP72BM;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"This app requires access to the camera for augmented reality features.\"";
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = UClanImaginarium.ARMuseumApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		22F271C92C512F5600609437 /* Build configuration list for PBXProject "ARMuseumApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22F271DB2C512F5800609437 /* Debug */,
+				22F271DC2C512F5800609437 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22F271DD2C512F5800609437 /* Build configuration list for PBXNativeTarget "ARMuseumApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22F271DE2C512F5800609437 /* Debug */,
+				22F271DF2C512F5800609437 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 22F271C62C512F5600609437 /* Project object */;
+}

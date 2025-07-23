@@ -1,0 +1,26 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "resources" : [
+    {
+      "filename" : "batman.arreferenceimage"
+    },
+    {
+      "filename" : "DiningRoomPoster.arreferenceimage"
+    },
+    {
+      "filename" : "DiningRoomPosterNA 1.arreferenceimage"
+    },
+    {
+      "filename" : "EntrancePoster.arreferenceimage"
+    },
+    {
+      "filename" : "poster.arreferenceimage"
+    },
+    {
+      "filename" : "Viva Exhibit Display.arreferenceimage"
+    }
+  ]
+}
