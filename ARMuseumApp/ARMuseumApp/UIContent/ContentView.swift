@@ -10,15 +10,18 @@ struct ContentView: View {
                 ZStack {
                     //AR Camera - will handle all AR related content
                     ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity) // stretch to fill the screen
                         .edgesIgnoringSafeArea(.all)
                     
                     //Main UI elements
+
+                    //Show this VStack at the bottom of the screen
                     VStack {
-                        Spacer()
+                        Spacer() // Push the buttons to the bottom
                         ButtonBar()
                     }.edgesIgnoringSafeArea(.all)
                     
+                    // Other UI elements are placed on top of the AR view
                     EndSessionButton()
                     
                     ImageDetectionOverlay()
@@ -29,8 +32,9 @@ struct ContentView: View {
                     //PanelMovementToggle()
                     
                     MovingPanelButtons()
-                }.disabled(buttonFunctions.tutorialVisible)
+                }.disabled(buttonFunctions.tutorialVisible) // Disable interaction when tutorial is visible
                 
+                // Show the tutorial pages above all other content
                 TutorialPages()
             }
         }
