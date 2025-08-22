@@ -15,7 +15,7 @@ class ButtonFunctions: ObservableObject {
     @Published var editModeActive: Bool = false
     @Published var movementModeBool: Bool = true
     @Published var movingPanel: Bool = false
-    @Published var tutorialVisible: Bool = false
+    @Published var tutorialVisible: Bool = true // Initially show the tutorial when the app starts - IS
     
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
