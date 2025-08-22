@@ -71,3 +71,46 @@
 //        }
 //    }
 //}
+
+// The following function will display an image using a url receieved from a Node server running on render. This is to test connection to the database
+
+import SwiftUI
+
+struct RoomImageView: View {
+    @State private var uiImage: UIImage?
+
+    var body: some View {
+        VStack {
+            if let uiImage = uiImage {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 300)
+            } else {
+                ProgressView("Loading image...")
+            }
+        }
+        .task {
+            await fetchRoomImage()
+        }
+    }
+
+    func fetchRoomImage() async {
+        guard let url = URL(string: "https://armuseumapp.onrender.com/room/testRoom/imageURL") else { return }
+
+        do {
+            // 1. Get the raw string from your endpoint
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let imageUrlString = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+               let imageUrl = URL(string: imageUrlString) {
+
+                // 2. Fetch the actual image
+                let (imgData, _) = try await URLSession.shared.data(from: imageUrl)
+                self.uiImage = UIImage(data: imgData)
+            }
+        } catch {
+            print("Error fetching image:", error)
+        }
+    }
+}
+
