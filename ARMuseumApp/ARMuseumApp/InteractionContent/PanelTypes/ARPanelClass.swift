@@ -15,7 +15,7 @@ class ARPanel {
     var panelText: String
     var parentNode: SCNNode
     var currentGeometry: SCNBox
-    var displayActive = false
+    var displayActive = true
     var panelNodeInScene = false
     
     let panelSides = SCNMaterial()
@@ -29,6 +29,7 @@ class ARPanel {
     
     var deleteButtonNode = SCNNode()
     var editButtonNode = SCNNode()
+    var moveButtonNode = SCNNode()
     
     init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String) {
         self.panelText = text
@@ -62,6 +63,8 @@ class ARPanel {
         makePanelFaceCamera()
         createDeleteButton()
         createEditButton()
+        createMoveButton()
+        self.displayActive = true // expanded at start
         print("Test - Init panel")
     }
     
@@ -69,6 +72,8 @@ class ARPanel {
         sceneView.scene.rootNode.addChildNode(parentNode)
         panelNodeInScene = true
         displayActive = true
+        animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
+
         print("Add to scene")
     }
     
@@ -79,64 +84,106 @@ class ARPanel {
     }
     
     func handleTap() {
-        if (!displayActive) {
+//        if (!displayActive) {
             displayActive = true
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
-        }
-        else {
-            displayActive = false
-            animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
-        }
+//        }
+//        else {
+//            displayActive = false
+//            animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
+//        }
     }
     
     func editModeToggle() {
         deleteButtonNode.isHidden.toggle()
         editButtonNode.isHidden.toggle()
+        moveButtonNode.isHidden.toggle()
     }
     
     func createDeleteButton() {
-        let deleteButtonGeometry = SCNBox(width: 0.013, height: 0.013, length: 0.008, chamferRadius: 1)
+        let buttonSize: CGFloat = 0.025
+        let iconSize: CGFloat = 0.018
+        let chamfer: CGFloat = 0.003
+
+        let deleteButtonGeometry = SCNBox(width: buttonSize, height: buttonSize, length: 0.005, chamferRadius: chamfer)
         deleteButtonGeometry.materials = [transparentPanelFace, panelSides, panelSides, panelSides, panelSides, panelSides]
+
         deleteButtonNode.geometry = deleteButtonGeometry
-        deleteButtonNode.position = SCNVector3(x: 0.025, y: 0.025, z: 0.003)
-        
-        let deleteImage = UIImage(systemName: "xmark.bin.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 128))
+        deleteButtonNode.position = SCNVector3(x: 0.035, y: 0.025, z: 0.01) // increased z
+        deleteButtonNode.isHidden = true
+
+        // Icon
+        let deleteImage = UIImage(systemName: "xmark.bin.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 256, weight: .bold))
         let deleteIconMaterial = SCNMaterial()
         deleteIconMaterial.diffuse.contents = deleteImage
-        let deleteIconGeometry = SCNPlane(width: 0.009, height: 0.009)
+        deleteIconMaterial.isDoubleSided = true
+
+        let deleteIconGeometry = SCNPlane(width: iconSize, height: iconSize)
         deleteIconGeometry.materials = [deleteIconMaterial]
-        
-        deleteButtonNode.geometry = deleteButtonGeometry
+
         let deleteIconNode = SCNNode(geometry: deleteIconGeometry)
-        deleteIconNode.position = SCNVector3(x: 0, y: 0, z: 0.0045)
-        
-        deleteButtonNode.isHidden = true
-        
-        parentNode.addChildNode(deleteButtonNode)
+        deleteIconNode.position = SCNVector3(x: 0, y: 0, z: 0.003) // relative to button
         deleteButtonNode.addChildNode(deleteIconNode)
+
+        parentNode.addChildNode(deleteButtonNode)
     }
-    
+
     func createEditButton() {
-        let editButtonGeometry = SCNBox(width: 0.013, height: 0.013, length: 0.008, chamferRadius: 1)
+        let buttonSize: CGFloat = 0.025
+        let iconSize: CGFloat = 0.018
+        let chamfer: CGFloat = 0.003
+
+        let editButtonGeometry = SCNBox(width: buttonSize, height: buttonSize, length: 0.005, chamferRadius: chamfer)
         editButtonGeometry.materials = [transparentPanelFace, panelSides, panelSides, panelSides, panelSides, panelSides]
+
         editButtonNode.geometry = editButtonGeometry
-        editButtonNode.position = SCNVector3(x: 0.012, y: 0.025, z: 0.003)
-        
-        let editImage = UIImage(systemName: "slider.horizontal.2.square.on.square", withConfiguration: UIImage.SymbolConfiguration(pointSize: 128))
+        editButtonNode.position = SCNVector3(x: 0.01, y: 0.025, z: 0.01)
+        editButtonNode.isHidden = true
+
+        // Icon
+        let editImage = UIImage(systemName: "slider.horizontal.2.square.on.square", withConfiguration: UIImage.SymbolConfiguration(pointSize: 256, weight: .bold))
         let editIconMaterial = SCNMaterial()
         editIconMaterial.diffuse.contents = editImage
-        let editIconGeometry = SCNPlane(width: 0.009, height: 0.009)
+        editIconMaterial.isDoubleSided = true
+
+        let editIconGeometry = SCNPlane(width: iconSize, height: iconSize)
         editIconGeometry.materials = [editIconMaterial]
-        
-        editButtonNode.geometry = editButtonGeometry
+
         let editIconNode = SCNNode(geometry: editIconGeometry)
-        editIconNode.position = SCNVector3(x: 0, y: 0, z: 0.0045)
-        
-        editButtonNode.isHidden = true
-        
-        parentNode.addChildNode(editButtonNode)
+        editIconNode.position = SCNVector3(x: 0, y: 0, z: 0.003)
         editButtonNode.addChildNode(editIconNode)
+
+        parentNode.addChildNode(editButtonNode)
     }
+        
+    func createMoveButton() {
+        let buttonSize: CGFloat = 0.025
+        let iconSize: CGFloat = 0.018
+        let chamfer: CGFloat = 0.003
+
+        let moveButtonGeometry = SCNBox(width: buttonSize, height: buttonSize, length: 0.005, chamferRadius: chamfer)
+        moveButtonGeometry.materials = [transparentPanelFace, panelSides, panelSides, panelSides, panelSides, panelSides]
+
+        moveButtonNode.geometry = moveButtonGeometry
+        moveButtonNode.position = SCNVector3(x: 0.075, y: 0.025, z: 0.01)
+        moveButtonNode.isHidden = true
+
+        // Icon
+        let moveImage = UIImage(systemName: "arrow.up.and.down.and.arrow.left.and.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 256, weight: .bold))
+        let moveIconMaterial = SCNMaterial()
+        moveIconMaterial.diffuse.contents = moveImage
+        moveIconMaterial.isDoubleSided = true
+
+        let moveIconGeometry = SCNPlane(width: iconSize, height: iconSize)
+        moveIconGeometry.materials = [moveIconMaterial]
+
+        let moveIconNode = SCNNode(geometry: moveIconGeometry)
+        moveIconNode.position = SCNVector3(x: 0, y: 0, z: 0.003)
+        moveButtonNode.addChildNode(moveIconNode)
+
+        parentNode.addChildNode(moveButtonNode)
+    }
+
     
     func animatePanel(panelNode: SCNNode, currentGeometry: SCNBox, targetGeometry: SCNBox) {
         let sideButtonTargetGeometry: SCNBox
@@ -152,8 +199,9 @@ class ARPanel {
             iconCurrentScale = SCNVector3(x: 1.4, y: 1.4, z: 1.4)
 
             // Move buttons to the top-right when enlarged
-            deleteButtonNode.position = SCNVector3(x: 0.11, y: 0.05, z: 0.003)
-            editButtonNode.position = SCNVector3(x: 0.08, y: 0.05, z: 0.003)
+            deleteButtonNode.position = SCNVector3(x: 0.11, y: 0.05, z: 0.025)
+            editButtonNode.position = SCNVector3(x: 0.08, y: 0.05, z: 0.025)
+            moveButtonNode.position = SCNVector3(x: 0.05, y: 0.05, z: 0.025)
             
             sideButtonTargetGeometry = SCNBox(width: 0.020, height: 0.020, length: 0.012, chamferRadius: 1)
         }
@@ -186,4 +234,6 @@ class ARPanel {
         let titleGeometry = textNode.geometry as? SCNText
         titleGeometry?.string = text
     }
+    
 }
+

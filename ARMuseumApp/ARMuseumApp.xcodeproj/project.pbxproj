@@ -24,6 +24,7 @@
 		22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */; };
 		22B7EC422D4A732700C7FDFD /* TutorialPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC412D4A732700C7FDFD /* TutorialPages.swift */; };
 		22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CDDF7A2D7E496D0099B223 /* MongoController.swift */; };
+		22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */; };
 		22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D12C512F5600609437 /* ARMuseumApp.swift */; };
 		22F271D42C512F5600609437 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D32C512F5600609437 /* ContentView.swift */; };
 		22F271D62C512F5800609437 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F271D52C512F5800609437 /* Assets.xcassets */; };
@@ -50,6 +51,7 @@
 		22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialButton.swift; sourceTree = "<group>"; };
 		22B7EC412D4A732700C7FDFD /* TutorialPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPages.swift; sourceTree = "<group>"; };
 		22CDDF7A2D7E496D0099B223 /* MongoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoController.swift; sourceTree = "<group>"; };
+		22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPanelButton.swift; sourceTree = "<group>"; };
 		22F271CE2C512F5600609437 /* ARMuseumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMuseumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22F271D12C512F5600609437 /* ARMuseumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMuseumApp.swift; sourceTree = "<group>"; };
 		22F271D32C512F5600609437 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				22B7EC3D2D4842EE00C7FDFD /* MovingPanelButtons.swift */,
 				22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */,
 				22B7EC412D4A732700C7FDFD /* TutorialPages.swift */,
+				22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */,
 			);
 			path = UIContent;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				22F271E12C51319300609437 /* ARViewContainer.swift in Sources */,
 				22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */,
 				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
+				22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */,
 				22B7EC3E2D4842EE00C7FDFD /* MovingPanelButtons.swift in Sources */,
 				228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */,
 				22B7EC322D4089B500C7FDFD /* EditModeButton.swift in Sources */,

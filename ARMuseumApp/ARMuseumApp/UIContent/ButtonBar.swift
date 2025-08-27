@@ -11,60 +11,68 @@ struct ButtonBar: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             Spacer()
-            // Custom Tab Bar with All Icons Blue
-            Color.white.opacity(0.6)
-                .edgesIgnoringSafeArea(.vertical)
-                .frame(height: 80) // Match height to the original design
-                .overlay(
-                    HStack {
-                        Spacer()
-                        
-                        // Drawing Button
-                        Button(action: buttonFunctions.startDrawing) {
-                            ButtonBarItemDesign(iconName: "paintbrush.pointed.fill", buttonText: "Drawing")
-                        }
-                        
-                        Spacer()
-                        
-                        // Capture Button
-                        NavigationLink(destination: ScreenShotView(buttonFunctions: _buttonFunctions)) {
-                            ButtonBarItemDesign(iconName: "camera.fill", buttonText: "Capture")
-                        }
-                        
-                        Spacer()
-                        
-                        // Add Panel Button
-                        NavigationLink(destination: AddPanelView(buttonFunctions: _buttonFunctions, needsClosing: false)) {
-                            ButtonBarItemDesign(iconName: "plus.rectangle.fill.on.rectangle.fill", buttonText: "Add Panel")
-                        }
-                        .disabled(!buttonFunctions.sessionRunning)
-                        .opacity(buttonFunctions.sessionRunning ? 1.0 : 0.5)
-                        
-                        Spacer()
-                    }
-                )
-                .cornerRadius(10)
+            
+            Divider() // native tab bars have a top border
+
+            HStack {
+                Spacer()
                 
+                // End Session Button
+                Button(action: {
+                    buttonFunctions.endSession()
+                }) {
+                    ButtonBarItemDesign(iconName: "xmark.circle.fill", buttonText: "End")
+                }
+                .disabled(!buttonFunctions.sessionRunning)
+                .opacity(buttonFunctions.sessionRunning ? 1.0 : 0.4)
+                
+                Spacer()
+                
+                // Capture Button
+                NavigationLink(destination: ScreenShotView(buttonFunctions: _buttonFunctions)) {
+                    ButtonBarItemDesign(iconName: "camera.fill", buttonText: "Capture")
+                }
+                
+                Spacer()
+                
+                // Drawing Button
+                Button(action: {
+                    buttonFunctions.toggleDrawingMode()
+                }) {
+                    ButtonBarItemDesign(
+                        iconName: buttonFunctions.isDrawingMode ? "paintbrush.fill" : "paintbrush", // icon changes when active
+                        buttonText: buttonFunctions.isDrawingMode ? "Stop" : "Draw"
+                    )
+                }
+
+
+                Spacer()
+            }
+            .padding(.top, 10)
+            .padding(.bottom, 20)
+            .background(.ultraThinMaterial) // semi-blur, modern native style
+            .clipShape(RoundedRectangle(cornerRadius: 0)) // native tab bars are square
+
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom) // ensures bar doesn't shift when keyboard shows
     }
 }
+
 
 struct ButtonBarItemDesign: View {
     var iconName: String
     var buttonText: String
-    var body: some View {
-        VStack {
-            Image(systemName: iconName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 30, height: 30, alignment: .center)
-                .foregroundColor(.blue)
-            Text(buttonText)
-                .font(.footnote)
-                .foregroundColor(.blue)
-        }
 
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: iconName)
+                .font(.system(size: 22, weight: .regular))
+            Text(buttonText)
+                .font(.caption2)
+        }
+        .foregroundColor(.accentColor)
     }
 }
+

@@ -15,22 +15,53 @@ class ButtonFunctions: ObservableObject {
     @Published var editModeActive: Bool = false
     @Published var movementModeBool: Bool = true
     @Published var movingPanel: Bool = false
-    @Published var tutorialVisible: Bool = true // Initially show the tutorial when the app starts - IS
-    
+    @Published var tutorialVisible: Bool = false
+    @Published var isDrawingMode = false
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
         self.arView = arView
         self.panelController = panelController
     }
 
+    func toggleDrawingMode() {
+            isDrawingMode.toggle()
+        }
+    
     func addPanel(text: String, panelColor: UIColor, panelIcon: String) {
-        let newPanel = ARPanel(position: SCNVector3(x: 0, y: 0, z: -0.1), scene: arView!, text: text, panelColor: panelColor, panelIcon: panelIcon)
-        if(sessionRunning) {
+        guard let arView = arView, let pointOfView = arView.pointOfView else {
+            print("Error: ARSCNView or pointOfView is nil")
+            return
+        }
+
+        // Get the camera transform
+        let cameraTransform = pointOfView.transform
+
+        // Camera's forward direction
+        let forward = SCNVector3(-cameraTransform.m31, -cameraTransform.m32, -cameraTransform.m33)
+
+        // Camera's current position
+        let cameraPosition = SCNVector3(cameraTransform.m41, cameraTransform.m42, cameraTransform.m43)
+
+        // Distance in front of the camera to place the panel
+        let distance: Float = 0.5
+
+        // Calculate final position
+        let position = SCNVector3(
+            cameraPosition.x + forward.x * distance,
+            cameraPosition.y + forward.y * distance,
+            cameraPosition.z + forward.z * distance
+        )
+
+        // Create and add the panel
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon)
+
+        if sessionRunning {
             newPanel.addToScene()
         }
+
         panelController?.panelsInScene.append(newPanel)
         panelController?.diningRoomPanels.append(newPanel)
-        
+
     }
 
     func captureImage() -> UIImage? {

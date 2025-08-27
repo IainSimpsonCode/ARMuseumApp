@@ -40,7 +40,7 @@ class ShadowPanel {
         self.parentNode = SCNNode(geometry: currentGeometry)
         self.parentNode.position = position
         
-        self.textNode = createTextNode(text: "", fontSize: 1, color: UIColor.black)
+        self.textNode = createTextNode(text: "Move me to where \n you feel i best fit!", fontSize: 1, color: UIColor.black)
         
         let mainIconMaterial = SCNMaterial()
         iconImage = UIImage(systemName: panelIcon, withConfiguration: UIImage.SymbolConfiguration(pointSize: 128))!

@@ -56,7 +56,6 @@ struct ARViewContainer: UIViewRepresentable {
         
         func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
             guard let pointOfView = parent.sceneView?.pointOfView else { return }
-            print("PLeaseeee")
 
             // Get camera position and direction
             let cameraTransform = pointOfView.transform
@@ -74,6 +73,7 @@ struct ARViewContainer: UIViewRepresentable {
             DispatchQueue.main.async {
                 self.shadowPanel?.parentNode.position = newPosition
             }
+            
         }
     }
 
