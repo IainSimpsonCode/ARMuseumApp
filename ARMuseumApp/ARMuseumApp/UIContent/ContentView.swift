@@ -2,56 +2,56 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
-    
+    @State private var showRoomPopup = false   // <-- popup state
+
     var body: some View {
-        if buttonFunctions.sessionRunning{
+        if buttonFunctions.sessionRunning {
             NavigationView {
                 ZStack {
-                    //stack the UI on top of the AR Camera
                     ZStack {
-                        //AR Camera - will handle all AR related content
                         ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .edgesIgnoringSafeArea(.all)
-                        
-                        //Main UI elements
+
                         VStack {
                             Spacer()
                             ButtonBar()
                         }.edgesIgnoringSafeArea(.all)
-                        
+
                         AddPanelButton()
-                        
                         ImageDetectionOverlay()
-                        
                         TutorialButton()
-                        
                         EditModeButton()
-                        //PanelMovementToggle()
-                        
                         MovingPanelButtons()
-                    }.disabled(buttonFunctions.tutorialVisible)
-                    
+                    }
+                    .disabled(buttonFunctions.tutorialVisible)
+
                     TutorialPages()
                 }
             }
-        }
-        else{
+            .onChange(of: buttonFunctions.currentRoom) { newRoom in
+                if let _ = newRoom {
+                    showRoomPopup = true
+                }
+            }
+            .alert(isPresented: $showRoomPopup) {
+                Alert(
+                    title: Text("Room Detected"),
+                    message: Text("You are in room \(buttonFunctions.currentRoom ?? "Unknown")"),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+        } else {
             ZStack {
-                //stack the UI on top of the AR Camera
                 ZStack {
-                    //AR Camera - will handle all AR related content
                     ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .edgesIgnoringSafeArea(.all)
-                    
+
                     ImageDetectionOverlay()
-                    
                     MovingPanelButtons()
                 }
-                
             }
         }
-        
     }
 }

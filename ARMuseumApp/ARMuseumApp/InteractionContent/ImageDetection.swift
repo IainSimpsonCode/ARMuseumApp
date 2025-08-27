@@ -8,7 +8,7 @@
 import ARKit
 import SwiftUI
 
-var rooms: [String] = ["DiningRoomPoster", "SecondPoster", "Viva Exhibit Display"]
+var rooms: [String] = ["DiningRoomPoster", "SecondPoster", "Viva Exhibit Display", "testMarker"]
 
 class ImageDetection: NSObject, ARSCNViewDelegate {
     var sceneView: ARSCNView

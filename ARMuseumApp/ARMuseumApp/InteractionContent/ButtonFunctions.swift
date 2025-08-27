@@ -17,6 +17,8 @@ class ButtonFunctions: ObservableObject {
     @Published var movingPanel: Bool = false
     @Published var tutorialVisible: Bool = false
     @Published var isDrawingMode = false
+    @Published var currentRoom: String? = nil
+
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
         self.arView = arView
@@ -81,6 +83,8 @@ class ButtonFunctions: ObservableObject {
     
     func startSession(node: SCNNode, posterName: String) {
         sessionRunning = true
+        currentRoom = posterName
+
         print("WOMP")
         panelController!.roomSetup(imageNode: node, sceneView: arView!)
         
@@ -107,6 +111,7 @@ class ButtonFunctions: ObservableObject {
     
     func endSession() {
         sessionRunning = false
+        currentRoom = nil
         
         panelController?.removePanelsInScene()
         resetARSession()
