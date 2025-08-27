@@ -91,7 +91,7 @@ struct RoomImageView: View {
             }
         }
         .task {
-            await fetchRoomImage()
+            await fetchRoomImage(roomName: "testRoom")
         }
     }
 

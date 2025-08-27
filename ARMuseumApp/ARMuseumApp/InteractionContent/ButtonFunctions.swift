@@ -123,7 +123,7 @@ class ButtonFunctions: ObservableObject {
         Task {
             let referenceImages = await DBController.getReferenceImages(for: "testMuseum")
             configuration.detectionImages = referenceImages
-            arView!.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
+            await arView!.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
     }
     
