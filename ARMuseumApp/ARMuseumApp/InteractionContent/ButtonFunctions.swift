@@ -114,9 +114,12 @@ class ButtonFunctions: ObservableObject {
     
     func resetARSession() {
         let configuration = ARWorldTrackingConfiguration()
-        let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil)
-        configuration.detectionImages = referenceImages
-        arView!.session.run(configuration, options: [.removeExistingAnchors])
+
+        Task {
+            let referenceImages = await DBController.getReferenceImages(for: "testMuseum")
+            configuration.detectionImages = referenceImages
+            arView!.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
+        }
     }
     
     func toggleEditMode() {

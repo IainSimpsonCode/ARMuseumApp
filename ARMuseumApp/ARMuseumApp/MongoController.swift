@@ -95,8 +95,8 @@ struct RoomImageView: View {
         }
     }
 
-    func fetchRoomImage() async {
-        guard let url = URL(string: "https://armuseumapp.onrender.com/room/testRoom/imageURL") else { return }
+    func fetchRoomImage(roomName: String) async {
+        guard let url = URL(string: "https://armuseumapp.onrender.com/room/" + roomName + "/imageURL") else { return }
 
         do {
             // 1. Get the raw string from your endpoint
@@ -113,4 +113,47 @@ struct RoomImageView: View {
         }
     }
 }
+
+
+import ARKit
+import UIKit
+
+struct DBController {
+    static func getReferenceImages(for museum: String) async -> Set<ARReferenceImage> {
+        guard let url = URL(string: "https://armuseumapp.onrender.com/museum/\(museum)/roomImageURLs") else {
+            return []
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let rooms = try JSONSerialization.jsonObject(with: data) as? [[String: String]] else {
+                return []
+            }
+
+            var referenceImages: Set<ARReferenceImage> = []
+
+            for room in rooms {
+                if let imageUrlString = room["imageURL"],
+                   let roomID = room["roomID"],
+                   let imageUrl = URL(string: imageUrlString) {
+                    
+                    let (imgData, _) = try await URLSession.shared.data(from: imageUrl)
+                    if let uiImage = UIImage(data: imgData),
+                       let cgImage = uiImage.cgImage {
+                        
+                        let refImage = ARReferenceImage(cgImage, orientation: .up, physicalWidth: 0.30)
+                        refImage.name = roomID
+                        referenceImages.insert(refImage)
+                    }
+                }
+            }
+
+            return referenceImages
+        } catch {
+            print("Error fetching reference images:", error)
+            return []
+        }
+    }
+}
+
 
