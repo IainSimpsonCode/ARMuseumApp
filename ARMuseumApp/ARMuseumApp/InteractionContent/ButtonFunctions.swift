@@ -118,6 +118,8 @@ class ButtonFunctions: ObservableObject {
     }
     
     func resetARSession() {
+
+        print("Setting reference images")
         let configuration = ARWorldTrackingConfiguration()
 
         Task {
@@ -125,6 +127,7 @@ class ButtonFunctions: ObservableObject {
             configuration.detectionImages = referenceImages
             await arView!.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         }
+        print("Reference images set")
     }
     
     func toggleEditMode() {
