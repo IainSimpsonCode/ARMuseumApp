@@ -99,11 +99,9 @@ struct ARViewContainer: UIViewRepresentable {
         
         // arView.session.run(configuration)
         
-        Task {
-            let referenceImages = await DBController.getReferenceImages(for: "testMuseum")
-            configuration.detectionImages = referenceImages
-            arView.session.run(configuration)
-        }
+        configuration.detectionImages = context.environment.referenceImages
+        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+
 
         DispatchQueue.main.async {
             self.buttonFunctions.setupARView(arView, panelController: self.panelController)
