@@ -26,28 +26,42 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         print("Image Detected")
         
-        //turns the anchor into an image anchor
-        if let imageAnchor = anchor as? ARImageAnchor {
+        guard let imageAnchor = anchor as? ARImageAnchor,
+              let imageName = imageAnchor.referenceImage.name,
+              rooms.contains(imageName)
+        else { return }
+        
+        // Capture node + name immediately
+        let targetNode = node
+        
+        // Add 2s delay before checking alignment & starting session
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
             
-            //Check if image scanned is a valid room
-            if rooms.contains(imageAnchor.referenceImage.name!) {
-                let imagePosition = node.position
+            let imagePosition = targetNode.presentation.worldPosition  // <- more stable
+            
+            // Define box area for alignment
+            let boxWidth: Float = 2.5
+            let boxHeight: Float = 2.5
+            let boxCenter = SCNVector3(0, 0, 0)
+            
+//            if abs(imagePosition.x - boxCenter.x) < boxWidth / 2 &&
+//               abs(imagePosition.z - boxCenter.z) < boxHeight / 2 {
                 
-                //Code for image lineup
-                let boxWidth: Float = 0.25
-                let boxHeight: Float = 0.25
-                let boxCenter = SCNVector3(0, 0, 0)
-                
-                if abs(imagePosition.x - boxCenter.x) < boxWidth / 2 && abs(imagePosition.z - boxCenter.z) < boxHeight / 2 {
-                    //If a session isnt currently running start a new session
-                    if !buttonFunctions.sessionRunning {
-                        print("Image is aligned!")
-                        //testMongo()
-                        buttonFunctions.startSession(node: node, posterName: imageAnchor.referenceImage.name ?? "NIL")
-                    }
+                if !self.buttonFunctions.sessionRunning {
+                    print("Image is aligned (after delay)!")
+                    self.buttonFunctions.startSession(
+                        node: targetNode,
+                        posterName: imageName
+                    )
                 }
-            }
+//            } else {
+//                print("❌ Image not aligned after delay")
+//                print(abs(imagePosition.x - boxCenter.x))
+//                print(boxWidth / 2)
+//            }
         }
     }
+
 }
 

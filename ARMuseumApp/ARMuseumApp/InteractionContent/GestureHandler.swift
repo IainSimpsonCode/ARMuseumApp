@@ -47,6 +47,8 @@ class GestureHandler: NSObject {
                     let generator = UINotificationFeedbackGenerator()
                     generator.prepare()
                     generator.notificationOccurred(.success)
+                    
+                    PanelStorageManager.deletePanel(byId: panelsInScene.id)
 
                 }
                 else if(node == panelsInScene.editButtonNode || node == panelsInScene.deleteButtonNode.childNodes[0]) {

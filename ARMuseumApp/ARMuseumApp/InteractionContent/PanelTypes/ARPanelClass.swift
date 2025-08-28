@@ -31,7 +31,10 @@ class ARPanel {
     var editButtonNode = SCNNode()
     var moveButtonNode = SCNNode()
     
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String) {
+    let currentRoom: String
+    let id: Int
+    
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -59,6 +62,9 @@ class ARPanel {
         parentNode.addChildNode(textNode)
         parentNode.addChildNode(iconNode)
         parentNode.addChildNode(editButtonNode)
+        
+        self.currentRoom = currentRoom
+        self.id = id
         
         makePanelFaceCamera()
         createDeleteButton()

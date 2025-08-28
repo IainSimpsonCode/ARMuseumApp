@@ -17,7 +17,7 @@ class ButtonFunctions: ObservableObject {
     @Published var movingPanel: Bool = false
     @Published var tutorialVisible: Bool = false
     @Published var isDrawingMode = false
-    @Published var currentRoom: String = nil
+    @Published var currentRoom: String = ""
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
         self.arView = arView
@@ -53,27 +53,28 @@ class ButtonFunctions: ObservableObject {
             cameraPosition.z + forward.z * distance
         )
 
+        let id = panelController!.panelsInScene.count + 1
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, id: id, currentRoom: currentRoom)
 
         if sessionRunning {
             newPanel.addToScene()
         }
 
-        print(position)
         panelController?.panelsInScene.append(newPanel)
         panelController?.diningRoomPanels.append(newPanel)
 
+        save()
     }
     
-    func placeLoadedPanel(position: SCNVector3, text: String, panelColor: UIColor, panelIcon: String){
+    func placeLoadedPanel(position: SCNVector3, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String){
         guard let arView = arView, let pointOfView = arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, id: id, currentRoom: currentRoom)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -128,7 +129,7 @@ class ButtonFunctions: ObservableObject {
     
     func endSession() {
         sessionRunning = false
-        currentRoom = nil
+        currentRoom = ""
         
         panelController?.removePanelsInScene()
         resetARSession()
@@ -155,7 +156,7 @@ class ButtonFunctions: ObservableObject {
     
     func save(){
         for(panel) in panelController!.panelsInScene{
-            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: "text.book.closed.fill", text: panel.panelText, color: "red")
+            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: "text.book.closed.fill", text: panel.panelText, color: "red", id: panel.id, currentRoom: panel.currentRoom)
         }
     }
 }
