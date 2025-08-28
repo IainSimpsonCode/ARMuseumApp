@@ -28,23 +28,22 @@ struct ARMuseumApp: App {
     @State private var referenceImages: Set<ARReferenceImage> = []
     @State private var isLoading = true
 
-    init() {
-        Task {
-            await preloadReferenceImages()
-        }
-    }
-
     var body: some Scene {
         WindowGroup {
-            if isLoading {
-                VStack {
-                    ProgressView("Loading reference images...")
-                    Text("Please wait, preparing AR session")
+            Group {
+                if isLoading {
+                    VStack {
+                        ProgressView("Loading reference images...")
+                        Text("Please wait, preparing AR session")
+                    }
+                } else {
+                    ContentView(referenceImages: referenceImages) // pass images directly
+                        .environmentObject(buttonFunctions)
                 }
-            } else {
-                ContentView()
-                    .environmentObject(buttonFunctions)
-                    .environment(\.referenceImages, referenceImages)
+            }
+            // Use the new `.task` modifier to run async work after initialization
+            .task {
+                await preloadReferenceImages()
             }
         }
     }
@@ -60,11 +59,13 @@ struct ARMuseumApp: App {
                   "width=\(img.physicalSize.width)m height=\(img.physicalSize.height)m")
         }
 
-        DispatchQueue.main.async {
+        // Update the state on the main actor
+        await MainActor.run {
             self.referenceImages = images
             self.isLoading = false
             print("Finished loading \(images.count) reference images")
         }
     }
 }
+
 
