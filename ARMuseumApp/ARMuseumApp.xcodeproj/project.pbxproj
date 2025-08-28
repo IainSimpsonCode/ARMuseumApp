@@ -12,6 +12,7 @@
 		2241F8952CA2687A00D8CA36 /* PanelCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */; };
 		228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010452C53D2B3000D01B4 /* ARPanelController.swift */; };
 		228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010472C53D3FC000D01B4 /* ImageDetection.swift */; };
+		229B417D2E60A64E00BD3A35 /* ReferenceImageKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229B417C2E60A64E00BD3A35 /* ReferenceImageKeys.swift */; };
 		22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */; };
 		22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */; };
 		22B7EC322D4089B500C7FDFD /* EditModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC312D4089B500C7FDFD /* EditModeButton.swift */; };
@@ -39,6 +40,7 @@
 		2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelCreationView.swift; sourceTree = "<group>"; };
 		228010452C53D2B3000D01B4 /* ARPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPanelController.swift; sourceTree = "<group>"; };
 		228010472C53D3FC000D01B4 /* ImageDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetection.swift; sourceTree = "<group>"; };
+		229B417C2E60A64E00BD3A35 /* ReferenceImageKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceImageKeys.swift; sourceTree = "<group>"; };
 		22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonFunctions.swift; sourceTree = "<group>"; };
 		22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndSessionButton.swift; sourceTree = "<group>"; };
 		22B7EC312D4089B500C7FDFD /* EditModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeButton.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				22F271D12C512F5600609437 /* ARMuseumApp.swift */,
+				229B417C2E60A64E00BD3A35 /* ReferenceImageKeys.swift */,
 				22CDDF7A2D7E496D0099B223 /* MongoController.swift */,
 				228010432C53C7E0000D01B4 /* InteractionContent */,
 				228010412C53C7AD000D01B4 /* ARViewController */,
@@ -251,6 +254,7 @@
 				22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */,
 				22B7EC3A2D430C3A00C7FDFD /* ShadowPanel.swift in Sources */,
 				22F271E12C51319300609437 /* ARViewContainer.swift in Sources */,
+				229B417D2E60A64E00BD3A35 /* ReferenceImageKeys.swift in Sources */,
 				22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */,
 				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
 				22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */,
