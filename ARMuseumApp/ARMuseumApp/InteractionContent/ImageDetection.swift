@@ -49,16 +49,12 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
 //               abs(imagePosition.z - boxCenter.z) < boxHeight / 2 {
                 
                 if !self.buttonFunctions.sessionRunning {
-                    print("Image is aligned (after delay)!")
+                    print("Image is aligned")
                     self.buttonFunctions.startSession(
                         node: targetNode,
                         posterName: imageName
                     )
                 }
-//            } else {
-//                print("❌ Image not aligned after delay")
-//                print(abs(imagePosition.x - boxCenter.x))
-//                print(boxWidth / 2)
 //            }
         }
     }

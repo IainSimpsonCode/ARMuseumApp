@@ -31,9 +31,9 @@ class PanelStorageManager {
     static func savePanel(position: SCNVector3, imageName: String, text: String, color: String, id: Int, currentRoom: String) {
         var panels = loadSavedPanels()
         
-        // ✅ Check if this id already exists
+        // Check if this id already exists
         if panels.contains(where: { $0.id == id }) {
-            print("⚠️ Panel with id \(id) already exists. Skipping save.")
+            print("Panel with id \(id) already exists. Skipping save.")
             return
         }
         
@@ -48,7 +48,7 @@ class PanelStorageManager {
         
         panels.append(saved)
         saveAllPanels(panels)
-        print("✅ Panel with id \(id) saved.")
+        print("Panel with id \(id) saved.")
     }
 
     /// Load and return `LoadedPanel`s with SCNVector3 positions
@@ -106,7 +106,7 @@ class PanelStorageManager {
     /// Delete all saved panels
     static func deleteAllPanels() {
         saveAllPanels([])
-        print("✅ All panels deleted from storage.")
+        print("All panels deleted from storage.")
     }
     
     /// Delete panel by id
@@ -118,9 +118,9 @@ class PanelStorageManager {
         
         if panels.count < originalCount {
             saveAllPanels(panels)
-            print("✅ Panel with id \(id) deleted.")
+            print("Panel with id \(id) deleted.")
         } else {
-            print("⚠️ No panel found with id \(id).")
+            print("No panel found with id \(id).")
         }
     }
     /// Generate the next available ID based on saved panels
