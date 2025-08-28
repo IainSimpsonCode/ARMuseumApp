@@ -90,17 +90,26 @@ struct ARViewContainer: UIViewRepresentable {
         arView.scene = scene
 
         // Run the AR session
+        print("Loading reference images 2")
         let configuration = ARWorldTrackingConfiguration()
         
         //Load refrence images for image detection
-        let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil)
-        configuration.detectionImages = referenceImages
+        // let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil)
+        // configuration.detectionImages = referenceImages
         
-        arView.session.run(configuration)
+        // arView.session.run(configuration)
         
+        Task {
+            let referenceImages = await DBController.getReferenceImages(for: "testMuseum")
+            configuration.detectionImages = referenceImages
+            await arView!.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
+        }
+
         DispatchQueue.main.async {
             self.buttonFunctions.setupARView(arView, panelController: self.panelController)
         }
+
+        print("Images loaded 2")
         
         // Setup gesture handler
         context.coordinator.setupGestureHandler(for: arView)

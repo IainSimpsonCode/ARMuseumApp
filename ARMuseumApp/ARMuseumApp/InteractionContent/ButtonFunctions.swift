@@ -117,7 +117,7 @@ class ButtonFunctions: ObservableObject {
         resetARSession()
     }
     
-    func resetARSession() {
+    func setReferenceImages() {
 
         print("Setting reference images")
         let configuration = ARWorldTrackingConfiguration()
