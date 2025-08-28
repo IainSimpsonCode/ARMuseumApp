@@ -130,6 +130,10 @@ class ButtonFunctions: ObservableObject {
         print("Reference images set")
     }
     
+    func resetARSession() {
+        
+    }
+    
     func toggleEditMode() {
         editModeActive.toggle()
         for panel in panelController!.panelsInScene {

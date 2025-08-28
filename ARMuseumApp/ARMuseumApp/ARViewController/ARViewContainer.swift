@@ -102,7 +102,7 @@ struct ARViewContainer: UIViewRepresentable {
         Task {
             let referenceImages = await DBController.getReferenceImages(for: "testMuseum")
             configuration.detectionImages = referenceImages
-            await arView!.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
+            arView.session.run(configuration)
         }
 
         DispatchQueue.main.async {
