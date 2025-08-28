@@ -31,13 +31,8 @@ struct ARMuseumApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if isLoading {
-                    VStack {
-                        ProgressView("Loading reference images...")
-                        Text("Please wait, preparing AR session")
-                    }
-                } else {
-                    ContentView(referenceImages: referenceImages) // pass images directly
+                if !isLoading {
+                    ContentView(referenceImages: referenceImages)
                         .environmentObject(buttonFunctions)
                 }
             }
