@@ -40,10 +40,7 @@ class GestureHandler: NSObject {
             let node = hitResult.node
             
             for (index, panelsInScene) in panelController.panelsInScene.enumerated() {
-                if(node == panelsInScene.parentNode || node == panelsInScene.iconNode){
-                    panelsInScene.handleTap()
-                }
-                else if(node == panelsInScene.deleteButtonNode || node == panelsInScene.deleteButtonNode.childNodes[0]) {
+                if(node == panelsInScene.deleteButtonNode || node == panelsInScene.deleteButtonNode.childNodes[0]) {
                     panelsInScene.parentNode.removeFromParentNode()
                     panelController.panelsInScene.remove(at: index)
                     
@@ -53,7 +50,7 @@ class GestureHandler: NSObject {
 
                 }
                 else if(node == panelsInScene.editButtonNode || node == panelsInScene.deleteButtonNode.childNodes[0]) {
-                    // Placeholder for edit functionality
+                    print("Edit under construction")
                 }
                 else if(node == panelsInScene.moveButtonNode || node == panelsInScene.moveButtonNode.childNodes[0]) {
                     shadowPanel?.iconNode.position = panelsInScene.iconNode.position
@@ -185,4 +182,32 @@ class GestureHandler: NSObject {
         node.position = drawPosition
         sceneView.scene.rootNode.addChildNode(node)
     }
+    
+    func updatePanelDistances() {
+        guard let pointOfView = sceneView.pointOfView else { return }
+
+        let cameraPosition = pointOfView.worldPosition
+        
+        for panel in panelController.panelsInScene {
+            let panelPosition = panel.parentNode.worldPosition
+            let distance = distanceBetween(cameraPosition, panelPosition)
+
+            if(distance > 1){
+                panel.changePanelSize(makeSmaller: true)
+            }
+            else{
+                panel.changePanelSize(makeSmaller: false)
+
+            }
+        }
+    }
+
+    // Utility
+    private func distanceBetween(_ a: SCNVector3, _ b: SCNVector3) -> Float {
+        let dx = a.x - b.x
+        let dy = a.y - b.y
+        let dz = a.z - b.z
+        return sqrt(dx*dx + dy*dy + dz*dz)
+    }
+
 }

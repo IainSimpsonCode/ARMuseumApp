@@ -59,9 +59,27 @@ class ButtonFunctions: ObservableObject {
             newPanel.addToScene()
         }
 
+        print(position)
         panelController?.panelsInScene.append(newPanel)
         panelController?.diningRoomPanels.append(newPanel)
 
+    }
+    
+    func placeLoadedPanel(position: SCNVector3, text: String, panelColor: UIColor, panelIcon: String){
+        guard let arView = arView, let pointOfView = arView.pointOfView else {
+            print("Error: ARSCNView or pointOfView is nil")
+            return
+        }
+        
+        // Create and add the panel
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon)
+
+        if sessionRunning {
+            newPanel.addToScene()
+        }
+
+        panelController?.panelsInScene.append(newPanel)
+        panelController?.diningRoomPanels.append(newPanel)
     }
 
     func captureImage() -> UIImage? {
@@ -129,5 +147,11 @@ class ButtonFunctions: ObservableObject {
     func movePanelButtons(option: Int){
         shadowPanel?.shadowPanelChoice = option
         shadowPanel?.shadowPanelAction()
+    }
+    
+    func save(){
+        for(panel) in panelController!.panelsInScene{
+            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: "text.book.closed.fill", text: panel.panelText, color: "red")
+        }
     }
 }

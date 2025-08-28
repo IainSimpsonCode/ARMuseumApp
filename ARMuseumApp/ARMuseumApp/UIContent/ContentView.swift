@@ -26,7 +26,7 @@ struct ContentView: View {
                         
                         TutorialButton()
                         
-                        EditModeButton()
+                        SaveButton()
                         //PanelMovementToggle()
                         
                         MovingPanelButtons()

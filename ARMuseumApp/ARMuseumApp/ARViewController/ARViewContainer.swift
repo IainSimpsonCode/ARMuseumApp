@@ -20,6 +20,8 @@ struct ARViewContainer: UIViewRepresentable {
         var panelController: ARPanelController
         var shadowPanel: ShadowPanel?
 
+        private var lastDistanceUpdateTime: TimeInterval = 0
+
         init(_ parent: ARViewContainer) {
             self.parent = parent
             self.panelController = parent.panelController
@@ -72,6 +74,14 @@ struct ARViewContainer: UIViewRepresentable {
 
             DispatchQueue.main.async {
                 self.shadowPanel?.parentNode.position = newPosition
+                
+                // Throttle distance checks to once per second
+                if time - self.lastDistanceUpdateTime >= 2.0 {
+                    self.lastDistanceUpdateTime = time
+                        DispatchQueue.main.async {
+                            self.gestureHandler?.updatePanelDistances()
+                        }
+                    }           
             }
             
         }
@@ -110,6 +120,15 @@ struct ARViewContainer: UIViewRepresentable {
         context.coordinator.setupSceneView(for: arView)
         
         context.coordinator.setupShadowPanel()
+        
+//        PanelStorageManager.deleteAllPanels()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            let allPanels = PanelStorageManager.loadPanels()
+            for panel in allPanels {
+                buttonFunctions.placeLoadedPanel(position: panel.position,  text: panel.text, panelColor: .red, panelIcon: panel.systemImageName)
+            }
+        }
 
         return arView
     }

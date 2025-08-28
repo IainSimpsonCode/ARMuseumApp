@@ -65,7 +65,6 @@ class ARPanel {
         createEditButton()
         createMoveButton()
         self.displayActive = true // expanded at start
-        print("Test - Init panel")
     }
     
     func addToScene() {
@@ -73,8 +72,6 @@ class ARPanel {
         panelNodeInScene = true
         displayActive = true
         animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
-
-        print("Add to scene")
     }
     
     func makePanelFaceCamera() {
@@ -83,16 +80,17 @@ class ARPanel {
         parentNode.constraints = [followCameraConstraint]
     }
     
-    func handleTap() {
-//        if (!displayActive) {
+    func changePanelSize(makeSmaller : Bool) {
+        if (!makeSmaller) {
             displayActive = true
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
-//        }
-//        else {
-//            displayActive = false
-//            animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
-//        }
+        }
+        else {
+            displayActive = false
+            animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
+        }
     }
+    
     
     func editModeToggle() {
         deleteButtonNode.isHidden.toggle()
@@ -235,5 +233,9 @@ class ARPanel {
         titleGeometry?.string = text
     }
     
+    func getWorldPosition() -> SCNVector3 {
+        return parentNode.worldPosition
+    }
+
 }
 

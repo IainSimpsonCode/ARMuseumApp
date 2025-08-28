@@ -179,7 +179,7 @@ struct PanelCreatorView: View {
         .navigationTitle(exhibit.name)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            // ✅ Set default selections if not yet set
+            // Set default selections if not yet set
             if selectedText == "nil" {
                 selectedText = exhibit.textOptions.first ?? "nil"
             }
@@ -214,3 +214,4 @@ struct ColorButton: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
+

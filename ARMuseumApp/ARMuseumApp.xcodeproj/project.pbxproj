@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		221EB8C52E60745200EEED99 /* PanelStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221EB8C42E60745200EEED99 /* PanelStorageManager.swift */; };
 		2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */; };
 		2241F8932CA2682E00D8CA36 /* ScreenshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */; };
 		2241F8952CA2687A00D8CA36 /* PanelCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */; };
@@ -25,6 +26,7 @@
 		22B7EC422D4A732700C7FDFD /* TutorialPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC412D4A732700C7FDFD /* TutorialPages.swift */; };
 		22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CDDF7A2D7E496D0099B223 /* MongoController.swift */; };
 		22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */; };
+		22DE18962E5F451200BC8575 /* SaveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DE18952E5F451200BC8575 /* SaveButton.swift */; };
 		22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D12C512F5600609437 /* ARMuseumApp.swift */; };
 		22F271D42C512F5600609437 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D32C512F5600609437 /* ContentView.swift */; };
 		22F271D62C512F5800609437 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F271D52C512F5800609437 /* Assets.xcassets */; };
@@ -34,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		221EB8C42E60745200EEED99 /* PanelStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelStorageManager.swift; sourceTree = "<group>"; };
 		2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARWebViewPanel.swift; sourceTree = "<group>"; };
 		2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotView.swift; sourceTree = "<group>"; };
 		2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelCreationView.swift; sourceTree = "<group>"; };
@@ -52,6 +55,7 @@
 		22B7EC412D4A732700C7FDFD /* TutorialPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialPages.swift; sourceTree = "<group>"; };
 		22CDDF7A2D7E496D0099B223 /* MongoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoController.swift; sourceTree = "<group>"; };
 		22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPanelButton.swift; sourceTree = "<group>"; };
+		22DE18952E5F451200BC8575 /* SaveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveButton.swift; sourceTree = "<group>"; };
 		22F271CE2C512F5600609437 /* ARMuseumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMuseumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22F271D12C512F5600609437 /* ARMuseumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMuseumApp.swift; sourceTree = "<group>"; };
 		22F271D32C512F5600609437 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -73,6 +77,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		221EB8C32E60743B00EEED99 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				221EB8C42E60745200EEED99 /* PanelStorageManager.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		2241F88F2CA25B5500D8CA36 /* PanelTypes */ = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +111,7 @@
 				22B7EC3F2D486F0300C7FDFD /* TutorialButton.swift */,
 				22B7EC412D4A732700C7FDFD /* TutorialPages.swift */,
 				22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */,
+				22DE18952E5F451200BC8575 /* SaveButton.swift */,
 			);
 			path = UIContent;
 			sourceTree = "<group>";
@@ -149,6 +162,7 @@
 		22F271D02C512F5600609437 /* ARMuseumApp */ = {
 			isa = PBXGroup;
 			children = (
+				221EB8C32E60743B00EEED99 /* Classes */,
 				22F271D12C512F5600609437 /* ARMuseumApp.swift */,
 				22CDDF7A2D7E496D0099B223 /* MongoController.swift */,
 				228010432C53C7E0000D01B4 /* InteractionContent */,
@@ -248,9 +262,11 @@
 				22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */,
 				22F271E52C5148A400609437 /* ARPanelClass.swift in Sources */,
 				228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */,
+				22DE18962E5F451200BC8575 /* SaveButton.swift in Sources */,
 				22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */,
 				22B7EC3A2D430C3A00C7FDFD /* ShadowPanel.swift in Sources */,
 				22F271E12C51319300609437 /* ARViewContainer.swift in Sources */,
+				221EB8C52E60745200EEED99 /* PanelStorageManager.swift in Sources */,
 				22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */,
 				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
 				22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */,
