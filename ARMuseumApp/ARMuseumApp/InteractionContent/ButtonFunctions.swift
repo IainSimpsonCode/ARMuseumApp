@@ -156,7 +156,8 @@ class ButtonFunctions: ObservableObject {
     
     func save(){
         for(panel) in panelController!.panelsInScene{
-            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: "text.book.closed.fill", text: panel.panelText, color: "red", id: panel.id, currentRoom: panel.currentRoom)
+            print(panel.panelSides.diffuse.contents)
+            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: panel.panelIconName, text: panel.panelText, color: "red", id: panel.id, currentRoom: panel.currentRoom)
         }
     }
 }

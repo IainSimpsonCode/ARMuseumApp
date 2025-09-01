@@ -33,6 +33,7 @@ class ARPanel {
     
     let currentRoom: String
     let id: Int
+    let panelIconName: String
     
     init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String) {
         self.panelText = text
@@ -66,11 +67,14 @@ class ARPanel {
         self.currentRoom = currentRoom
         self.id = id
         
+        self.displayActive = true // expanded at start
+        self.panelIconName = panelIcon
+        
         makePanelFaceCamera()
         createDeleteButton()
         createEditButton()
         createMoveButton()
-        self.displayActive = true // expanded at start
+        
     }
     
     func addToScene() {
@@ -86,14 +90,21 @@ class ARPanel {
         parentNode.constraints = [followCameraConstraint]
     }
     
-    func changePanelSize(makeSmaller : Bool) {
-        if (!makeSmaller) {
+    func changePanelSize(size : Int) {
+        if (size == 2) {
             displayActive = true
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
+            iconNode.isHidden = false
         }
-        else {
+        else if(size == 1) {
             displayActive = false
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
+            iconNode.isHidden = false
+        }
+        else{
+            displayActive = false
+            animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.00, length: 0.00, chamferRadius: 0))
+            iconNode.isHidden = true
         }
     }
     

@@ -54,6 +54,7 @@ class PanelStorageManager {
     /// Load and return `LoadedPanel`s with SCNVector3 positions
     static func loadPanels() -> [LoadedPanel] {
         let savedPanels = loadSavedPanels()
+        print("loaded \(savedPanels.count) panels")
         
         return savedPanels.compactMap { panel in
             guard panel.position.count == 3 else { return nil }

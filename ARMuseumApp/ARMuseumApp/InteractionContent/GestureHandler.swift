@@ -194,12 +194,14 @@ class GestureHandler: NSObject {
             let panelPosition = panel.parentNode.worldPosition
             let distance = distanceBetween(cameraPosition, panelPosition)
 
-            if(distance > 1){
-                panel.changePanelSize(makeSmaller: true)
+            if(distance < 1){
+                panel.changePanelSize(size : 2)
+            }
+            else if(distance > 1 && distance < 2){
+                panel.changePanelSize(size: 1)
             }
             else{
-                panel.changePanelSize(makeSmaller: false)
-
+                panel.changePanelSize(size: 0)
             }
         }
     }
