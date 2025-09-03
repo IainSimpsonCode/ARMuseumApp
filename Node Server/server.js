@@ -25,7 +25,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/api/museums", getMuseumNames);
 
-app.get("/api/:museumID/authenticate", validateCuratorLogin)
+app.post("/api/:museumID/authenticate", validateCuratorLogin)
 
 app.get("/api/:museumID/:roomID/panel", getCuratorPanels)
 app.post("/api/:museumID/:roomID/panel", createNewCuratorPanel)

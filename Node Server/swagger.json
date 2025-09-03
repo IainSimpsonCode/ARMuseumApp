@@ -9,6 +9,7 @@
     "/api/{museumID}/{roomID}/panel": {
       "get": {
         "summary": "Get curator panels",
+        "tags": ["Panels"],
         "description": "Fetch all curator panels for a given museum and room.",
         "parameters": [
           {
@@ -57,6 +58,7 @@
       },
       "post": {
         "summary": "Create new curator panel",
+        "tags": ["Panels"],
         "parameters": [
           {
             "name": "museumID",
@@ -111,6 +113,7 @@
       },
       "patch": {
         "summary": "Update curator panel",
+        "tags": ["Panels"],
         "description": "Update one or more fields of a curator panel by docID.",
         "parameters": [
           {
@@ -152,6 +155,7 @@
       },
       "delete": {
         "summary": "Delete curator panel",
+        "tags": ["Panels"],
         "description": "Delete a curator panel by docID.",
         "parameters": [
           {
