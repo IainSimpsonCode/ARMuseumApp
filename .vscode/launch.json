@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:ARMuseumApp}/ARMuseumApp",
+      "name": "Debug ARMuseumApp (ARMuseumApp)",
+      "program": "${workspaceFolder:ARMuseumApp}/ARMuseumApp/.build/debug/ARMuseumApp",
+      "preLaunchTask": "swift: Build Debug ARMuseumApp (ARMuseumApp)"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:ARMuseumApp}/ARMuseumApp",
+      "name": "Release ARMuseumApp (ARMuseumApp)",
+      "program": "${workspaceFolder:ARMuseumApp}/ARMuseumApp/.build/release/ARMuseumApp",
+      "preLaunchTask": "swift: Build Release ARMuseumApp (ARMuseumApp)"
+    }
+  ]
+}
