@@ -13,6 +13,10 @@
 		2241F8952CA2687A00D8CA36 /* PanelCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */; };
 		228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010452C53D2B3000D01B4 /* ARPanelController.swift */; };
 		228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010472C53D3FC000D01B4 /* ImageDetection.swift */; };
+		2281E6982E6856BA0086C836 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2281E6972E6856BA0086C836 /* SplashScreen.swift */; };
+		2281E69A2E685A2E0086C836 /* SessionSelectionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2281E6992E685A2E0086C836 /* SessionSelectionScreen.swift */; };
+		2281E69C2E6860E10086C836 /* SessionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2281E69B2E6860E10086C836 /* SessionDetails.swift */; };
+		2281E69E2E687AD60086C836 /* ARCameraForMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2281E69D2E687AD60086C836 /* ARCameraForMenu.swift */; };
 		22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */; };
 		22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */; };
 		22B7EC322D4089B500C7FDFD /* EditModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B7EC312D4089B500C7FDFD /* EditModeButton.swift */; };
@@ -42,6 +46,10 @@
 		2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelCreationView.swift; sourceTree = "<group>"; };
 		228010452C53D2B3000D01B4 /* ARPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPanelController.swift; sourceTree = "<group>"; };
 		228010472C53D3FC000D01B4 /* ImageDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetection.swift; sourceTree = "<group>"; };
+		2281E6972E6856BA0086C836 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		2281E6992E685A2E0086C836 /* SessionSelectionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSelectionScreen.swift; sourceTree = "<group>"; };
+		2281E69B2E6860E10086C836 /* SessionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetails.swift; sourceTree = "<group>"; };
+		2281E69D2E687AD60086C836 /* ARCameraForMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCameraForMenu.swift; sourceTree = "<group>"; };
 		22B079ED2C5A769B00BCA37E /* ButtonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonFunctions.swift; sourceTree = "<group>"; };
 		22B7EC2F2D4088FD00C7FDFD /* EndSessionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndSessionButton.swift; sourceTree = "<group>"; };
 		22B7EC312D4089B500C7FDFD /* EditModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeButton.swift; sourceTree = "<group>"; };
@@ -81,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				221EB8C42E60745200EEED99 /* PanelStorageManager.swift */,
+				2281E69B2E6860E10086C836 /* SessionDetails.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -112,6 +121,8 @@
 				22B7EC412D4A732700C7FDFD /* TutorialPages.swift */,
 				22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */,
 				22DE18952E5F451200BC8575 /* SaveButton.swift */,
+				2281E6972E6856BA0086C836 /* SplashScreen.swift */,
+				2281E6992E685A2E0086C836 /* SessionSelectionScreen.swift */,
 			);
 			path = UIContent;
 			sourceTree = "<group>";
@@ -120,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				22F271E02C51319300609437 /* ARViewContainer.swift */,
+				2281E69D2E687AD60086C836 /* ARCameraForMenu.swift */,
 			);
 			path = ARViewController;
 			sourceTree = "<group>";
@@ -255,6 +267,7 @@
 				22B7EC422D4A732700C7FDFD /* TutorialPages.swift in Sources */,
 				22B7EC342D408A6D00C7FDFD /* ButtonBar.swift in Sources */,
 				22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */,
+				2281E69A2E685A2E0086C836 /* SessionSelectionScreen.swift in Sources */,
 				22B7EC382D41912A00C7FDFD /* ImageDetectionOverlay.swift in Sources */,
 				22F271D42C512F5600609437 /* ContentView.swift in Sources */,
 				2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */,
@@ -264,10 +277,13 @@
 				228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */,
 				22DE18962E5F451200BC8575 /* SaveButton.swift in Sources */,
 				22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */,
+				2281E69C2E6860E10086C836 /* SessionDetails.swift in Sources */,
 				22B7EC3A2D430C3A00C7FDFD /* ShadowPanel.swift in Sources */,
 				22F271E12C51319300609437 /* ARViewContainer.swift in Sources */,
+				2281E69E2E687AD60086C836 /* ARCameraForMenu.swift in Sources */,
 				221EB8C52E60745200EEED99 /* PanelStorageManager.swift in Sources */,
 				22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */,
+				2281E6982E6856BA0086C836 /* SplashScreen.swift in Sources */,
 				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
 				22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */,
 				22B7EC3E2D4842EE00C7FDFD /* MovingPanelButtons.swift in Sources */,

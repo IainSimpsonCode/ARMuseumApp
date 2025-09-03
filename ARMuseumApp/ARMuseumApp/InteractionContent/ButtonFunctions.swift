@@ -12,12 +12,19 @@ class ButtonFunctions: ObservableObject {
     var panelController: ARPanelController?
     var shadowPanel: ShadowPanel?
     @Published var sessionRunning: Bool = false
+    @Published var SessionSelected: Int = 0
     @Published var editModeActive: Bool = false
     @Published var movementModeBool: Bool = true
     @Published var movingPanel: Bool = false
     @Published var tutorialVisible: Bool = false
     @Published var isDrawingMode = false
     @Published var currentRoom: String = ""
+    @Published var sessionDetails: SessionDetails
+    
+    init() {
+            // Example initialization with parameters
+        self.sessionDetails = SessionDetails(sessionType: 0, museumID: "", roomID: "", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
+        }
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
         self.arView = arView

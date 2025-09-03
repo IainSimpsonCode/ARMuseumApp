@@ -16,6 +16,7 @@ class ARPanel {
     var parentNode: SCNNode
     var currentGeometry: SCNBox
     var displayActive = true
+    var panelState: Int
     var panelNodeInScene = false
     
     let panelSides = SCNMaterial()
@@ -35,6 +36,8 @@ class ARPanel {
     let id: Int
     let panelIconName: String
     
+    var isTemporarilyExpanded = false
+
     init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
@@ -68,6 +71,7 @@ class ARPanel {
         self.id = id
         
         self.displayActive = true // expanded at start
+        self.panelState = 2
         self.panelIconName = panelIcon
         
         makePanelFaceCamera()
@@ -93,16 +97,19 @@ class ARPanel {
     func changePanelSize(size : Int) {
         if (size == 2) {
             displayActive = true
+            panelState = 2
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
             iconNode.isHidden = false
         }
         else if(size == 1) {
             displayActive = false
+            panelState = 1
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
             iconNode.isHidden = false
         }
         else{
             displayActive = false
+            panelState = 0
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.00, length: 0.00, chamferRadius: 0))
             iconNode.isHidden = true
         }
@@ -206,7 +213,7 @@ class ARPanel {
         SCNTransaction.begin()
         SCNTransaction.animationDuration = 1.0
 
-        if (displayActive) {
+        if (panelState == 2) {
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
                 self.editTextNode(text: panelText, fontSize: 5, color: UIColor.black)
             }
@@ -220,7 +227,7 @@ class ARPanel {
             
             sideButtonTargetGeometry = SCNBox(width: 0.020, height: 0.020, length: 0.012, chamferRadius: 1)
         }
-        else {
+        else if (panelState == 1 || panelState == 0) {
             editTextNode(text: "", fontSize: 1, color: UIColor.black)
             iconCurrentLocation = SCNVector3(x: 0.0, y: 0.0, z: 0.0051)
             iconCurrentScale = SCNVector3(x: 1.0, y: 1.0, z: 1.0)
@@ -230,6 +237,22 @@ class ARPanel {
             editButtonNode.position = SCNVector3(x: 0.012, y: 0.025, z: 0.003)
             
             sideButtonTargetGeometry = SCNBox(width: 0.013, height: 0.013, length: 0.008, chamferRadius: 1)
+        }
+        else if panelState == 3 {
+            // Bigger panel to show more text
+            Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
+                self.editTextNode(text: panelText, fontSize: 6, color: UIColor.black)
+            }
+            
+            iconCurrentLocation = SCNVector3(x: -0.1, y: 0.0, z: 0.025)
+            iconCurrentScale = SCNVector3(x: 1.5, y: 1.5, z: 1.5)
+            
+            // Move buttons to top-right
+            deleteButtonNode.position = SCNVector3(x: 0.15, y: 0.07, z: 0.03)
+            editButtonNode.position = SCNVector3(x: 0.12, y: 0.07, z: 0.03)
+            moveButtonNode.position = SCNVector3(x: 0.08, y: 0.07, z: 0.03)
+            
+            sideButtonTargetGeometry = SCNBox(width: 0.025, height: 0.025, length: 0.015, chamferRadius: 1)
         }
 
         // Update panel size
