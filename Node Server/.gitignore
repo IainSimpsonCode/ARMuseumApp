@@ -1,3 +1,7 @@
+### IMPORTANT SECRETS ###
+.env
+serviceAccountKey.json
+
 # Logs
 logs
 *.log
