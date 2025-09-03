@@ -4,7 +4,10 @@ struct ContentView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     
     var body: some View {
-        if buttonFunctions.sessionRunning{
+        if buttonFunctions.sessionDetails.sessionType == 0{
+            SplashScreen()
+        }
+        else if buttonFunctions.sessionDetails.isSessionActive{
             NavigationView {
                 ZStack {
                     //stack the UI on top of the AR Camera
@@ -14,22 +17,37 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .edgesIgnoringSafeArea(.all)
                         
-                        //Main UI elements
-                        VStack {
-                            Spacer()
-                            ButtonBar()
-                        }.edgesIgnoringSafeArea(.all)
+                        if(!buttonFunctions.sessionDetails.panelCreationMode){
+                            //Main UI elements
+                            VStack {
+                                Spacer()
+                                ButtonBar()
+                            }.edgesIgnoringSafeArea(.all)
+                            
+                            AddPanelButton()
+                            
+                            ImageDetectionOverlay()
+                            
+                            TutorialButton()
+                            
+                            SaveButton()
+                            //PanelMovementToggle()
+                            
+                            MovingPanelButtons()
+                        }
+                        else {
+                            // Provide a binding for needsClosing
+                            @State var needsClosing = false
+                            // Provide an actual exhibit, for example the first one
+                            let selectedExhibit = exhibits.first!
+
+                            PanelCreatorView(
+                                buttonFunctions: _buttonFunctions,
+                                needsClosing: $needsClosing,  // <-- binding
+                                exhibit: selectedExhibit       // <-- actual Exhibit
+                            )
+                        }
                         
-                        AddPanelButton()
-                        
-                        ImageDetectionOverlay()
-                        
-                        TutorialButton()
-                        
-                        SaveButton()
-                        //PanelMovementToggle()
-                        
-                        MovingPanelButtons()
                     }.disabled(buttonFunctions.tutorialVisible)
                     
                     TutorialPages()

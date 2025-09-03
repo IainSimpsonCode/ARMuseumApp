@@ -34,13 +34,13 @@ struct AddPanelView: View {
     var body: some View {
         List {
             ForEach(exhibits.indices, id: \.self) { index in
-                NavigationLink(
-                    destination: PanelCreatorView(
-                        buttonFunctions: _buttonFunctions,
-                        needsClosing: $needsClosing,
-                        exhibit: exhibits[index]
-                    )
-                ) {
+                Button(action: {
+                    // Run your code here
+                    buttonFunctions.sessionDetails.panelCreationMode = true
+                    
+                    // Optionally navigate
+                    presentationMode.wrappedValue.dismiss()
+                }) {
                     HStack(spacing: 16) {
                         Image(exhibits[index].imageName)
                             .resizable()
@@ -56,6 +56,7 @@ struct AddPanelView: View {
                     .padding(.vertical, 4)
                 }
             }
+
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Exhibits")
@@ -67,7 +68,7 @@ struct AddPanelView: View {
     }
 }
 
-// MARK: - PanelCreatorView
+import SwiftUI
 
 struct PanelCreatorView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
@@ -81,120 +82,126 @@ struct PanelCreatorView: View {
     @State private var selectedIcon: String = "nil"
 
     var body: some View {
-        ScrollView {
+        ZStack {
+            Color.clear.edgesIgnoringSafeArea(.all)
+            Color.black.opacity(0.2)
+                    .edgesIgnoringSafeArea(.all)
+
             VStack(spacing: 20) {
-                Image(exhibit.imageName)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding(.bottom, 10)
-                
+                // --- Above center ---
                 Text("Panel Designer")
                     .font(.system(.title2, design: .rounded).weight(.bold))
+                    .foregroundColor(.white)
 
-                // MARK: Text Picker
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Choose a text to display")
                         .font(.headline)
-                    
+                        .foregroundColor(.white)
+
                     Picker("Text Option", selection: $selectedText) {
-                        ForEach(exhibit.textOptions, id: \.self) {
-                            Text($0).tag($0)
+                        ForEach(exhibit.textOptions, id: \.self) { option in
+                            Text(option).tag(option)
                         }
                     }
                     .pickerStyle(.menu)
                     .padding()
-                    .background(Color(.systemGray6))
+                    .background(Color.white.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
 
-                // MARK: Color Selector
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Select Panel Color")
-                        .font(.headline)
+                Spacer()
 
-                    HStack(spacing: 16) {
-                        ForEach(sharedColorOptions, id: \.self) { color in
-                            ColorButton(buttonColor: color, isSelected: selectedColor == color) {
-                                selectedColor = color
-                            }
-                        }
-                    }
-                }
+                // --- EXACT CENTER: Placeholder ---
+                // Centered dummy panel
+                    DummyARPanel(
+                        text: selectedText,
+                        borderColor: selectedColor ?? .blue,
+                        icon: selectedIcon
+                    )
+                    .frame(maxHeight: 200)
+                    .padding(.vertical, 20)
 
-                // MARK: Icon Selector
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Panel Icon")
-                        .font(.headline)
+                Spacer()
 
-                    ScrollView(.horizontal, showsIndicators: false) {
+                // --- Below center ---
+                VStack(spacing: 16) {
+                    // Color Selector
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Select Panel Color")
+                            .font(.headline)
+                            .foregroundColor(.white)
+
                         HStack(spacing: 16) {
-                            ForEach(sharedIconOptions, id: \.self) { symbol in
-                                Button(action: {
-                                    selectedIcon = symbol
-                                }) {
-                                    Image(systemName: symbol)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 36, height: 36)
-                                        .padding(10)
-                                        .background(selectedIcon == symbol ? Color.blue : Color(.systemGray5))
-                                        .foregroundColor(selectedIcon == symbol ? .white : .primary)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
-                                        )
+                            ForEach(sharedColorOptions, id: \.self) { color in
+                                ColorButton(buttonColor: color, isSelected: selectedColor == color) {
+                                    selectedColor = color
                                 }
                             }
                         }
-                        .padding(.horizontal, 2)
                     }
-                }
 
-                // MARK: Add Button
-                Button(action: {
-                    if selectedText != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
-                        buttonFunctions.addPanel(
-                            text: exhibit.name + ":\n\n" + selectedText,
-                            panelColor: UIColor(selectedColor),
-                            panelIcon: selectedIcon
-                        )
-                        needsClosing = true
-                        presentationMode.wrappedValue.dismiss()
+                    // Icon Selector
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Panel Icon")
+                            .font(.headline)
+                            .foregroundColor(.white)
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(sharedIconOptions, id: \.self) { symbol in
+                                    Button(action: { selectedIcon = symbol }) {
+                                        Image(systemName: symbol)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 36, height: 36)
+                                            .padding(10)
+                                            .background(selectedIcon == symbol ? Color.blue.opacity(0.5) : Color.clear)
+                                            .foregroundColor(selectedIcon == symbol ? .white : .primary)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
+                                            )
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 2)
+                        }
                     }
-                }) {
-                    Text("Add To Scene")
-                        .font(.system(.headline, design: .rounded))
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    // Add Button
+                    Button(action: {
+                        if selectedText != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
+                            buttonFunctions.addPanel(
+                                text: exhibit.name + ":\n\n" + selectedText,
+                                panelColor: UIColor(selectedColor),
+                                panelIcon: selectedIcon
+                            )
+                            needsClosing = true
+                            presentationMode.wrappedValue.dismiss()
+                            buttonFunctions.sessionDetails.panelCreationMode = false
+                        }
+                    }) {
+                        Text("Add To Scene")
+                            .font(.system(.headline, design: .rounded))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue.opacity(0.8))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
                 }
-                .padding(.top, 10)
+                .padding(.bottom, 20)
             }
-            .padding(20)
+            .padding(.horizontal, 20)
         }
-        .navigationTitle(exhibit.name)
-        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            // Set default selections if not yet set
-            if selectedText == "nil" {
-                selectedText = exhibit.textOptions.first ?? "nil"
-            }
-            if selectedColor == nil {
-                selectedColor = sharedColorOptions.first
-            }
-            if selectedIcon == "nil" {
-                selectedIcon = sharedIconOptions.first ?? "nil"
-            }
+            if selectedText == "nil" { selectedText = exhibit.textOptions.first ?? "nil" }
+            if selectedColor == nil { selectedColor = sharedColorOptions.first }
+            if selectedIcon == "nil" { selectedIcon = sharedIconOptions.first ?? "nil" }
         }
     }
 }
-
-
-// MARK: - ColorButton View
 
 struct ColorButton: View {
     let buttonColor: Color
@@ -214,4 +221,40 @@ struct ColorButton: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
+
+struct DummyARPanel: View {
+    let text: String
+    let borderColor: Color
+    let icon: String
+
+    var body: some View {
+        ZStack {
+            // Transparent background with colored border
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(borderColor, lineWidth: 2)
+                .background(Color.clear)
+            
+            HStack(spacing: 8) {
+                // Icon on the left
+                Image(systemName: icon)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 36, height: 36)
+                    .padding(.leading, 8)
+                
+                // Panel text
+                Text(text)
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.trailing, 8)
+            }
+            .padding(.vertical, 8)
+        }
+        .frame(width: 260, height: 100)
+        .shadow(radius: 2) // optional subtle shadow like AR panel
+    }
+}
+
 

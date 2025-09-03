@@ -50,6 +50,7 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
                 
                 if !self.buttonFunctions.sessionRunning {
                     print("Image is aligned")
+                    buttonFunctions.sessionDetails.isSessionActive = true
                     self.buttonFunctions.startSession(
                         node: targetNode,
                         posterName: imageName

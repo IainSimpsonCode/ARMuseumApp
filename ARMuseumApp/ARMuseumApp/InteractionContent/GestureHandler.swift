@@ -9,7 +9,7 @@ class GestureHandler: NSObject {
     private var initialScale: SCNVector3?
     private var selectedNode: SCNNode?
     @ObservedObject var buttonFunctions: ButtonFunctions
-    
+
     init(sceneView: ARSCNView, panelController: ARPanelController, buttonFunctions: ButtonFunctions) {
         self.sceneView = sceneView
         self.panelController = panelController
@@ -36,37 +36,84 @@ class GestureHandler: NSObject {
         let location = sender.location(in: sceneView)
         let hitTestResults = sceneView.hitTest(location, options: nil)
         
-        if let hitResult = hitTestResults.first {
-            let node = hitResult.node
-            
-            for (index, panelsInScene) in panelController.panelsInScene.enumerated() {
-                if(node == panelsInScene.deleteButtonNode || node == panelsInScene.deleteButtonNode.childNodes[0]) {
-                    panelsInScene.parentNode.removeFromParentNode()
-                    panelController.panelsInScene.remove(at: index)
-                    
-                    let generator = UINotificationFeedbackGenerator()
-                    generator.prepare()
-                    generator.notificationOccurred(.success)
-                    
-                    PanelStorageManager.deletePanel(byId: panelsInScene.id)
-
-                }
-                else if(node == panelsInScene.editButtonNode || node == panelsInScene.deleteButtonNode.childNodes[0]) {
-                    print("Edit under construction")
-                }
-                else if(node == panelsInScene.moveButtonNode || node == panelsInScene.moveButtonNode.childNodes[0]) {
-                    shadowPanel?.iconNode.position = panelsInScene.iconNode.position
-                    shadowPanel?.iconNode.scale = panelsInScene.iconNode.scale
-                    shadowPanel?.parentNode.geometry = panelsInScene.parentNode.geometry
-
-                    shadowPanel?.addToScene()
-                    buttonFunctions.movingPanel = true
-                    shadowPanel?.panelToChnage = panelsInScene
-                        
-                }
+        guard let hitResult = hitTestResults.first else { return }
+        let node = hitResult.node
+        
+        for (index, panel) in panelController.panelsInScene.enumerated() {
+            // DELETE BUTTON
+            if node == panel.deleteButtonNode || node == panel.deleteButtonNode.childNodes.first {
+                panel.parentNode.removeFromParentNode()
+                panelController.panelsInScene.remove(at: index)
+                PanelStorageManager.deletePanel(byId: panel.id)
+                
+                let generator = UINotificationFeedbackGenerator()
+                generator.prepare()
+                generator.notificationOccurred(.success)
+                return
             }
+            
+            // EDIT BUTTON
+            else if node == panel.editButtonNode || node == panel.editButtonNode.childNodes.first {
+                print("Edit under construction")
+                return
+            }
+            
+            // MOVE BUTTON
+            else if node == panel.moveButtonNode || node == panel.moveButtonNode.childNodes.first {
+                shadowPanel?.iconNode.position = panel.iconNode.position
+                shadowPanel?.iconNode.scale = panel.iconNode.scale
+                shadowPanel?.parentNode.geometry = panel.parentNode.geometry
+                shadowPanel?.addToScene()
+                buttonFunctions.movingPanel = true
+                shadowPanel?.panelToChnage = panel
+                return
+            }
+            
+            else if node == panel.parentNode || node == panel.iconNode {
+                if panel.isTemporarilyExpanded {
+                    // Panel is already expanded → revert to normal
+                    panel.isTemporarilyExpanded = false
+                    
+                    let distance = self.distanceBetween(self.sceneView.pointOfView!.worldPosition,
+                                                        panel.parentNode.worldPosition)
+                    if distance < 1 {
+                        panel.changePanelSize(size: 2)
+                    } else if distance > 1 && distance < 2 {
+                        panel.changePanelSize(size: 1)
+                    } else {
+                        panel.changePanelSize(size: 0)
+                    }
+                } else {
+                    // Panel is not expanded → temporarily expand
+                    panel.isTemporarilyExpanded = true
+                    panel.panelState = 3
+                    let state3Geometry = SCNBox(width: 0.3, height: 0.18, length: 0.04, chamferRadius: 1)
+                    panel.animatePanel(panelNode: panel.parentNode, currentGeometry: panel.currentGeometry, targetGeometry: state3Geometry)
+                    
+                    // Revert after 10s
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                        panel.isTemporarilyExpanded = false
+                        let distance = self.distanceBetween(self.sceneView.pointOfView!.worldPosition,
+                                                            panel.parentNode.worldPosition)
+                        if distance < 1 {
+                            panel.changePanelSize(size: 2)
+                        } else if distance > 1 && distance < 2 {
+                            panel.changePanelSize(size: 1)
+                        } else {
+                            panel.changePanelSize(size: 0)
+                        }
+                    }
+                }
+                
+                return
+            }
+
         }
     }
+
+
+
+
     
     @objc func handleHold(sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
@@ -187,24 +234,25 @@ class GestureHandler: NSObject {
     
     func updatePanelDistances() {
         guard let pointOfView = sceneView.pointOfView else { return }
-
         let cameraPosition = pointOfView.worldPosition
         
         for panel in panelController.panelsInScene {
+            // Skip panels that are temporarily expanded
+            if panel.isTemporarilyExpanded { continue }
+            
             let panelPosition = panel.parentNode.worldPosition
             let distance = distanceBetween(cameraPosition, panelPosition)
 
-            if(distance < 1){
-                panel.changePanelSize(size : 2)
-            }
-            else if(distance > 1 && distance < 2){
+            if distance < 1 {
+                panel.changePanelSize(size: 2)
+            } else if distance > 1 && distance < 2 {
                 panel.changePanelSize(size: 1)
-            }
-            else{
+            } else {
                 panel.changePanelSize(size: 0)
             }
         }
     }
+
 
     // Utility
     private func distanceBetween(_ a: SCNVector3, _ b: SCNVector3) -> Float {
