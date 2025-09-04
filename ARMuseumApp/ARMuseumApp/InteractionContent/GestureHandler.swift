@@ -44,7 +44,7 @@ class GestureHandler: NSObject {
             if node == panel.deleteButtonNode || node == panel.deleteButtonNode.childNodes.first {
                 panel.parentNode.removeFromParentNode()
                 panelController.panelsInScene.remove(at: index)
-                PanelStorageManager.deletePanel(byId: panel.id)
+//                PanelStorageManager.deletePanel(byId: panel.id)
                 
                 let generator = UINotificationFeedbackGenerator()
                 generator.prepare()
@@ -111,10 +111,6 @@ class GestureHandler: NSObject {
         }
     }
 
-
-
-
-    
     @objc func handleHold(sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         

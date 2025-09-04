@@ -172,14 +172,16 @@ struct PanelCreatorView: View {
                     // Add Button
                     Button(action: {
                         if selectedText != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
-                            buttonFunctions.addPanel(
-                                text: exhibit.name + ":\n\n" + selectedText,
-                                panelColor: UIColor(selectedColor),
-                                panelIcon: selectedIcon
-                            )
-                            needsClosing = true
-                            presentationMode.wrappedValue.dismiss()
-                            buttonFunctions.sessionDetails.panelCreationMode = false
+                            Task {
+                                await buttonFunctions.addPanel(
+                                    text: exhibit.name + ":\n\n" + selectedText,
+                                    panelColor: UIColor(selectedColor),
+                                    panelIcon: selectedIcon
+                                )
+                                needsClosing = true
+                                presentationMode.wrappedValue.dismiss()
+                                buttonFunctions.sessionDetails.panelCreationMode = false
+                            }
                         }
                     }) {
                         Text("Add To Scene")
@@ -190,6 +192,7 @@ struct PanelCreatorView: View {
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
+
                 }
                 .padding(.bottom, 20)
             }

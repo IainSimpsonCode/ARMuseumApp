@@ -14,7 +14,11 @@ struct SaveButton: View {
         VStack {
             HStack {
                 Spacer()
-                Button(action: buttonFunctions.save) {
+                Button(action: {
+                    Task {
+                        await getMuseumsService()
+                    }
+                }) {
                     Image(systemName: "square.and.arrow.down") // Save icon
                         .font(.system(size: 28, weight: .medium))
                         .foregroundColor(.accentColor)
@@ -23,6 +27,7 @@ struct SaveButton: View {
                         .clipShape(Circle())
                 }
                 .accessibilityLabel("Save Changes")
+
             }
             Spacer()
         }

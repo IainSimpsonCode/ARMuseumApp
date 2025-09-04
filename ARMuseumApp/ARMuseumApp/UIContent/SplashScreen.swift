@@ -1,130 +1,183 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
-
-struct Option: Identifiable {
-    let id: Int
-    let title: String
-}
+import RealityKit
+import ARKit
 
 struct SplashScreen: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
-    @State private var selectedOption: Option? = nil
+    @State private var museums: [String] = []
+    @State private var selectedMuseum: String? = nil
     @State private var showDropdown = false
     @State private var goToNextScreen = false
-
-    let options = [
-        Option(id: 1, title: "Museum 1"),
-        Option(id: 2, title: "Museum 2"),
-        Option(id: 3, title: "Museum 3")
-    ]
-
+    @StateObject private var arModel = ARViewModel()
+    
+    @State private var serverUp = false
+    @State private var showServerModal = false
+    
     var body: some View {
         NavigationView {
             ZStack {
-                ARCameraForMenu()
+                // AR Camera view safely wrapped
+                ARCameraForMenu(model: arModel)
                     .edgesIgnoringSafeArea(.all)
                 
                 Color.black
-                        .opacity(0.3)
-                        .edgesIgnoringSafeArea(.all)
+                    .opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
                 
                 VStack {
                     Text("Welcome to \nAR Museum")
-                            .font(.largeTitle)          // makes it big
-                            .fontWeight(.bold)          // bold text
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 50)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 50)
                     
-                    Spacer() // Push dropdown to bottom
-
-                    // Dropdown menu
-                    VStack(spacing: 0) {
-                        Button(action: { withAnimation { showDropdown.toggle() } }) {
-                            HStack {
-                                Text(selectedOption?.title ?? "Select an option")
-                                    .foregroundColor(.black)
-                                Spacer()
-                                Image(systemName: showDropdown ? "chevron.up" : "chevron.down")
-                                    .foregroundColor(.gray)
-                            }
-                            .padding()
-                            .frame(width: 300)
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .shadow(radius: 4)
-                        }
-
-                        if showDropdown {
-                            VStack(spacing: 0) {
-                                ForEach(options) { option in
-                                    Button(action: {
-                                        selectedOption = option
-                                        showDropdown = false
-                                        saveSelection(option)
-                                    }) {
-                                        Text(option.title)
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(Color.white)
-                                            .foregroundColor(.black)
-                                    }
-                                    Divider()
+                    Spacer()
+                    
+                    // Dropdown + Begin button
+                    VStack {
+                        // Dropdown
+                        VStack(spacing: 0) {
+                            Button(action: { withAnimation { showDropdown.toggle() } }) {
+                                HStack {
+                                    Text(selectedMuseum ?? "Select an option")
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Image(systemName: showDropdown ? "chevron.up" : "chevron.down")
+                                        .foregroundColor(.gray)
                                 }
+                                .padding()
+                                .frame(width: 300)
+                                .background(Color.white)
+                                .cornerRadius(10)
+                                .shadow(radius: 4)
                             }
-                            .frame(width: 300)
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .shadow(radius: 4)
-                            .transition(.move(edge: .top))
+                            
+                            if showDropdown {
+                                VStack(spacing: 0) {
+                                    ForEach(museums, id: \.self) { museum in
+                                        Button(action: {
+                                            selectedMuseum = museum
+                                            showDropdown = false
+                                            saveSelection(museum)
+                                        }) {
+                                            Text(museum)
+                                                .frame(maxWidth: .infinity)
+                                                .padding()
+                                                .background(Color.white)
+                                                .foregroundColor(.black)
+                                        }
+                                        Divider()
+                                    }
+                                }
+                                .frame(width: 300)
+                                .background(Color.white)
+                                .cornerRadius(10)
+                                .shadow(radius: 4)
+                                .transition(.move(edge: .top))
+                            }
+                        }
+                        
+                        // Begin button
+                        if selectedMuseum != nil && serverUp {
+                            Button(action: {
+                                buttonFunctions.sessionDetails.museumID = selectedMuseum!
+                                goToNextScreen = true
+                            }) {
+                                Text("Begin")
+                                    .frame(width: 200, height: 50)
+                                    .background(Color.green)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(12)
+                                    .font(.title2)
+                            }
+                            .padding(.top, 20)
                         }
                     }
-
-                    // Begin button
-                    if selectedOption != nil {
-                        Button(action: {
-                            buttonFunctions.sessionDetails.museumID = selectedOption!.title
-                            goToNextScreen = true
-                        }) {
-                            Text("Begin")
-                                .frame(width: 200, height: 50)
-                                .background(Color.green)
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
-                                .font(.title2)
-                        }
-                        .padding(.top, 20)
+                    .padding(.bottom, 50)
+                    
+                    // NavigationLink
+                    NavigationLink(
+                        destination: SessionSelectionScreen(),
+                        isActive: $goToNextScreen
+                    ) {
+                        EmptyView()
                     }
+                    .hidden()
                 }
-                .padding(.bottom, 50) // space from bottom
+                
+                // MARK: - Server Down Modal
+                .alert(isPresented: $showServerModal) {
+                    Alert(
+                        title: Text("Server Status"),
+                        message: Text(serverUp ? "Server is online." : "Server is down. Retrying..."),
+                        dismissButton: .none // No close button; modal stays until server is up
+                    )
+                }
 
-                // NavigationLink to next screen
-                NavigationLink(
-                    destination: SessionSelectionScreen(),
-                    isActive: $goToNextScreen
-                ) {
-                    EmptyView()
-                }
-                .hidden()
             }
             .onAppear {
                 loadLastSelection()
+                checkServerHealth()
+            }
+        }
+    }
+    
+    // MARK: - Local Storage
+    func saveSelection(_ museum: String) {
+        UserDefaults.standard.set(museum, forKey: "lastSelectedMuseum")
+        selectedMuseum = museum
+    }
+    
+    func loadLastSelection() {
+        if let savedMuseum = UserDefaults.standard.string(forKey: "lastSelectedMuseum") {
+            selectedMuseum = savedMuseum
+        }
+    }
+    
+    // MARK: - Load Museums from API
+    func loadMuseums() {
+        Task {
+            self.museums = await getMuseumsService()
+        }
+        
+    }
+    
+    // MARK: - Server Health Check
+    func checkServerHealth() {
+        showServerModal = false  // Start with modal hidden
+
+        Task {
+            // Start a timer to show the modal after 2s if still waiting
+            let timerTask = Task {
+                try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+                if !Task.isCancelled {  // Only show if not cancelled
+                    showServerModal = true
+                }
+            }
+
+            let message = await healthCheckService()
+
+            // Cancel the timer if the API finished in time
+            timerTask.cancel()
+
+            if message.contains("Server is OK and online.") {
+                serverUp = true
+                showServerModal = false  // Hide modal when server is up
+                loadMuseums()
+            } else {
+                serverUp = false
+                showServerModal = true   // Show modal if server is down
+                try? await Task.sleep(nanoseconds: 10_000_000_000) // Retry in 10s
+                checkServerHealth()
             }
         }
     }
 
-    // MARK: - Local Storage
 
-    func saveSelection(_ option: Option) {
-        UserDefaults.standard.set(option.id, forKey: "lastSelectedOption")
-    }
-
-    func loadLastSelection() {
-        let savedId = UserDefaults.standard.integer(forKey: "lastSelectedOption")
-        if let option = options.first(where: { $0.id == savedId }) {
-            selectedOption = option
-        }
-    }
 }
-
-
-
-

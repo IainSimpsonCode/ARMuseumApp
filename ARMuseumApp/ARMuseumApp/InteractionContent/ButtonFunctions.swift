@@ -6,6 +6,7 @@
 //
 
 import ARKit
+import UIKit
 
 class ButtonFunctions: ObservableObject {
     var arView: ARSCNView?
@@ -35,14 +36,14 @@ class ButtonFunctions: ObservableObject {
             isDrawingMode.toggle()
         }
     
-    func addPanel(text: String, panelColor: UIColor, panelIcon: String) {
-        guard let arView = arView, let pointOfView = arView.pointOfView else {
+    func addPanel(text: String, panelColor: UIColor, panelIcon: String) async {
+        guard let arView = arView, let pointOfView = await arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
 
         // Get the camera transform
-        let cameraTransform = pointOfView.transform
+        let cameraTransform = await pointOfView.transform
 
         // Camera's forward direction
         let forward = SCNVector3(-cameraTransform.m31, -cameraTransform.m32, -cameraTransform.m33)
@@ -71,7 +72,23 @@ class ButtonFunctions: ObservableObject {
         panelController?.panelsInScene.append(newPanel)
         panelController?.diningRoomPanels.append(newPanel)
 
-        save()
+        let rgb = getRGB(from: panelColor)
+        var panelToSave = Panel(
+            id: "",
+            museumID: sessionDetails.museumID,
+            roomID: sessionDetails.roomID,
+            x: position.x,
+            y: position.y,
+            z: position.z,
+            red: rgb.red,
+            green: rgb.green,
+            blue: rgb.blue,
+            alpha: rgb.alpha,
+            text: text,
+            icon: panelIcon
+        )
+        
+        await PanelStorageManager.savePanel(panel: panelToSave)
     }
     
     func placeLoadedPanel(position: SCNVector3, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String){
@@ -160,11 +177,23 @@ class ButtonFunctions: ObservableObject {
         shadowPanel?.shadowPanelChoice = option
         shadowPanel?.shadowPanelAction()
     }
-    
-    func save(){
-        for(panel) in panelController!.panelsInScene{
-            print(panel.panelSides.diffuse.contents)
-            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: panel.panelIconName, text: panel.panelText, color: "red", id: panel.id, currentRoom: panel.currentRoom)
-        }
+
+    func getRGB(from color: UIColor) -> (red: Int, green: Int, blue: Int, alpha: Double) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        // Extract RGBA components
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        // Convert 0–1 range to 0–255 for RGB
+        return (
+            red: Int(red * 255),
+            green: Int(green * 255),
+            blue: Int(blue * 255),
+            alpha: Double(alpha)
+        )
     }
+
 }

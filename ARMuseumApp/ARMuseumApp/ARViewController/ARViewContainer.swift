@@ -121,12 +121,12 @@ struct ARViewContainer: UIViewRepresentable {
         
         context.coordinator.setupShadowPanel()
         
-//        PanelStorageManager.deleteAllPanels()
+        PanelStorageManager.deleteAllPanels()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             let allPanels = PanelStorageManager.loadPanels()
             for panel in allPanels {
-                buttonFunctions.placeLoadedPanel(position: panel.position,  text: panel.text, panelColor: .red, panelIcon: panel.systemImageName, id: panel.id, currentRoom: panel.currentRoom)
+//                buttonFunctions.placeLoadedPanel(position: panel.position,  text: panel.text, panelColor: .red, panelIcon: panel.systemImageName, id: panel.id, currentRoom: panel.currentRoom)
             }
         }
 

@@ -1,5 +1,13 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import Foundation
 import SceneKit
+
+// MARK: - Data Model
 
 // MARK: - Data Model
 
@@ -8,7 +16,7 @@ struct SavedPanel: Codable {
     let systemImageName: String
     let text: String
     let color: String
-    let id: Int
+    let id: String              // <-- changed from Int to String
     let currentRoom: String
 }
 
@@ -19,37 +27,40 @@ struct LoadedPanel {
     let systemImageName: String
     let text: String
     let color: String
-    let id: Int
+    let id: String              // <-- changed from Int to String
     let currentRoom: String
 }
+
 
 // MARK: - Storage Manager
 
 class PanelStorageManager {
     
-    /// Save a new panel (appends to existing ones, but skips if id already exists)
-    static func savePanel(position: SCNVector3, imageName: String, text: String, color: String, id: Int, currentRoom: String) {
-        var panels = loadSavedPanels()
+    static func savePanel(panel: Panel) async {        
+        var panelToSave = panel
+        // Use provided id or generate a new one
+        panelToSave.id = randomId()
         
-        // Check if this id already exists
-        if panels.contains(where: { $0.id == id }) {
-            print("Panel with id \(id) already exists. Skipping save.")
-            return
-        }
+//        // Check if this id already exists
+//        if panelToSave.contains(where: { $0.id == panelId }) {
+//            
+//        }
         
-        let saved = SavedPanel(
-            position: [position.x, position.y, position.z],
-            systemImageName: imageName,
-            text: text,
-            color: color,
-            id: id,
-            currentRoom: currentRoom
-        )
+//        let saved = SavedPanel(
+//            position: [position.x, position.y, position.z],
+//            systemImageName: imageName,
+//            text: text,
+//            color: color,
+//            id: panelId,
+//            currentRoom: currentRoom
+//        )
         
-        panels.append(saved)
-        saveAllPanels(panels)
-        print("Panel with id \(id) saved.")
+        print(panelToSave)
+        
+        await savePanelService(museumID: panelToSave.museumID, roomID: panelToSave.roomID, panel: panelToSave)
+        
     }
+
 
     /// Load and return `LoadedPanel`s with SCNVector3 positions
     static func loadPanels() -> [LoadedPanel] {
@@ -110,8 +121,7 @@ class PanelStorageManager {
         print("All panels deleted from storage.")
     }
     
-    /// Delete panel by id
-    static func deletePanel(byId id: Int) {
+    static func deletePanel(byId id: String) {
         var panels = loadSavedPanels()
         let originalCount = panels.count
         
@@ -124,12 +134,12 @@ class PanelStorageManager {
             print("No panel found with id \(id).")
         }
     }
-    /// Generate the next available ID based on saved panels
-        static func generateNextId() -> Int {
-            let panels = loadSavedPanels()
-            let maxId = panels.map { $0.id }.max() ?? 0
-            return maxId + 1
-        }
+    
+    static func randomId(length: Int = 16) -> String {
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0..<length).compactMap { _ in chars.randomElement() })
+    }
 }
+
 
 

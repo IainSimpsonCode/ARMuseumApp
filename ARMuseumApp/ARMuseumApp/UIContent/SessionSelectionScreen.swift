@@ -1,14 +1,21 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
 
 struct SessionSelectionScreen: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @State private var showCommunityScreen = false
     @State private var showLoginScreen = false
+    @StateObject private var arModel = ARViewModel()
 
     var body: some View {
         ZStack {
-            ARCameraForMenu()
-                .edgesIgnoringSafeArea(.all)
+            ARCameraForMenu(model: arModel)
+                        .edgesIgnoringSafeArea(.all)
             
             Color.black
                     .opacity(0.3)
