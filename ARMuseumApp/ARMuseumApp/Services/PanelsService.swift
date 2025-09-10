@@ -18,14 +18,14 @@ func getPanelsByMuseumAndRoomService(museumID: String, roomID: String) async -> 
         return decoded
         
     } catch {
-        print("GET API Error: \(error)")
         return []
     }
 }
 
-func savePanelService(museumID: String, roomID: String, panel: Panel) async -> String {
+func savePanelService(panel: Panel) async -> String {
     do {
-        let endpoint = "/api/\(museumID)/\(roomID)/panel"
+        let endpoint = "/api/\(panel.museumID)/\(panel.roomID)/panel"
+        
         
         // Convert the Codable object to [String: Any]
         let jsonData = try JSONEncoder().encode(panel)
@@ -42,7 +42,72 @@ func savePanelService(museumID: String, roomID: String, panel: Panel) async -> S
         }
         
     } catch {
-        print("POST API Error: \(error)")
-        return "POST API Error: \(error.localizedDescription)"
+        return "API Error: \(error.localizedDescription)"
     }
 }
+
+func deletePanelService(museumID: String, roomID: String,id: String) async -> String {
+    do {
+        let endpoint = "/api/\(museumID)/\(roomID)/panel"
+        
+        // Create dictionary directly
+        let jsonObject: [String: Any] = ["docID": id]
+        
+        // Convert dictionary to Data
+        let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+        
+        // Make the API request
+        let data = try await APIService.request(endpoint: endpoint, method: .DELETE, body: jsonObject)
+        
+        // Convert response Data to String
+        if let responseString = String(data: data, encoding: .utf8) {
+            print("Request posted successfully: \(responseString)")
+            return responseString
+        } else {
+            return "Request posted successfully but could not decode response."
+        }
+        
+    } catch {
+        return "API Error: \(error.localizedDescription)"
+    }
+}
+
+func updatePanelService(panel: Panel) async -> String {
+    do {
+        let endpoint = "/api/\(panel.museumID)/\(panel.roomID)/panel"
+
+        // Prepare fields dictionary
+        let fields: [String: Any] = [
+            "x": panel.x,
+            "y": panel.y,
+            "z": panel.z,
+            "red": panel.red,
+            "green": panel.green,
+            "blue": panel.blue,
+            "alpha": panel.alpha,
+            "text": panel.text,
+            "icon": panel.icon,
+            "colour": panel.colour
+        ]
+
+        // Wrap with docID
+        let jsonObject: [String: Any] = [
+            "docID": panel.id,
+            "fields": fields
+        ]
+
+        // Make the API request
+        let data = try await APIService.request(endpoint: endpoint, method: .PATCH, body: jsonObject)
+
+        if let responseString = String(data: data, encoding: .utf8) {
+            print("Request posted successfully: \(responseString)")
+            return responseString
+        } else {
+            return "Request posted successfully but could not decode response."
+        }
+    } catch {
+        return "API Error: \(error.localizedDescription)"
+    }
+}
+
+

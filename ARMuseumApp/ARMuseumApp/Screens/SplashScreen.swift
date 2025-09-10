@@ -27,7 +27,7 @@ struct SplashScreen: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 Color.black
-                    .opacity(0.3)
+                    .opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack {
@@ -35,6 +35,10 @@ struct SplashScreen: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(12)
+                        .shadow(radius: 4)
                         .padding(.top, 50)
                     
                     Spacer()
@@ -112,13 +116,27 @@ struct SplashScreen: View {
                 }
                 
                 // MARK: - Server Down Modal
-                .alert(isPresented: $showServerModal) {
-                    Alert(
-                        title: Text("Server Status"),
-                        message: Text(serverUp ? "Server is online." : "Server is down. Retrying..."),
-                        dismissButton: .none // No close button; modal stays until server is up
-                    )
-                }
+                if showServerModal {
+                        VStack(spacing: 12) {
+                            Text("Restarting Server")
+                                .font(.headline)
+
+                            Text(serverUp ? "Server is online." :
+                                 "Server is down. Retrying...\nPlease allow up to a minute for the server to be up and running")
+                                .multilineTextAlignment(.center)
+                                .font(.subheadline)
+
+                            if !serverUp {
+                                ProgressView()
+                                    .padding(.top, 8)
+                            }
+                        }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(radius: 8)
+                        .frame(maxWidth: 300)
+                    }
 
             }
             .onAppear {

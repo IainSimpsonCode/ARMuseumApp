@@ -24,7 +24,6 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        print("Image Detected")
         
         guard let imageAnchor = anchor as? ARImageAnchor,
               let imageName = imageAnchor.referenceImage.name,
@@ -38,7 +37,7 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             
-            let imagePosition = targetNode.presentation.worldPosition  // <- more stable
+            let imagePosition = targetNode.presentation.worldPosition
             
             // Define box area for alignment
             let boxWidth: Float = 2.5
@@ -49,12 +48,21 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
 //               abs(imagePosition.z - boxCenter.z) < boxHeight / 2 {
                 
                 if !self.buttonFunctions.sessionRunning {
-                    print("Image is aligned")
                     buttonFunctions.sessionDetails.isSessionActive = true
                     self.buttonFunctions.startSession(
                         node: targetNode,
                         posterName: imageName
                     )
+                    
+                    Task {
+                        let allPanels = await PanelStorageManager.loadPanels(
+                            museumID: self.buttonFunctions.sessionDetails.museumID,
+                            roomID: self.buttonFunctions.sessionDetails.roomID
+                        )
+                        for panel in allPanels {
+                            self.buttonFunctions.placeLoadedPanel(panel: panel)
+                        }
+                    }
                 }
 //            }
         }

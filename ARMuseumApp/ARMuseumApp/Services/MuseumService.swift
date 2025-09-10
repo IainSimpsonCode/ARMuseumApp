@@ -27,7 +27,6 @@ func getMuseumsService() async -> [String] {
         return [""]
         
     } catch {
-        print("GET API Error: \(error)")
         return []
     }
 }

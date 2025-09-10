@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Panel: Codable, Identifiable {
     var id: String
@@ -20,5 +21,11 @@ struct Panel: Codable, Identifiable {
     var alpha: Double
     var text: String
     var icon: String
+    var colour: String
+    
+    
+    
+    
+    
 }
 

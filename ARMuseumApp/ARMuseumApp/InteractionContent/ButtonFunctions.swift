@@ -19,12 +19,13 @@ class ButtonFunctions: ObservableObject {
     @Published var movingPanel: Bool = false
     @Published var tutorialVisible: Bool = false
     @Published var isDrawingMode = false
+    @Published var isEraserMode = false
     @Published var currentRoom: String = ""
     @Published var sessionDetails: SessionDetails
     
     init() {
             // Example initialization with parameters
-        self.sessionDetails = SessionDetails(sessionType: 0, museumID: "", roomID: "", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
+        self.sessionDetails = SessionDetails(sessionType: 0, museumID: "", roomID: "TestRoom", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
         }
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
@@ -34,6 +35,13 @@ class ButtonFunctions: ObservableObject {
 
     func toggleDrawingMode() {
             isDrawingMode.toggle()
+            if isDrawingMode == false{
+                isEraserMode = false
+            }
+        }
+    
+    func toggleEraserMode() {
+            isEraserMode.toggle()
         }
     
     func addPanel(text: String, panelColor: UIColor, panelIcon: String) async {
@@ -60,10 +68,9 @@ class ButtonFunctions: ObservableObject {
             cameraPosition.y + forward.y * distance,
             cameraPosition.z + forward.z * distance
         )
-
-        let id = panelController!.panelsInScene.count + 1
+        
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, id: id, currentRoom: currentRoom)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -72,33 +79,28 @@ class ButtonFunctions: ObservableObject {
         panelController?.panelsInScene.append(newPanel)
         panelController?.diningRoomPanels.append(newPanel)
 
-        let rgb = getRGB(from: panelColor)
-        var panelToSave = Panel(
-            id: "",
-            museumID: sessionDetails.museumID,
-            roomID: sessionDetails.roomID,
-            x: position.x,
-            y: position.y,
-            z: position.z,
-            red: rgb.red,
-            green: rgb.green,
-            blue: rgb.blue,
-            alpha: rgb.alpha,
-            text: text,
-            icon: panelIcon
-        )
+        var panelToSave = newPanel.convertToPanel(museumID: sessionDetails.museumID, roomID: sessionDetails.roomID)
         
         await PanelStorageManager.savePanel(panel: panelToSave)
     }
     
-    func placeLoadedPanel(position: SCNVector3, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String){
+    func placeLoadedPanel(panel: Panel){
         guard let arView = arView, let pointOfView = arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
         
+        let position = SCNVector3(panel.x, panel.y, panel.z)
+        let panelColor = UIColor(
+            red: CGFloat(panel.red) / 255.0,
+            green: CGFloat(panel.green) / 255.0,
+            blue: CGFloat(panel.blue) / 255.0,
+            alpha: CGFloat(panel.alpha) / 255.0
+        )
+
+        print(panel.id)
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, id: id, currentRoom: currentRoom)
+        let newPanel = ARPanel(position: position, scene: arView, text: panel.text, panelColor: panelColor, panelIcon: panel.icon, currentRoom: currentRoom , Id: panel.id )
 
         if sessionRunning {
             newPanel.addToScene()

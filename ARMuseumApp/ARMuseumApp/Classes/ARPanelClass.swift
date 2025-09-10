@@ -8,6 +8,7 @@
 import Foundation
 import SceneKit
 import ARKit
+import SwiftUI
 
 class ARPanel {
     
@@ -33,12 +34,12 @@ class ARPanel {
     var moveButtonNode = SCNNode()
     
     let currentRoom: String
-    let id: Int
+    let id: String
     let panelIconName: String
     
     var isTemporarilyExpanded = false
 
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String) {
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, Id: String? = nil) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -53,7 +54,10 @@ class ARPanel {
         self.textNode = createTextNode(text: "", fontSize: 1, color: UIColor.black)
         
         let mainIconMaterial = SCNMaterial()
-        iconImage = UIImage(systemName: panelIcon, withConfiguration: UIImage.SymbolConfiguration(pointSize: 128))!
+        iconImage = UIImage(
+            systemName: panelIcon,
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 128)
+        ) ?? UIImage(systemName: "questionmark.circle")!
         mainIconMaterial.diffuse.contents = iconImage
         
         let iconGeometry = SCNPlane(width: 0.03, height: 0.03)
@@ -68,7 +72,12 @@ class ARPanel {
         parentNode.addChildNode(editButtonNode)
         
         self.currentRoom = currentRoom
-        self.id = id
+        if Id == nil {
+            self.id = ARPanel.randomId()
+        } else {
+            self.id = Id!  // safe to force unwrap because else means Id is not nil
+        }
+        
         
         self.displayActive = true // expanded at start
         self.panelState = 2
@@ -107,12 +116,16 @@ class ARPanel {
             animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1))
             iconNode.isHidden = false
         }
-        else{
-            displayActive = false
-            panelState = 0
-            animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.05, height: 0.00, length: 0.00, chamferRadius: 0))
-            iconNode.isHidden = true
-        }
+        else {
+                displayActive = false
+                panelState = 0
+                animatePanel(
+                    panelNode: parentNode,
+                    currentGeometry: currentGeometry,
+                    targetGeometry: SCNBox(width: 0.02, height: 0.02, length: 0.02, chamferRadius: 0.01) // Small cube instead of disappearing
+                )
+                iconNode.isHidden = true // keep hidden so only the dot remains
+            }
     }
     
     
@@ -275,6 +288,29 @@ class ARPanel {
     
     func getWorldPosition() -> SCNVector3 {
         return parentNode.worldPosition
+    }
+
+    static func randomId(length: Int = 16) -> String {
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0..<length).compactMap { _ in chars.randomElement() })
+    }
+    
+    func convertToPanel(museumID: String, roomID: String) -> Panel {
+        return Panel(
+            id: self.id,
+            museumID: museumID,
+            roomID: roomID,
+            x: self.parentNode.position.x,
+            y: self.parentNode.position.y,
+            z: self.parentNode.position.z,
+            red: 1,   // replace with actual color extraction if needed
+            green: 1,
+            blue: 1,
+            alpha: 1,
+            text: self.panelText,
+            icon: self.panelIconName,
+            colour: ""
+        )
     }
 
 }

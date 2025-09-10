@@ -34,14 +34,13 @@ struct LoadedPanel {
 
 class PanelStorageManager {
     
-    static func savePanel(panel: Panel) async {        
+    static func savePanel(panel: Panel) async {
         var panelToSave = panel
         // Use provided id or generate a new one
-        panelToSave.id = randomId()
         
 //        // Check if this id already exists
 //        if panelToSave.contains(where: { $0.id == panelId }) {
-//            
+//
 //        }
         
 //        let saved = SavedPanel(
@@ -55,7 +54,7 @@ class PanelStorageManager {
         
         print(panelToSave)
         
-        await savePanelService(museumID: panelToSave.museumID, roomID: panelToSave.roomID, panel: panelToSave)
+        await savePanelService(panel: panelToSave)
         
     }
 
@@ -68,7 +67,7 @@ class PanelStorageManager {
         return savedPanels.compactMap { panel in
             let position = SCNVector3(panel.x, panel.y, panel.z)
             
-            return Panel(id: panel.id, museumID: museumID, roomID: roomID, x: panel.x, y: panel.y, z: panel.z, red: panel.red, green: panel.green, blue: panel.blue, alpha: panel.alpha, text: panel.text, icon: panel.icon)
+            return Panel(id: panel.id, museumID: museumID, roomID: roomID, x: panel.x, y: panel.y, z: panel.z, red: panel.red, green: panel.green, blue: panel.blue, alpha: panel.alpha, text: panel.text, icon: panel.icon, colour: "")
         }
     }
 
@@ -79,10 +78,7 @@ class PanelStorageManager {
         
     }
     
-    static func randomId(length: Int = 16) -> String {
-        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).compactMap { _ in chars.randomElement() })
-    }
+    
 }
 
 

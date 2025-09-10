@@ -35,28 +35,18 @@ struct AddPanelView: View {
         List {
             ForEach(exhibits.indices, id: \.self) { index in
                 Button(action: {
-                    // Run your code here
                     buttonFunctions.sessionDetails.panelCreationMode = true
-                    
-                    // Optionally navigate
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    HStack(spacing: 16) {
-                        Image(exhibits[index].imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 80, height: 80)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        
-                        Text(exhibits[index].name)
-                            .font(.system(.headline, design: .rounded))
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.8)
-                    }
-                    .padding(.vertical, 4)
+                    Text(exhibits[index].name)
+                        .font(.system(.headline, design: .rounded))
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.9)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
                 }
+                .buttonStyle(.plain)
             }
-
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Exhibits")
@@ -67,6 +57,7 @@ struct AddPanelView: View {
         }
     }
 }
+
 
 import SwiftUI
 
@@ -82,16 +73,20 @@ struct PanelCreatorView: View {
     @State private var selectedIcon: String = "nil"
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topLeading) {
+            // Your AR background stays behind everything
             Color.clear.edgesIgnoringSafeArea(.all)
             Color.black.opacity(0.2)
-                    .edgesIgnoringSafeArea(.all)
+                .edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 20) {
-                // --- Above center ---
                 Text("Panel Designer")
                     .font(.system(.title2, design: .rounded).weight(.bold))
                     .foregroundColor(.white)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+                    .shadow(radius: 4)
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Choose a text to display")
@@ -108,24 +103,22 @@ struct PanelCreatorView: View {
                     .background(Color.white.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
+                .padding(.top, 50)
+
 
                 Spacer()
 
-                // --- EXACT CENTER: Placeholder ---
-                // Centered dummy panel
-                    DummyARPanel(
-                        text: selectedText,
-                        borderColor: selectedColor ?? .blue,
-                        icon: selectedIcon
-                    )
-                    .frame(maxHeight: 200)
-                    .padding(.vertical, 20)
+                PreviewARPanel(
+                    text: selectedText,
+                    borderColor: selectedColor ?? .blue,
+                    icon: selectedIcon
+                )
+                .frame(maxHeight: 200)
+                .padding(.vertical, 20)
 
                 Spacer()
 
-                // --- Below center ---
                 VStack(spacing: 16) {
-                    // Color Selector
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Select Panel Color")
                             .font(.headline)
@@ -140,7 +133,6 @@ struct PanelCreatorView: View {
                         }
                     }
 
-                    // Icon Selector
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Panel Icon")
                             .font(.headline)
@@ -169,7 +161,6 @@ struct PanelCreatorView: View {
                         }
                     }
 
-                    // Add Button
                     Button(action: {
                         if selectedText != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
                             Task {
@@ -197,6 +188,27 @@ struct PanelCreatorView: View {
                 .padding(.bottom, 20)
             }
             .padding(.horizontal, 20)
+            .padding(.top, 10)
+
+            Button(action: {
+                needsClosing = true
+                presentationMode.wrappedValue.dismiss()
+                buttonFunctions.sessionDetails.panelCreationMode = false
+            }) {
+                HStack {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 18, weight: .medium))
+                    Text("Back")
+                        .font(.system(.headline, design: .rounded))
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color.black.opacity(0.5))
+                .clipShape(Capsule())
+                .padding(.leading)
+                .padding(.top, 10)
+            }
         }
         .onAppear {
             if selectedText == "nil" { selectedText = exhibit.textOptions.first ?? "nil" }
@@ -205,6 +217,7 @@ struct PanelCreatorView: View {
         }
     }
 }
+
 
 struct ColorButton: View {
     let buttonColor: Color
@@ -225,39 +238,6 @@ struct ColorButton: View {
     }
 }
 
-struct DummyARPanel: View {
-    let text: String
-    let borderColor: Color
-    let icon: String
 
-    var body: some View {
-        ZStack {
-            // Transparent background with colored border
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(borderColor, lineWidth: 2)
-                .background(Color.clear)
-            
-            HStack(spacing: 8) {
-                // Icon on the left
-                Image(systemName: icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 36, height: 36)
-                    .padding(.leading, 8)
-                
-                // Panel text
-                Text(text)
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.trailing, 8)
-            }
-            .padding(.vertical, 8)
-        }
-        .frame(width: 260, height: 100)
-        .shadow(radius: 2) // optional subtle shadow like AR panel
-    }
-}
 
 

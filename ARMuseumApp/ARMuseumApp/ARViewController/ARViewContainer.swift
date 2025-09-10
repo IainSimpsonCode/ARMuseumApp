@@ -95,43 +95,31 @@ struct ARViewContainer: UIViewRepresentable {
         let arView = ARSCNView()
         arView.delegate = context.coordinator
 
-        // Create a new scene, This will be the only scene ever made, if this isnt the case then that needs to be fixed
+        // Create a new scene
         let scene = SCNScene()
         arView.scene = scene
 
         // Run the AR session
         let configuration = ARWorldTrackingConfiguration()
-        
-        //Load refrence images for image detection
         let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil)
         configuration.detectionImages = referenceImages
-        
         arView.session.run(configuration)
-        
+
+        // Setup AR view on main thread
         DispatchQueue.main.async {
             self.buttonFunctions.setupARView(arView, panelController: self.panelController)
         }
-        
-        // Setup gesture handler
-        context.coordinator.setupGestureHandler(for: arView)
-        
-        context.coordinator.setupImageDetectionHandler(for: arView)
-        
-        context.coordinator.setupSceneView(for: arView)
-        
-        context.coordinator.setupShadowPanel()
-        
-        PanelStorageManager.deleteAllPanels()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            let allPanels = PanelStorageManager.loadPanels()
-            for panel in allPanels {
-//                buttonFunctions.placeLoadedPanel(position: panel.position,  text: panel.text, panelColor: .red, panelIcon: panel.systemImageName, id: panel.id, currentRoom: panel.currentRoom)
-            }
-        }
 
+        // Setup handlers
+        context.coordinator.setupGestureHandler(for: arView)
+        context.coordinator.setupImageDetectionHandler(for: arView)
+        context.coordinator.setupSceneView(for: arView)
+        context.coordinator.setupShadowPanel()
+
+        restoreDrawings(to: arView.scene)
         return arView
     }
+
 
     func updateUIView(_ uiView: ARSCNView, context: Context) {
         
