@@ -10,7 +10,7 @@
       "get": {
         "summary": "Get curator panels",
         "tags": ["Panels"],
-        "description": "Fetch all curator panels for a given museum and room.",
+        "description": "Fetch all curator panels for a given museum and room. Each panel includes its Firestore doc ID, coordinates, colour channels, alpha, icon, and the corresponding text from PanelData.",
         "parameters": [
           {
             "name": "museumID",
@@ -35,16 +35,19 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "string" },
-                      "museumID": { "type": "string" },
-                      "roomID": { "type": "string" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "z": { "type": "number" },
-                      "colour": { "type": "string" },
-                      "alpha": { "type": "number" },
-                      "text": { "type": "string" },
-                      "icon": { "type": "string" }
+                      "id": { "type": "string", "example": "abc123" },
+                      "museumID": { "type": "string", "example": "TestMuseum" },
+                      "roomID": { "type": "string", "example": "MainHall" },
+                      "x": { "type": "number", "example": 1.2 },
+                      "y": { "type": "number", "example": 3.4 },
+                      "z": { "type": "number", "example": 0.5 },
+                      "r": { "type": "integer", "minimum": 0, "maximum": 255, "example": 255 },
+                      "g": { "type": "integer", "minimum": 0, "maximum": 255, "example": 128 },
+                      "b": { "type": "integer", "minimum": 0, "maximum": 255, "example": 64 },
+                      "alpha": { "type": "number", "minimum": 0, "maximum": 1, "example": 0.8 },
+                      "panelID": { "type": "string", "example": "panel_123" },
+                      "icon": { "type": "string", "example": "info" },
+                      "text": { "type": "string", "example": "This is the text for the panel from PanelData." }
                     }
                   }
                 }
@@ -77,15 +80,17 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["x", "y", "z", "colour", "alpha", "text", "icon"],
+                "required": ["x", "y", "z", "r", "g", "b", "alpha", "panelID", "icon"],
                 "properties": {
-                  "x": { "type": "number" },
-                  "y": { "type": "number" },
-                  "z": { "type": "number" },
-                  "colour": { "type": "string" },
-                  "alpha": { "type": "number", "minimum": 0, "maximum": 1 },
-                  "text": { "type": "string" },
-                  "icon": { "type": "string" }
+                  "x": { "type": "number", "example": 1.2 },
+                  "y": { "type": "number", "example": 3.4 },
+                  "z": { "type": "number", "example": 0.5 },
+                  "r": { "type": "integer", "minimum": 0, "maximum": 255, "example": 255 },
+                  "g": { "type": "integer", "minimum": 0, "maximum": 255, "example": 128 },
+                  "b": { "type": "integer", "minimum": 0, "maximum": 255, "example": 64 },
+                  "alpha": { "type": "number", "minimum": 0, "maximum": 1, "example": 0.8 },
+                  "panelID": { "type": "string", "example": "panel_123" },
+                  "icon": { "type": "string", "example": "info" }
                 }
               }
             }
@@ -98,7 +103,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "panelID": { "type": "string" } }
+                  "properties": {
+                    "message": { "type": "string", "example": "Panel panel_123 created. Document projects/.../docRef" }
+                  }
                 }
               }
             }
@@ -112,18 +119,8 @@
         "tags": ["Panels"],
         "description": "Update one or more fields of a curator panel by docID.",
         "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "roomID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
+          { "name": "museumID", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "roomID", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
@@ -134,10 +131,7 @@
                 "required": ["docID", "fields"],
                 "properties": {
                   "docID": { "type": "string" },
-                  "fields": {
-                    "type": "object",
-                    "description": "Key-value pairs of fields to update"
-                  }
+                  "fields": { "type": "object", "description": "Key-value pairs of fields to update" }
                 }
               }
             }
@@ -154,18 +148,8 @@
         "tags": ["Panels"],
         "description": "Delete a curator panel by docID.",
         "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "roomID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
+          { "name": "museumID", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "roomID", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
@@ -174,9 +158,7 @@
               "schema": {
                 "type": "object",
                 "required": ["docID"],
-                "properties": {
-                  "docID": { "type": "string" }
-                }
+                "properties": { "docID": { "type": "string" } }
               }
             }
           }
@@ -185,6 +167,38 @@
           "200": { "description": "Document deleted successfully" },
           "400": { "description": "Missing docID or document not found" },
           "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/api/{museumID}/{roomID}/curator/availablePanels": {
+      "get": {
+        "summary": "Get available curator panels",
+        "tags": ["Panels"],
+        "description": "Fetch all panels for a given museum/room that have not yet been used in CuratorPanelData. Useful for allowing curators to see what panels are still available to add.",
+        "parameters": [
+          { "name": "museumID", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "roomID", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of available panels that can be used.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "panelID": { "type": "string", "example": "panel_123" },
+                      "title": { "type": "string", "example": "Ancient Artifacts" },
+                      "text": { "type": "string", "example": "This panel describes ancient artifacts from the Bronze Age." }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Server could not connect to the database." }
         }
       }
     },
