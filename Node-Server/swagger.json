@@ -41,9 +41,7 @@
                       "x": { "type": "number" },
                       "y": { "type": "number" },
                       "z": { "type": "number" },
-                      "red": { "type": "integer" },
-                      "green": { "type": "integer" },
-                      "blue": { "type": "integer" },
+                      "colour": { "type": "string" },
                       "alpha": { "type": "number" },
                       "text": { "type": "string" },
                       "icon": { "type": "string" }
