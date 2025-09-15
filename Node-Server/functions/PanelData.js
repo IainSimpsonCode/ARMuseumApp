@@ -23,8 +23,8 @@ export const createNewCuratorPanel = async (req, res) => {
   }
 
   // Check text is supplied for others
-  if (!colour || !roomID || !museumID || !panelID || !icon) {
-    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, panelID, colour or icon. Please check parameters." });
+  if (!colour || !roomID || !museumID || !text || !icon) {
+    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, colour, text or icon. Please check parameters." });
   }
 
   try {
@@ -32,12 +32,12 @@ export const createNewCuratorPanel = async (req, res) => {
     const panelData = {
       museumID,
       roomID,
-      panelID,
       x,
       y,
       z,
       colour,
       alpha,
+      text,
       icon
     };
 

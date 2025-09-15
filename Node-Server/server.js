@@ -8,7 +8,7 @@ import { getMuseumNames } from "./functions/MuseumData.js";
 import { validateCuratorLogin } from "./functions/CuratorAuth.js";
 import { createNewCuratorPanel, deleteCuratorPanel, getCuratorPanels, updateCuratorPanel } from "./functions/PanelData.js";
 import { serverHealthCheck } from "./functions/healthCheck.js";
-import { createCommunitySession, deleteCommunitySession, getCommunitySessions } from "./functions/communitySessions.js";
+import { createCommunitySession, deleteCommunitySession, getCommunitySessions } from "./functions/CommunitySessions.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
