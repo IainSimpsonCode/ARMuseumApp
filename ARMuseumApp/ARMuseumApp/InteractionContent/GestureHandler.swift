@@ -44,8 +44,13 @@ class GestureHandler: NSObject {
             if node == panel.deleteButtonNode || node == panel.deleteButtonNode.childNodes.first {
                 panel.parentNode.removeFromParentNode()
                 panelController.panelsInScene.remove(at: index)
-                PanelStorageManager.deletePanel(byId: panel.id)
-                
+                Task {
+                        await PanelStorageManager.deletePanelByID(
+                            museumID: buttonFunctions.sessionDetails.museumID,
+                            roomID: buttonFunctions.sessionDetails.roomID,
+                            Id: panel.id
+                        )
+                    }
                 let generator = UINotificationFeedbackGenerator()
                 generator.prepare()
                 generator.notificationOccurred(.success)
@@ -54,10 +59,21 @@ class GestureHandler: NSObject {
             
             // EDIT BUTTON
             else if node == panel.editButtonNode || node == panel.editButtonNode.childNodes.first {
-                print("Edit under construction")
+                DispatchQueue.main.async {
+                    let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+                    let window = windowScene?.windows.first
+                    let root = window?.rootViewController
+
+                    let editView = UIHostingController(
+                        rootView: EditPanelView(panel: panel, needsClosing: .constant(false))
+                            .environmentObject(self.buttonFunctions)
+                    )
+
+                    root?.present(editView, animated: true)
+                }
                 return
             }
-            
+
             // MOVE BUTTON
             else if node == panel.moveButtonNode || node == panel.moveButtonNode.childNodes.first {
                 shadowPanel?.iconNode.position = panel.iconNode.position
@@ -111,10 +127,6 @@ class GestureHandler: NSObject {
         }
     }
 
-
-
-
-    
     @objc func handleHold(sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         
@@ -172,11 +184,16 @@ class GestureHandler: NSObject {
 
         switch sender.state {
         case .began, .changed:
-            drawFloatingAtTouch(location: location)
+            if buttonFunctions.isEraserMode {
+                eraseFloatingAtTouch(location: location)
+            } else {
+                drawFloatingAtTouch(location: location)
+            }
         default:
             break
         }
     }
+
 
 
     private func drawFloatingAtTouch(location: CGPoint) {
@@ -200,7 +217,10 @@ class GestureHandler: NSObject {
         let node = SCNNode(geometry: sphere)
         node.position = interpolated
         sceneView.scene.rootNode.addChildNode(node)
+        
+        saveDrawingNode(node)
     }
+
 
     private func interpolate(from: SCNVector3, to: SCNVector3, factor: Float) -> SCNVector3 {
         return SCNVector3(
@@ -210,6 +230,57 @@ class GestureHandler: NSObject {
         )
     }
 
+    private func eraseFloatingAtTouch(location: CGPoint) {
+        guard let currentFrame = sceneView.session.currentFrame else { return }
+
+        // Convert screen touch point to a 3D point on far plane
+        let rayResult = sceneView.unprojectPoint(SCNVector3(location.x, location.y, 1.0)) // far plane
+        let cameraTransform = currentFrame.camera.transform
+        let cameraPosition = SCNVector3(cameraTransform.columns.3.x,
+                                        cameraTransform.columns.3.y,
+                                        cameraTransform.columns.3.z)
+
+        // Direction from camera to ray point
+        let rayDirection = SCNVector3(rayResult.x - cameraPosition.x,
+                                      rayResult.y - cameraPosition.y,
+                                      rayResult.z - cameraPosition.z)
+
+        let eraseRadius: Float = 0.02 // 2 cm
+
+        // Remove any node whose distance from the ray is < eraseRadius
+        let nodesToErase = sceneView.scene.rootNode.childNodes.filter { node in
+            guard node.geometry is SCNSphere else { return false }
+
+            // Vector from camera to node
+            let toNode = SCNVector3(node.position.x - cameraPosition.x,
+                                    node.position.y - cameraPosition.y,
+                                    node.position.z - cameraPosition.z)
+
+            // Project toNode onto rayDirection
+            let t = (toNode.x * rayDirection.x + toNode.y * rayDirection.y + toNode.z * rayDirection.z) /
+                    (rayDirection.x * rayDirection.x + rayDirection.y * rayDirection.y + rayDirection.z * rayDirection.z)
+
+            // Closest point on ray
+            let closestPoint = SCNVector3(cameraPosition.x + rayDirection.x * t,
+                                          cameraPosition.y + rayDirection.y * t,
+                                          cameraPosition.z + rayDirection.z * t)
+
+            // Distance from node to ray
+            let dx = node.position.x - closestPoint.x
+            let dy = node.position.y - closestPoint.y
+            let dz = node.position.z - closestPoint.z
+            let distance = sqrt(dx*dx + dy*dy + dz*dz)
+
+            return distance < eraseRadius
+        }
+
+        // Remove nodes from scene AND UserDefaults
+        for node in nodesToErase {
+            node.removeFromParentNode()
+            removeDrawingNode(node)
+        }
+    }
+    
     private func addPointInFrontOfCamera() {
         guard let pointOfView = sceneView.pointOfView else { return }
 

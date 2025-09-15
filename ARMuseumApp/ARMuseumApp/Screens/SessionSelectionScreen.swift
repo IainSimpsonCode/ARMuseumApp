@@ -1,14 +1,21 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
 
 struct SessionSelectionScreen: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @State private var showCommunityScreen = false
     @State private var showLoginScreen = false
+    @StateObject private var arModel = ARViewModel()
 
     var body: some View {
         ZStack {
-            ARCameraForMenu()
-                .edgesIgnoringSafeArea(.all)
+            ARCameraForMenu(model: arModel)
+                        .edgesIgnoringSafeArea(.all)
             
             Color.black
                     .opacity(0.3)
@@ -17,19 +24,57 @@ struct SessionSelectionScreen: View {
                 Text("Choose an Option")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+                    .shadow(radius: 4)
                 
-                Text("You selected: \(buttonFunctions.sessionDetails.museumID)")
+                Text("\(buttonFunctions.sessionDetails.museumID)")
                     .font(.title3)
                     .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+                    .shadow(radius: 4)
+                    .padding(.bottom, 50)
                 
-                Button("Private", action: handleOption1)
-                    .buttonStyle(.borderedProminent)
+                    Button(action: privateS) {
+                        Text("Private")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 200, height: 50)
+                            .background(Color.blue.opacity(0.8))
+                            .cornerRadius(15)
+                            .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+
+                    Button(action: community) {
+                        Text("Community")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 200, height: 50)
+                            .background(Color.blue.opacity(0.8))
+                            .cornerRadius(15)
+                            .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+
+                    Button(action: curator) {
+                        Text("Curator")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .frame(width: 200, height: 50)
+                            .background(Color.blue.opacity(0.8))
+                            .cornerRadius(15)
+                            .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 
-                Button("Community", action: handleOption2)
-                    .buttonStyle(.borderedProminent)
-                
-                Button("Curator", action: handleOption3)
-                    .buttonStyle(.borderedProminent)
+
                 
                 Spacer()
             }
@@ -44,18 +89,15 @@ struct SessionSelectionScreen: View {
         }
     }
     
-    func handleOption1() {
-        print("Option 1 selected")
+    func privateS() {
         buttonFunctions.sessionDetails.sessionType = 1
     }
     
-    func handleOption2() {
-        print("Option 2 selected")
-        showCommunityScreen = true   // <-- triggers full-screen modal
+    func community() {
+        showCommunityScreen = true  
     }
     
-    func handleOption3() {
-        print("Option 3 selected")
+    func curator() {
         showLoginScreen = true
     }
 }
@@ -117,7 +159,7 @@ struct CuratorLoginScreen: View {
                     Spacer()
                 }
             }
-            .navigationBarTitle("", displayMode: .inline) // optional: empty title
+            .navigationBarTitle("", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {

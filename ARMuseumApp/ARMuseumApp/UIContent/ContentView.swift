@@ -17,20 +17,24 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .edgesIgnoringSafeArea(.all)
                         
+                        
+                        
                         if(!buttonFunctions.sessionDetails.panelCreationMode){
+                            TopBarButtons()
+                                .environmentObject(buttonFunctions)
+                            
                             //Main UI elements
                             VStack {
                                 Spacer()
                                 ButtonBar()
                             }.edgesIgnoringSafeArea(.all)
                             
-                            AddPanelButton()
+//                            AddPanelButton()
                             
                             ImageDetectionOverlay()
                             
-                            TutorialButton()
+//                            TutorialButton()
                             
-                            SaveButton()
                             //PanelMovementToggle()
                             
                             MovingPanelButtons()
@@ -43,8 +47,8 @@ struct ContentView: View {
 
                             PanelCreatorView(
                                 buttonFunctions: _buttonFunctions,
-                                needsClosing: $needsClosing,  // <-- binding
-                                exhibit: selectedExhibit       // <-- actual Exhibit
+                                needsClosing: $needsClosing, 
+                                exhibit: selectedExhibit
                             )
                         }
                         

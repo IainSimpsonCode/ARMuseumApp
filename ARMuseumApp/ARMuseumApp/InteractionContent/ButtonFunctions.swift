@@ -6,6 +6,7 @@
 //
 
 import ARKit
+import UIKit
 
 class ButtonFunctions: ObservableObject {
     var arView: ARSCNView?
@@ -18,12 +19,13 @@ class ButtonFunctions: ObservableObject {
     @Published var movingPanel: Bool = false
     @Published var tutorialVisible: Bool = false
     @Published var isDrawingMode = false
+    @Published var isEraserMode = false
     @Published var currentRoom: String = ""
     @Published var sessionDetails: SessionDetails
     
     init() {
             // Example initialization with parameters
-        self.sessionDetails = SessionDetails(sessionType: 0, museumID: "", roomID: "", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
+        self.sessionDetails = SessionDetails(sessionType: 0, museumID: "", roomID: "TestRoom", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
         }
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
@@ -33,16 +35,23 @@ class ButtonFunctions: ObservableObject {
 
     func toggleDrawingMode() {
             isDrawingMode.toggle()
+            if isDrawingMode == false{
+                isEraserMode = false
+            }
         }
     
-    func addPanel(text: String, panelColor: UIColor, panelIcon: String) {
-        guard let arView = arView, let pointOfView = arView.pointOfView else {
+    func toggleEraserMode() {
+            isEraserMode.toggle()
+        }
+    
+    func addPanel(text: String, panelColor: UIColor, panelIcon: String) async {
+        guard let arView = arView, let pointOfView = await arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
 
         // Get the camera transform
-        let cameraTransform = pointOfView.transform
+        let cameraTransform = await pointOfView.transform
 
         // Camera's forward direction
         let forward = SCNVector3(-cameraTransform.m31, -cameraTransform.m32, -cameraTransform.m33)
@@ -59,10 +68,9 @@ class ButtonFunctions: ObservableObject {
             cameraPosition.y + forward.y * distance,
             cameraPosition.z + forward.z * distance
         )
-
-        let id = panelController!.panelsInScene.count + 1
+        
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, id: id, currentRoom: currentRoom)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -71,17 +79,28 @@ class ButtonFunctions: ObservableObject {
         panelController?.panelsInScene.append(newPanel)
         panelController?.diningRoomPanels.append(newPanel)
 
-        save()
+        var panelToSave = newPanel.convertToPanel(museumID: sessionDetails.museumID, roomID: sessionDetails.roomID)
+        
+        await PanelStorageManager.savePanel(panel: panelToSave)
     }
     
-    func placeLoadedPanel(position: SCNVector3, text: String, panelColor: UIColor, panelIcon: String, id: Int, currentRoom: String){
+    func placeLoadedPanel(panel: Panel){
         guard let arView = arView, let pointOfView = arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
         
+        let position = SCNVector3(panel.x, panel.y, panel.z)
+        let panelColor = UIColor(
+            red: CGFloat(panel.red) / 255.0,
+            green: CGFloat(panel.green) / 255.0,
+            blue: CGFloat(panel.blue) / 255.0,
+            alpha: CGFloat(panel.alpha) / 255.0
+        )
+
+        print(panel.id)
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, id: id, currentRoom: currentRoom)
+        let newPanel = ARPanel(position: position, scene: arView, text: panel.text, panelColor: panelColor, panelIcon: panel.icon, currentRoom: currentRoom , Id: panel.id )
 
         if sessionRunning {
             newPanel.addToScene()
@@ -160,11 +179,23 @@ class ButtonFunctions: ObservableObject {
         shadowPanel?.shadowPanelChoice = option
         shadowPanel?.shadowPanelAction()
     }
-    
-    func save(){
-        for(panel) in panelController!.panelsInScene{
-            print(panel.panelSides.diffuse.contents)
-            PanelStorageManager.savePanel(position: panel.getWorldPosition(), imageName: panel.panelIconName, text: panel.panelText, color: "red", id: panel.id, currentRoom: panel.currentRoom)
-        }
+
+    func getRGB(from color: UIColor) -> (red: Int, green: Int, blue: Int, alpha: Double) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        // Extract RGBA components
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        // Convert 0–1 range to 0–255 for RGB
+        return (
+            red: Int(red * 255),
+            green: Int(green * 255),
+            blue: Int(blue * 255),
+            alpha: Double(alpha)
+        )
     }
+
 }
