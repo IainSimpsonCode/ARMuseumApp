@@ -79,14 +79,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["x", "y", "z", "red", "green", "blue", "alpha", "text", "icon"],
+                "required": ["x", "y", "z", "colour", "alpha", "text", "icon"],
                 "properties": {
                   "x": { "type": "number" },
                   "y": { "type": "number" },
                   "z": { "type": "number" },
-                  "red": { "type": "integer", "minimum": 0, "maximum": 255 },
-                  "green": { "type": "integer", "minimum": 0, "maximum": 255 },
-                  "blue": { "type": "integer", "minimum": 0, "maximum": 255 },
+                  "colour": { "type": "string" },
                   "alpha": { "type": "number", "minimum": 0, "maximum": 1 },
                   "text": { "type": "string" },
                   "icon": { "type": "string" }
@@ -263,6 +261,104 @@
           "400": { "description": "Missing museumID, curatorID, or curatorPassword." },
           "401": { "description": "Invalid curatorID or curatorPassword." },
           "404": { "description": "Museum not found." },
+          "500": { "description": "Server could not connect to the database." }
+        }
+      }
+    },
+    "/api/{museumID}/sessions": {
+      "get": {
+        "summary": "Get all community session IDs for a museum",
+        "tags": ["Community Sessions"],
+        "parameters": [
+          {
+            "name": "museumID",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The museum ID to fetch community sessions for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of session IDs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string", "example": "session123" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing museumID parameter." },
+          "500": { "description": "Server could not connect to the database." }
+        }
+      },
+      "post": {
+        "summary": "Create a new community session",
+        "tags": ["Community Sessions"],
+        "parameters": [
+          {
+            "name": "museumID",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The museum ID where this session belongs."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["sessionID", "sessionPassword"],
+                "properties": {
+                  "sessionID": { "type": "string", "example": "session123" },
+                  "sessionPassword": { "type": "string", "example": "mypassword" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Session created successfully." },
+          "400": { "description": "Missing museumID, sessionID, or sessionPassword." },
+          "409": { "description": "A session with the same sessionID already exists." },
+          "503": { "description": "Database connection error." }
+        }
+      },
+      "delete": {
+        "summary": "Delete a community session",
+        "tags": ["Community Sessions"],
+        "parameters": [
+          {
+            "name": "museumID",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The museum ID where the session exists."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["sessionID", "sessionPassword"],
+                "properties": {
+                  "sessionID": { "type": "string", "example": "session123" },
+                  "sessionPassword": { "type": "string", "example": "mypassword" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Document deleted successfully." },
+          "400": { "description": "Missing parameters." },
+          "404": { "description": "No session found with the provided sessionID." },
           "500": { "description": "Server could not connect to the database." }
         }
       }

@@ -4,11 +4,11 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { getMuseumNames } from "./functions/getMuseumNames.js";
-import { validateCuratorLogin } from "./functions/curatorLogin.js";
-import { createNewCuratorPanel, deleteCuratorPanel, getCuratorPanels, updateCuratorPanel } from "./functions/getPanelData.js";
+import { getMuseumNames } from "./functions/MuseumData.js";
+import { validateCuratorLogin } from "./functions/CuratorAuth.js";
+import { createNewCuratorPanel, deleteCuratorPanel, getCuratorPanels, updateCuratorPanel } from "./functions/PanelData.js";
 import { serverHealthCheck } from "./functions/healthCheck.js";
-
+import { createCommunitySession, deleteCommunitySession, getCommunitySessions } from "./functions/communitySessions.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +31,10 @@ app.get("/api/:museumID/:roomID/panel", getCuratorPanels)
 app.post("/api/:museumID/:roomID/panel", createNewCuratorPanel)
 app.patch("/api/:museumID/:roomID/panel", updateCuratorPanel)
 app.delete("/api/:museumID/:roomID/panel", deleteCuratorPanel)
+
+app.get("/api/:museumID/community", getCommunitySessions)
+app.post("/api/:museumID/community", createCommunitySession)
+app.delete("/api/:museumID/community", deleteCommunitySession)
 
 app.get("/server/health", serverHealthCheck)
 
