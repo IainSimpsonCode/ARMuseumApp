@@ -14,4 +14,5 @@ struct SessionDetails{
     var communitySessionID: Int
     var isSessionActive: Bool
     var panelCreationMode: Bool
+    var selectedExhibit: Exhibits?
 }

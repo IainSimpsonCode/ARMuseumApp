@@ -82,7 +82,7 @@ struct SessionSelectionScreen: View {
         }
         // full-screen modal
         .fullScreenCover(isPresented: $showCommunityScreen) {
-            CommunityScreen()
+            CommunitySessionsScreen()
         }
         .fullScreenCover(isPresented: $showLoginScreen) {
             CuratorLoginScreen()
@@ -102,77 +102,4 @@ struct SessionSelectionScreen: View {
     }
 }
 
-struct CommunityScreen: View {
-    @Environment(\.dismiss) var dismiss  // used to close the modal
-    
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Color.green.opacity(0.3).edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: 20) {
-                    Text("Community Screen")
-                        .font(.largeTitle)
-                        .padding()
-                    
-                    Text("Community Session Screen")
-                        .font(.title2)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                    
-                    Spacer()
-                }
-            }
-            .navigationBarTitle("", displayMode: .inline) // optional: empty title
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 18, weight: .medium))
-                            Text("Back")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
-struct CuratorLoginScreen: View {
-    @Environment(\.dismiss) var dismiss  // used to close the modal
-    
-    var body: some View {
-        NavigationView {
-            ZStack {
-                Color.green.opacity(0.3).edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: 20) {
-                    Text("Login Screen")
-                        .font(.largeTitle)
-                        .padding()
-                    
-                    
-                    
-                    Spacer()
-                }
-            }
-            .navigationBarTitle("", displayMode: .inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 18, weight: .medium))
-                            Text("Back")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}

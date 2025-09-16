@@ -47,6 +47,10 @@
 		22F271E12C51319300609437 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271E02C51319300609437 /* ARViewContainer.swift */; };
 		22F271E32C5131CD00609437 /* GestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271E22C5131CD00609437 /* GestureHandler.swift */; };
 		22F271E52C5148A400609437 /* ARPanelClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271E42C5148A400609437 /* ARPanelClass.swift */; };
+		22FF0CB62E78497100CE7F31 /* Colours.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FF0CB52E78497100CE7F31 /* Colours.swift */; };
+		22FF0CBA2E79B44D00CE7F31 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FF0CB92E79B44D00CE7F31 /* LoginScreen.swift */; };
+		22FF0CBC2E79B86700CE7F31 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FF0CBB2E79B86700CE7F31 /* AuthenticationService.swift */; };
+		22FF0CBE2E79BE1400CE7F31 /* CommunitySessionSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FF0CBD2E79BE1400CE7F31 /* CommunitySessionSelection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +96,10 @@
 		22F271E02C51319300609437 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
 		22F271E22C5131CD00609437 /* GestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureHandler.swift; sourceTree = "<group>"; };
 		22F271E42C5148A400609437 /* ARPanelClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPanelClass.swift; sourceTree = "<group>"; };
+		22FF0CB52E78497100CE7F31 /* Colours.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colours.swift; sourceTree = "<group>"; };
+		22FF0CB92E79B44D00CE7F31 /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
+		22FF0CBB2E79B86700CE7F31 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		22FF0CBD2E79BE1400CE7F31 /* CommunitySessionSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySessionSelection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +122,7 @@
 				22F271E42C5148A400609437 /* ARPanelClass.swift */,
 				22B7EC392D430C3A00C7FDFD /* ShadowPanel.swift */,
 				2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */,
+				22FF0CB52E78497100CE7F31 /* Colours.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -126,6 +135,8 @@
 				2281E6992E685A2E0086C836 /* SessionSelectionScreen.swift */,
 				2253A35A2E71BB620019C379 /* PanelEditScreen.swift */,
 				2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */,
+				22FF0CB92E79B44D00CE7F31 /* LoginScreen.swift */,
+				22FF0CBD2E79BE1400CE7F31 /* CommunitySessionSelection.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -193,6 +204,7 @@
 				2281E6A62E69C6890086C836 /* PanelsService.swift */,
 				2253A35E2E71CB280019C379 /* ColourConvertionService.swift */,
 				22B7EC3B2D4312A300C7FDFD /* PanelTextNodeCreator.swift */,
+				22FF0CBB2E79B86700CE7F31 /* AuthenticationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -328,6 +340,7 @@
 				22F271D42C512F5600609437 /* ContentView.swift in Sources */,
 				2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */,
 				2281E6A72E69C6890086C836 /* PanelsService.swift in Sources */,
+				22FF0CBA2E79B44D00CE7F31 /* LoginScreen.swift in Sources */,
 				22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */,
 				22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */,
 				22F271E52C5148A400609437 /* ARPanelClass.swift in Sources */,
@@ -340,13 +353,16 @@
 				2281E6A12E699E280086C836 /* MuseumService.swift in Sources */,
 				228E548D2E6F2CE600B50D1F /* TopButtons.swift in Sources */,
 				22F271E12C51319300609437 /* ARViewContainer.swift in Sources */,
+				22FF0CBC2E79B86700CE7F31 /* AuthenticationService.swift in Sources */,
 				2281E69E2E687AD60086C836 /* ARCameraForMenu.swift in Sources */,
 				2281E6A92E69C81A0086C836 /* PanelsDetails.swift in Sources */,
 				228E548B2E6F258600B50D1F /* DrawingsController.swift in Sources */,
 				2253A35F2E71CB280019C379 /* ColourConvertionService.swift in Sources */,
 				22B7EC402D486F0300C7FDFD /* TutorialButton.swift in Sources */,
+				22FF0CB62E78497100CE7F31 /* Colours.swift in Sources */,
 				2281E6982E6856BA0086C836 /* SplashScreen.swift in Sources */,
 				2281E6A52E69C5530086C836 /* ServerCheckService.swift in Sources */,
+				22FF0CBE2E79BE1400CE7F31 /* CommunitySessionSelection.swift in Sources */,
 				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
 				2281E6A32E69A1920086C836 /* APIService.swift in Sources */,
 				22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */,

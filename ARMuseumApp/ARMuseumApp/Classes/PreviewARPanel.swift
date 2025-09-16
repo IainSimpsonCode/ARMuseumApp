@@ -18,8 +18,8 @@ struct PreviewARPanel: View {
             // Transparent background with colored border
             RoundedRectangle(cornerRadius: 8)
                 .stroke(borderColor, lineWidth: 2)
-                .background(Color.clear)
-            
+                .background(Color(red: 172/255, green: 172/255, blue: 172/255).opacity(0.9))
+
             HStack(spacing: 8) {
                 // Icon
                 Image(systemName: icon)

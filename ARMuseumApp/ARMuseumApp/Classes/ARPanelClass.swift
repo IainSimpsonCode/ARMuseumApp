@@ -10,6 +10,20 @@ import SceneKit
 import ARKit
 import SwiftUI
 
+// Helper to split text
+extension String {
+    func chunked(into size: Int) -> [String] {
+        var start = startIndex
+        var results = [String]()
+        while start < endIndex {
+            let end = index(start, offsetBy: size, limitedBy: endIndex) ?? endIndex
+            results.append(String(self[start..<end]))
+            start = end
+        }
+        return results
+    }
+}
+
 class ARPanel {
     
     let sceneView: ARSCNView
@@ -34,12 +48,12 @@ class ARPanel {
     var moveButtonNode = SCNNode()
     
     let currentRoom: String
-    let id: String
+    let panelID: String
     let panelIconName: String
     
     var isTemporarilyExpanded = false
 
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, Id: String? = nil) {
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -72,13 +86,7 @@ class ARPanel {
         parentNode.addChildNode(editButtonNode)
         
         self.currentRoom = currentRoom
-        if Id == nil {
-            self.id = ARPanel.randomId()
-        } else {
-            self.id = Id!  // safe to force unwrap because else means Id is not nil
-        }
-        
-        
+        self.panelID = panelID
         self.displayActive = true // expanded at start
         self.panelState = 2
         self.panelIconName = panelIcon
@@ -228,7 +236,7 @@ class ARPanel {
 
         if (panelState == 2) {
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
-                self.editTextNode(text: panelText, fontSize: 5, color: UIColor.black)
+                self.editTextNode(text: panelText,  color: UIColor.black)
             }
             iconCurrentLocation = SCNVector3(x: -0.08, y: 0.0, z: 0.021)
             iconCurrentScale = SCNVector3(x: 1.4, y: 1.4, z: 1.4)
@@ -241,7 +249,7 @@ class ARPanel {
             sideButtonTargetGeometry = SCNBox(width: 0.020, height: 0.020, length: 0.012, chamferRadius: 1)
         }
         else if (panelState == 1 || panelState == 0) {
-            editTextNode(text: "", fontSize: 1, color: UIColor.black)
+            editTextNode(text: "", color: UIColor.black)
             iconCurrentLocation = SCNVector3(x: 0.0, y: 0.0, z: 0.0051)
             iconCurrentScale = SCNVector3(x: 1.0, y: 1.0, z: 1.0)
 
@@ -254,7 +262,7 @@ class ARPanel {
         else if panelState == 3 {
             // Bigger panel to show more text
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
-                self.editTextNode(text: panelText, fontSize: 6, color: UIColor.black)
+                self.editTextNode(text: panelText, color: UIColor.black)
             }
             
             iconCurrentLocation = SCNVector3(x: -0.1, y: 0.0, z: 0.025)
@@ -281,11 +289,40 @@ class ARPanel {
         SCNTransaction.commit()
     }
 
-    func editTextNode(text: String, fontSize: CGFloat, color: UIColor) {
-        let titleGeometry = textNode.geometry as? SCNText
-        titleGeometry?.string = text
+    func editTextNode(text: String, color: UIColor = .black) {
+        // Panel dimensions
+        let panelWidth: Float = 0.20
+        let panelHeight: Float = 0.10
+
+        // Space for text (right 3/4 of panel)
+        let leftMargin = panelWidth * 0.25
+        let availableWidth: CGFloat = CGFloat(panelWidth - leftMargin) * 500 // scaled up for SCNText
+        let availableHeight: CGFloat = CGFloat(panelHeight) * 500
+
+        // Create SCNText
+        let textGeometry = SCNText(string: text, extrusionDepth: 0.0)
+        textGeometry.font = UIFont.systemFont(ofSize: 7)
+        textGeometry.firstMaterial?.diffuse.contents = color
+        textGeometry.firstMaterial?.isDoubleSided = true
+        textGeometry.alignmentMode = CATextLayerAlignmentMode.left.rawValue
+        textGeometry.truncationMode = CATextLayerTruncationMode.none.rawValue
+        textGeometry.isWrapped = true
+        textGeometry.containerFrame = CGRect(x: 0, y: 0, width: availableWidth, height: availableHeight)
+
+        // Assign geometry to node
+        textNode.geometry = textGeometry
+
+        // Center text vertically & offset horizontally
+        let (minVec, maxVec) = textNode.boundingBox
+        let textHeight = maxVec.y - minVec.y
+        textNode.pivot = SCNMatrix4MakeTranslation(minVec.x, minVec.y + textHeight / 2, 0)
+        textNode.position = SCNVector3(-panelWidth/2 + leftMargin, 0, 0.021)
+
+        // Apply a fixed scale to make it visible
+        textNode.scale = SCNVector3(0.002, 0.002, 0.002)
     }
-    
+
+
     func getWorldPosition() -> SCNVector3 {
         return parentNode.worldPosition
     }
@@ -296,20 +333,19 @@ class ARPanel {
     }
     
     func convertToPanel(museumID: String, roomID: String) -> Panel {
+        let rgba = convertUIColourToRGBA(from: self.panelSides.diffuse.contents as! UIColor)
         return Panel(
-            id: self.id,
+            panelID: self.panelID,
             museumID: museumID,
             roomID: roomID,
             x: self.parentNode.position.x,
             y: self.parentNode.position.y,
             z: self.parentNode.position.z,
-            red: 1,   // replace with actual color extraction if needed
-            green: 1,
-            blue: 1,
-            alpha: 1,
-            text: self.panelText,
             icon: self.panelIconName,
-            colour: ""
+            r: rgba.red,
+            g: rgba.green,
+            b: rgba.blue,
+            alpha: rgba.alpha
         )
     }
 

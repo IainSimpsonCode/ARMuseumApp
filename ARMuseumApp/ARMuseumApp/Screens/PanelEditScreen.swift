@@ -109,7 +109,7 @@ struct EditPanelView: View {
                     Button(action: {
                         // Update panel text
                         panel.panelText = selectedText
-                        panel.editTextNode(text: selectedText, fontSize: 5, color: UIColor.black)
+                        panel.editTextNode(text: selectedText,  color: UIColor.black)
                         
                         // Update border only
                         panel.panelSides.diffuse.contents = UIColor(selectedColor)

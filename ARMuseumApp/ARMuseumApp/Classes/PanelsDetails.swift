@@ -8,24 +8,39 @@
 import Foundation
 import SwiftUI
 
-struct Panel: Codable, Identifiable {
-    var id: String
+struct Panel: Codable {
+    var panelID: String
     var museumID: String
     var roomID: String
     var x: Float
     var y: Float
     var z: Float
-    var red: Int
-    var green: Int
-    var blue: Int
-    var alpha: Double
-    var text: String
+    var text: String?
     var icon: String
-    var colour: String
-    
-    
-    
-    
-    
+    var r: Int
+    var g: Int
+    var b: Int
+    var alpha: Float
 }
+
+struct PanelDetails: Identifiable, Codable{
+    var id: UUID? = UUID()
+    var panelID: String
+    var title: String
+    var text: String
+}
+
+struct Exhibits: Identifiable, Codable {
+    var id = UUID()
+    let title: String
+    let textOptions: [TextAndID]
+}
+
+struct TextAndID: Identifiable, Codable, Hashable {
+    let text: String
+    let panelID: String
+
+    var id: String { panelID } // for Identifiable
+}
+
 

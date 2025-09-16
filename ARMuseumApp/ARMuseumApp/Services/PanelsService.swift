@@ -18,6 +18,7 @@ func getPanelsByMuseumAndRoomService(museumID: String, roomID: String) async -> 
         return decoded
         
     } catch {
+        print(error)
         return []
     }
 }
@@ -51,7 +52,7 @@ func deletePanelService(museumID: String, roomID: String,id: String) async -> St
         let endpoint = "/api/\(museumID)/\(roomID)/panel"
         
         // Create dictionary directly
-        let jsonObject: [String: Any] = ["docID": id]
+        let jsonObject: [String: Any] = ["panelID": id]
         
         // Convert dictionary to Data
         let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
@@ -81,18 +82,13 @@ func updatePanelService(panel: Panel) async -> String {
             "x": panel.x,
             "y": panel.y,
             "z": panel.z,
-            "red": panel.red,
-            "green": panel.green,
-            "blue": panel.blue,
             "alpha": panel.alpha,
-            "text": panel.text,
             "icon": panel.icon,
-            "colour": panel.colour
         ]
 
         // Wrap with docID
         let jsonObject: [String: Any] = [
-            "docID": panel.id,
+            "panelID": panel.panelID,
             "fields": fields
         ]
 
@@ -107,6 +103,22 @@ func updatePanelService(panel: Panel) async -> String {
         }
     } catch {
         return "API Error: \(error.localizedDescription)"
+    }
+}
+
+func getNewPanelsService(museumID: String, roomID: String) async -> [PanelDetails] {
+    let endpoint = "/api/\(museumID)/\(roomID)/curator/availablePanels"
+    
+    do {
+        let data = try await APIService.request(endpoint: endpoint, method: .GET)
+        
+        // Decode JSON array into [MuseumItem]
+        let decoded = try JSONDecoder().decode([PanelDetails].self, from: data)
+        return decoded
+        
+    } catch {
+        print(error)
+        return []
     }
 }
 

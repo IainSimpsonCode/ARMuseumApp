@@ -48,7 +48,7 @@ class GestureHandler: NSObject {
                         await PanelStorageManager.deletePanelByID(
                             museumID: buttonFunctions.sessionDetails.museumID,
                             roomID: buttonFunctions.sessionDetails.roomID,
-                            Id: panel.id
+                            Id: panel.panelID
                         )
                     }
                 let generator = UINotificationFeedbackGenerator()

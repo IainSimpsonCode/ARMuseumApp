@@ -1,13 +1,5 @@
 import SwiftUI
 
-// MARK: - Data Model
-
-struct Exhibit {
-    let imageName: String
-    let name: String
-    let textOptions: [String]
-}
-
 // MARK: - Shared Options
 
 let sharedColorOptions: [Color] = [.red, .green, .blue, .orange, .yellow, .purple]
@@ -17,28 +9,36 @@ let sharedIconOptions: [String] = [
     "person.fill", "globe.europe.africa.fill", "rainbow", "flame.fill"
 ]
 
-let exhibits: [Exhibit] = [
-    Exhibit(imageName: "WashingMachineImage", name: "Washing Machine", textOptions: ["Discovered in 2024", "Used for washing\nclothes", "Consumes 500W per\nhour"]),
-    Exhibit(imageName: "DiningTableImage", name: "Dining Table", textOptions: ["Made of oak wood", "Seats up to 6 people", "Used since ancient\ntimes"]),
-    Exhibit(imageName: "DoorToKitchenImage", name: "Door to Kitchen", textOptions: ["Connects two rooms", "Made of mahogany", "Installed in 2021"]),
-    Exhibit(imageName: "TelescopeImage", name: "Telescope", textOptions: ["Invented in 1608", "Used for astronomy", "Can magnify up to\n1000x"])
-]
-
-// MARK: - AddPanelView
-
 struct AddPanelView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @Environment(\.presentationMode) var presentationMode
     @State var needsClosing: Bool
+    @State private var panels: [PanelDetails] = []  // Loaded panels
+
+    var exhibits: [Exhibits] {
+        // Group panels by title
+        let grouped = Dictionary(grouping: panels, by: { $0.title })
+        
+        return grouped.map { title, panelsForTitle in
+            // Convert each panel to TextAndID
+            let textOptions = panelsForTitle.map { TextAndID(text: $0.text, panelID: $0.panelID) }
+            return Exhibits(title: title, textOptions: textOptions)
+        }
+    }
+
 
     var body: some View {
         List {
-            ForEach(exhibits.indices, id: \.self) { index in
+            ForEach(exhibits) { panel in
                 Button(action: {
                     buttonFunctions.sessionDetails.panelCreationMode = true
+                    
+                    // Assign the selected panel to some shared object if needed
+                    buttonFunctions.sessionDetails.selectedExhibit = panel
+                    
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text(exhibits[index].name)
+                    Text(panel.title)
                         .font(.system(.headline, design: .rounded))
                         .lineLimit(2)
                         .minimumScaleFactor(0.9)
@@ -51,12 +51,17 @@ struct AddPanelView: View {
         .listStyle(.insetGrouped)
         .navigationTitle("Exhibits")
         .onAppear {
-            if needsClosing {
-                presentationMode.wrappedValue.dismiss()
+            if needsClosing { presentationMode.wrappedValue.dismiss() }
+            Task {
+                panels = await getNewPanelsService(
+                    museumID: buttonFunctions.sessionDetails.museumID,
+                    roomID: buttonFunctions.sessionDetails.roomID
+                )
             }
         }
     }
 }
+
 
 
 import SwiftUI
@@ -66,11 +71,11 @@ struct PanelCreatorView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var needsClosing: Bool
 
-    let exhibit: Exhibit
+    let exhibit: Exhibits
 
-    @State private var selectedText: String = "nil"
     @State private var selectedColor: Color?
     @State private var selectedIcon: String = "nil"
+    @State private var selectedOption: TextAndID?
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -93,9 +98,9 @@ struct PanelCreatorView: View {
                         .font(.headline)
                         .foregroundColor(.white)
 
-                    Picker("Text Option", selection: $selectedText) {
+                    Picker("Text Option", selection: $selectedOption) {
                         ForEach(exhibit.textOptions, id: \.self) { option in
-                            Text(option).tag(option)
+                            Text(option.text).tag(option) // tag now matches type of selectedOption
                         }
                     }
                     .pickerStyle(.menu)
@@ -109,7 +114,7 @@ struct PanelCreatorView: View {
                 Spacer()
 
                 PreviewARPanel(
-                    text: selectedText,
+                    text: selectedOption?.text ?? "",
                     borderColor: selectedColor ?? .blue,
                     icon: selectedIcon
                 )
@@ -162,12 +167,13 @@ struct PanelCreatorView: View {
                     }
 
                     Button(action: {
-                        if selectedText != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
+                        if selectedOption!.text != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
                             Task {
                                 await buttonFunctions.addPanel(
-                                    text: exhibit.name + ":\n\n" + selectedText,
+                                    text: exhibit.title + ":\n\n" + selectedOption!.text,
                                     panelColor: UIColor(selectedColor),
-                                    panelIcon: selectedIcon
+                                    panelIcon: selectedIcon,
+                                    panelID: selectedOption!.panelID
                                 )
                                 needsClosing = true
                                 presentationMode.wrappedValue.dismiss()
@@ -211,7 +217,9 @@ struct PanelCreatorView: View {
             }
         }
         .onAppear {
-            if selectedText == "nil" { selectedText = exhibit.textOptions.first ?? "nil" }
+            if selectedOption == nil {
+                    selectedOption = exhibit.textOptions.first
+                }
             if selectedColor == nil { selectedColor = sharedColorOptions.first }
             if selectedIcon == "nil" { selectedIcon = sharedIconOptions.first ?? "nil" }
         }

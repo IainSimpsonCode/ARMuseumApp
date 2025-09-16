@@ -43,12 +43,12 @@ struct ContentView: View {
                             // Provide a binding for needsClosing
                             @State var needsClosing = false
                             // Provide an actual exhibit, for example the first one
-                            let selectedExhibit = exhibits.first!
+                            let selectedExhibit = buttonFunctions.sessionDetails.selectedExhibit
 
                             PanelCreatorView(
                                 buttonFunctions: _buttonFunctions,
                                 needsClosing: $needsClosing, 
-                                exhibit: selectedExhibit
+                                exhibit: selectedExhibit!
                             )
                         }
                         
