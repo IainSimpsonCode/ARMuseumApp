@@ -92,53 +92,62 @@ export const getCuratorPanels = async (req, res) => {
 
 
 export const updateCuratorPanel = async (req, res) => {
-  const { docID } = req.body;
+  const { panelID } = req.body;
   const updateData = req.body.fields;
 
-  if (!docID || !updateData || typeof updateData !== "object") {
-    return res.status(400).json({ message: "docID and fields to update must be provided." });
+  if (!panelID || !updateData || typeof updateData !== "object") {
+    return res.status(400).json({ message: "panelID and fields to update must be provided." });
   }
 
   try {
-    const docRef = db.collection("CuratorPanelData").doc(docID);
+    // Query for the document with matching panelID
+    const snapshot = await db.collection("CuratorPanelData")
+      .where("panelID", "==", panelID)
+      .limit(1)
+      .get();
 
-    // Check if document exists
-    const docSnap = await docRef.get();
-    if (!docSnap.exists) {
-      return res.status(400).json({ message: `Document with ID ${docID} not found.` });
+    if (snapshot.empty) {
+      return res.status(400).json({ message: `Panel with panelID ${panelID} not found.` });
     }
 
+    const docRef = snapshot.docs[0].ref;
     await docRef.update(updateData);
-    return res.status(200).json({ message: "Document updated successfully." });
+
+    return res.status(200).json({ message: "Panel updated successfully." });
   } catch (e) {
-    console.error("Error updating document:", e);
+    console.error("Error updating panel:", e);
     return res.status(500).json({ message: "Server could not connect to the database." });
   }
 };
 
 export const deleteCuratorPanel = async (req, res) => {
-  const { docID } = req.body;  // or use req.params
+  const { panelID } = req.body; // or req.params, depending on how you call it
 
-  if (!docID) {
-    return res.status(400).json({ message: "docID must be provided." });
+  if (!panelID) {
+    return res.status(400).json({ message: "panelID must be provided." });
   }
 
   try {
-    const docRef = db.collection("CuratorPanelData").doc(docID);
+    // Query for the document with matching panelID
+    const snapshot = await db.collection("CuratorPanelData")
+      .where("panelID", "==", panelID)
+      .limit(1)
+      .get();
 
-    // Check if document exists
-    const docSnap = await docRef.get();
-    if (!docSnap.exists) {
-      return res.status(400).json({ message: `Document with ID ${docID} not found.` });
+    if (snapshot.empty) {
+      return res.status(400).json({ message: `Panel with panelID ${panelID} not found.` });
     }
 
+    const docRef = snapshot.docs[0].ref;
     await docRef.delete();
-    return res.status(200).json({ message: "Document deleted successfully." });
+
+    return res.status(200).json({ message: "Panel deleted successfully." });
   } catch (e) {
-    console.error("Error deleting document:", e);
+    console.error("Error deleting panel:", e);
     return res.status(500).json({ message: "Server could not connect to the database." });
   }
 };
+
 
 export const getAvailableCuratorPanels = async (req, res) => {
   const museumID = req.params.museumID;

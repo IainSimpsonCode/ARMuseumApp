@@ -8,7 +8,7 @@ import { getMuseumNames } from "./functions/MuseumData.js";
 import { validateCuratorLogin } from "./functions/CuratorAuth.js";
 import { createNewCuratorPanel, deleteCuratorPanel, getAllPanels, getAvailableCuratorPanels, getCuratorPanels, getPanelByID, updateCuratorPanel } from "./functions/PanelData.js";
 import { serverHealthCheck } from "./functions/healthCheck.js";
-import { createCommunitySession, deleteCommunitySession, getCommunitySessions } from "./functions/CommunitySessions.js";
+import { createCommunitySession, deleteCommunitySession, getCommunitySessions, joinCommunitySession } from "./functions/CommunitySessions.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,6 +41,7 @@ app.get("/api/:museumID/:roomID/panel/:panelID", getPanelByID)
 app.get("/api/:museumID/community", getCommunitySessions)
 app.post("/api/:museumID/community", createCommunitySession)
 app.delete("/api/:museumID/community", deleteCommunitySession)
+app.post("/api/:museumID/community/join", joinCommunitySession)
 
 app.get("/server/health", serverHealthCheck)
 

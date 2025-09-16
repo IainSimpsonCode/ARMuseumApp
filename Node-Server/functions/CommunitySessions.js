@@ -108,3 +108,43 @@ export const deleteCommunitySession = async (req, res) => {
     return res.status(500).json({ message: "Server could not connect to the database." });
   }
 };
+
+export const joinCommunitySession = async (req, res) => {
+  const museumID = req.params.museumID;
+  const { sessionID, sessionPassword } = req.body || {};
+
+  if (!museumID) {
+    return res.status(400).json({ message: "Missing parameter museumID." });
+  }
+
+  if (!sessionID || !sessionPassword) {
+    return res.status(400).json({ message: "Missing sessionID or sessionPassword in request body." });
+  }
+
+  try {
+    // Query the CommunitySessionData collection for a document matching both museumID and sessionID
+    const snapshot = await db.collection("CommunitySessionData")
+      .where("museumID", "==", museumID)
+      .where("sessionID", "==", sessionID)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({ message: "No session found with the provided sessionID." });
+    }
+
+    const doc = snapshot.docs[0];
+    const data = doc.data();
+    const accessToken = doc.id;
+
+    if (data.sessionPassword !== sessionPassword) {
+      return res.status(401).json({ message: "Incorrect password for this session." });
+    }
+
+    return res.status(200).json({ accessToken: accessToken });
+
+  } catch (e) {
+    console.error("Error verifying session:", e);
+    return res.status(500).json({ message: "Server could not connect to the database." });
+  }
+};
