@@ -209,6 +209,36 @@ export const getPanelByID = async (req, res) => {
   }
 };
 
+export const getAllPanels = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+
+  if (!museumID || !roomID ) {
+    res.status(400).json({message: "Missing parameters. Please check request."})
+  }
+
+  try {
+    // Get all panels for this museum/room
+    const allPanelsSnapshot = await db.collection("PanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .get();
+
+    // Extract full panel objects
+    const allPanels = allPanelsSnapshot.docs.map(doc => ({
+      panelID: doc.data().panelID,
+      title: doc.data().title,
+      text: doc.data().text,
+    }));
+
+    return res.status(200).json(allPanels);
+
+  } catch (e) {
+    console.error("Error getting documents:", e);
+    return res.status(500).json({ message: "Server could not connect to the database." });
+  }
+};
+
 // Helper function
 const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
   try {
