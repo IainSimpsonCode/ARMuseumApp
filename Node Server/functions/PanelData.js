@@ -4,7 +4,7 @@ export const createNewCuratorPanel = async (req, res) => {
   const museumID = req.params.museumID;
   const roomID = req.params.museumID;
 
-  const { x, y, z, red, green, blue, alpha, text, icon } = req.body || {};
+  const { x, y, z, colour, alpha, text, icon } = req.body || {};
 
   // Check x, y, z are numbers and not null/undefined
   if (
@@ -15,14 +15,6 @@ export const createNewCuratorPanel = async (req, res) => {
     return res.status(400).json({ message: "x, y, and z must be numbers and not null." });
   }
 
-  // Check red, green, blue are integers 0-255
-  const rgb = [red, green, blue].map(v => Math.round(v));
-  if (
-    rgb.some(v => typeof v !== "number" || isNaN(v) || v < 0 || v > 255)
-  ) {
-    return res.status(400).json({ message: "red, green, and blue must be integers between 0 and 255." });
-  }
-
   // Check alpha is a number between 0 and 1
   if (
     typeof alpha !== "number" || isNaN(alpha) || alpha < 0 || alpha > 1
@@ -31,8 +23,8 @@ export const createNewCuratorPanel = async (req, res) => {
   }
 
   // Check text is supplied for others
-  if (!roomID || !museumID || !text || !icon) {
-    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, text or icon. Please check parameters." });
+  if (!colour || !roomID || !museumID || !panelID || !icon) {
+    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, panelID, colour or icon. Please check parameters." });
   }
 
   try {
@@ -40,14 +32,12 @@ export const createNewCuratorPanel = async (req, res) => {
     const panelData = {
       museumID,
       roomID,
+      panelID,
       x,
       y,
       z,
-      red: Math.round(red),
-      green: Math.round(green),
-      blue: Math.round(blue),
+      colour,
       alpha,
-      text,
       icon
     };
 
