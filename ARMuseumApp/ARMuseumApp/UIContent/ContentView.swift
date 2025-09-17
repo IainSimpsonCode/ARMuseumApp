@@ -1,79 +1,64 @@
 import SwiftUI
+import SceneKit
 
 struct ContentView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     
+    // Add any state you need for PanelCreatorView
+    @State private var needsClosing = false
+
+    // You need a target node for StartSessionButton
+    // For now, create a placeholder node; replace with your actual node
+    @State private var myNode = SCNNode()
+    
     var body: some View {
-        if buttonFunctions.sessionDetails.sessionType == 0{
+        if buttonFunctions.sessionDetails.sessionType == 0 {
             SplashScreen()
         }
-        else if buttonFunctions.sessionDetails.isSessionActive{
+        else if buttonFunctions.sessionDetails.isSessionActive {
             NavigationView {
                 ZStack {
-                    //stack the UI on top of the AR Camera
-                    ZStack {
-                        //AR Camera - will handle all AR related content
-                        ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .edgesIgnoringSafeArea(.all)
+                    ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    if !buttonFunctions.sessionDetails.panelCreationMode {
+                        TopBarButtons()
+                            .environmentObject(buttonFunctions)
                         
-                        
-                        
-                        if(!buttonFunctions.sessionDetails.panelCreationMode){
-                            TopBarButtons()
-                                .environmentObject(buttonFunctions)
-                            
-                            //Main UI elements
-                            VStack {
-                                Spacer()
-                                ButtonBar()
-                            }.edgesIgnoringSafeArea(.all)
-                            
-//                            AddPanelButton()
-                            
-                            ImageDetectionOverlay()
-                            
-//                            TutorialButton()
-                            
-                            //PanelMovementToggle()
-                            
-                            MovingPanelButtons()
+                        VStack {
+                            Spacer()
+                            ButtonBar()
                         }
-                        else {
-                            // Provide a binding for needsClosing
-                            @State var needsClosing = false
-                            // Provide an actual exhibit, for example the first one
-                            let selectedExhibit = buttonFunctions.sessionDetails.selectedExhibit
-
+                        
+                        MovingPanelButtons()
+                    } else {
+                        if let selectedExhibit = buttonFunctions.sessionDetails.selectedExhibit {
                             PanelCreatorView(
-                                buttonFunctions: _buttonFunctions,
-                                needsClosing: $needsClosing, 
-                                exhibit: selectedExhibit!
+                                needsClosing: $needsClosing,
+                                exhibit: selectedExhibit
                             )
+                            .environmentObject(buttonFunctions)
+
                         }
-                        
-                    }.disabled(buttonFunctions.tutorialVisible)
+                    }
                     
                     TutorialPages()
                 }
             }
         }
-        else{
+        else {
             ZStack {
-                //stack the UI on top of the AR Camera
-                ZStack {
-                    //AR Camera - will handle all AR related content
-                    ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .edgesIgnoringSafeArea(.all)
-                    
-                    ImageDetectionOverlay()
-                    
-                    MovingPanelButtons()
-                }
+                ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
+                    .edgesIgnoringSafeArea(.all)
                 
+                StartSessionButton(
+                    targetNode: myNode,
+                    posterName: "SecondPoster"
+                )
+                .environmentObject(buttonFunctions)
+                
+                MovingPanelButtons()
             }
         }
-        
     }
 }

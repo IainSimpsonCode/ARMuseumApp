@@ -81,7 +81,9 @@ class ButtonFunctions: ObservableObject {
 
         var panelToSave = newPanel.convertToPanel(museumID: sessionDetails.museumID, roomID: sessionDetails.roomID)
         
-        await PanelStorageManager.savePanel(panel: panelToSave)
+//        if(sessionDetails.sessionType != 1){
+            await PanelStorageManager.savePanel(panel: panelToSave)
+//        }
     }
     
     func placeLoadedPanel(panel: Panel){
@@ -124,7 +126,6 @@ class ButtonFunctions: ObservableObject {
         sessionRunning = true
         currentRoom = posterName
 
-        print("WOMP")
         panelController!.roomSetup(imageNode: node, sceneView: arView!)
         
         if(posterName == "Viva Exhibit Display") {
@@ -150,7 +151,10 @@ class ButtonFunctions: ObservableObject {
     
     func endSession() {
         sessionRunning = false
+        sessionDetails.sessionType = 0
+        sessionDetails.isSessionActive = false
         currentRoom = ""
+
         
         panelController?.removePanelsInScene()
         resetARSession()
@@ -173,24 +177,6 @@ class ButtonFunctions: ObservableObject {
     func movePanelButtons(option: Int){
         shadowPanel?.shadowPanelChoice = option
         shadowPanel?.shadowPanelAction()
-    }
-
-    func getRGB(from color: UIColor) -> (red: Int, green: Int, blue: Int, alpha: Double) {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        
-        // Extract RGBA components
-        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
-        // Convert 0–1 range to 0–255 for RGB
-        return (
-            red: Int(red * 255),
-            green: Int(green * 255),
-            blue: Int(blue * 255),
-            alpha: Double(alpha)
-        )
     }
 
 }

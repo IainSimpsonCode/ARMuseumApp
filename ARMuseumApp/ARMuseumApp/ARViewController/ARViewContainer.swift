@@ -76,7 +76,7 @@ struct ARViewContainer: UIViewRepresentable {
                 self.shadowPanel?.parentNode.position = newPosition
                 
                 // Throttle distance checks to once per second
-                if time - self.lastDistanceUpdateTime >= 2.0 {
+                if time - self.lastDistanceUpdateTime >= 1.0 {
                     self.lastDistanceUpdateTime = time
                         DispatchQueue.main.async {
                             self.gestureHandler?.updatePanelDistances()
@@ -92,6 +92,7 @@ struct ARViewContainer: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> ARSCNView {
+        print("MOoooo")
         let arView = ARSCNView()
         arView.delegate = context.coordinator
 

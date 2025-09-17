@@ -94,7 +94,7 @@ struct SessionSelectionScreen: View {
     }
     
     func community() {
-        showCommunityScreen = true  
+        showCommunityScreen = true
     }
     
     func curator() {

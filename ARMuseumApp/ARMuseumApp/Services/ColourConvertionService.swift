@@ -28,9 +28,6 @@ func convertUIColourToRGBA(from color: UIColor) -> (red: Int, green: Int, blue: 
         Float(alpha)  // keep alpha as Float 0–1
     )
 }
-
-
-
     
 // MARK: - Convert RGBA 0–255 integers + alpha float → UIColor
 func convertRGBAToUIColor(r: Int, g: Int, b: Int, a: CGFloat = 1.0) -> UIColor {
