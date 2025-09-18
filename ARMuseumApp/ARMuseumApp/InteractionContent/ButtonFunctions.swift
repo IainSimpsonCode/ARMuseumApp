@@ -70,7 +70,7 @@ class ButtonFunctions: ObservableObject {
         )
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID, detailedText: "detailed Text")
 
         if sessionRunning {
             newPanel.addToScene()
@@ -97,7 +97,7 @@ class ButtonFunctions: ObservableObject {
         let colour = convertRGBAToUIColor(r: panel.r, g: panel.g, b: panel.b)
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID)
+        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID, detailedText: "detailed text")
 
         if sessionRunning {
             newPanel.addToScene()

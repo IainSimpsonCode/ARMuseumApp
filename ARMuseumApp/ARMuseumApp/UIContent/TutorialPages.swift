@@ -8,7 +8,7 @@ struct TutorialPages: View {
             VStack {
                 TabView {
                     TutorialWelcomePage()
-                    TutorialImageScanPage()
+                    ViewingPanels()
                     TutorialEditMode()
                     TutorialEditModePartTwo()
                 }
@@ -35,7 +35,7 @@ struct TutorialWelcomePage: View {
     
     var body: some View {
         VStack {
-            Text("Welcome to the App!")
+            Text("Welcome to AR Museum!")
                 .font(.title)
                 .bold()
                 .padding()
@@ -145,3 +145,59 @@ struct TutorialEditModePartTwo: View {
         }
     }
 }
+//viewing panels
+//panels are placed across the room
+//panels expand as you move closer to them, so dont worry if you cant see too many yet
+//panels also shrink as you move further from them so you view isnt cluttered
+//click on a panel to expand it and view more details.
+
+//adding panels
+//if youre on a private session, any changes will be visible only to you will be only for th duration of this session
+//if youre on a community session, any changes you make will also be visible to other users on the same session.
+//to add a new panel, simply click the add panel button at the bottom left of your screen.
+//here you can decide which panel to add (if theyre available), edit its icon and colour and then place it into the scene
+//you can also edit a placed panel by holdng down on it.
+
+struct ViewingPanels: View {
+    var body: some View {
+        VStack {
+            Text("Adding And Editing Panels")
+                .font(.title)
+                .bold()
+                .padding()
+                .multilineTextAlignment(.center)
+
+            Text("if youre on a private session, any changes will be visible only to you will be only for th duration of this session")
+                .multilineTextAlignment(.leading)
+                .padding()
+            
+            Text("if youre on a community session, any changes you make will also be visible to other users on the same session.")
+                .multilineTextAlignment(.leading)
+                .padding()
+            
+            Text("To add a new panel, simply click the add panel button at the bottom left of your screen.")
+                .multilineTextAlignment(.leading)
+                .padding()
+            
+            Text("here you can decide which panel to add (if theyre available), edit its icon and colour and then place it into the scene")
+                .multilineTextAlignment(.leading)
+                .padding()
+
+            Text("you can also edit a placed panel by holdng down on it.")
+                .multilineTextAlignment(.leading)
+                .padding()
+            
+            Spacer()
+
+            // image at the bottom
+            Image("batman")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 100)
+                .padding(.bottom, 20)
+        }
+    }
+}
+
+
+

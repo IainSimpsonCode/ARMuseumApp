@@ -21,6 +21,7 @@ struct Panel: Codable {
     var g: Int
     var b: Int
     var alpha: Float
+    var detailedText: String?
 }
 
 struct PanelDetails: Identifiable, Codable{
