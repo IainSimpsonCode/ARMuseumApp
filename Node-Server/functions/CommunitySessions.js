@@ -1,4 +1,5 @@
 import { db } from "../firebaseAdmin.js";
+import { getTextFieldFromPanelID } from "./PanelData.js";
 
 export const getCommunitySessions = async (req, res) => {
 
@@ -221,5 +222,67 @@ export const createNewCommunityPanel = async (req, res) => {
   } catch (e) {
     console.error("Error creating/updating document:", e);
     return res.status(503).json({ message: "Server could not connect to the database." });
+  }
+};
+
+export const getCommunityPanels = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+  const accessToken = req.params.accessToken;
+
+  try {
+    // --- Get Curator panels (no sessionID) ---
+    const curatorSnapshot = await db.collection("CuratorPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .get();
+
+    const curatorPanels = await Promise.all(curatorSnapshot.docs.map(async (doc) => {
+      const data = doc.data();
+      const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
+      return {
+        id: doc.id,
+        ...data,
+        text,
+      };
+    }));
+
+    // --- Get Community panels (with sessionID) ---
+    const communitySnapshot = await db.collection("CommunityPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("sessionID", "==", accessToken)
+      .get();
+
+    const communityPanels = await Promise.all(communitySnapshot.docs.map(async (doc) => {
+      const data = doc.data();
+      const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
+      return {
+        id: doc.id,
+        ...data,
+        text,
+      };
+    }));
+
+    // --- Merge panels by panelID ---
+    const panelMap = new Map();
+
+    // First add curator panels
+    curatorPanels.forEach(panel => {
+      panelMap.set(panel.panelID, panel);
+    });
+
+    // Then overwrite with community panels (if same panelID exists)
+    communityPanels.forEach(panel => {
+      panelMap.set(panel.panelID, panel);
+    });
+
+    // Convert map back to array
+    const mergedPanels = Array.from(panelMap.values());
+
+    return res.status(200).json(mergedPanels);
+  } catch (e) {
+    console.error("Error getting documents:", e);
+    return res.status(500).json({ message: "Server could not connect to the database." });
   }
 };
