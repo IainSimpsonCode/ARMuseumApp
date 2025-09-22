@@ -3,14 +3,16 @@ import { db } from "../firebaseAdmin.js";
 export const getCommunitySessions = async (req, res) => {
 
   const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
 
-  if (!museumID) {
-    return res.status(400).json({ message: "Missing parameter museumID." });
+  if (!museumID || !roomID) {
+    return res.status(400).json({ message: "Missing parameter museumID or roomID." });
   }
 
   try {
     const snapshot = await db.collection("CommunitySessionData")
       .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
       .get();
 
     const sessions = snapshot.docs.map(doc => ({
@@ -29,12 +31,13 @@ export const getCommunitySessions = async (req, res) => {
 
 export const createCommunitySession = async (req, res) => {
   const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
 
   const { sessionID, sessionPassword } = req.body || {};
 
   // Check text is supplied for ID, password and museumID
-  if (!museumID || !sessionID || !sessionPassword) {
-    return res.status(400).json({ message: "Missing parameter. Either museumID, sessionID or sessionPassword." });
+  if (!museumID || !roomID || !sessionID || !sessionPassword) {
+    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, sessionID or sessionPassword." });
   }
 
   // Check whether the sessionID is already in use
@@ -64,6 +67,7 @@ export const createCommunitySession = async (req, res) => {
     // Prepare the data to insert
     const panelData = {
       museumID,
+      roomID,
       sessionID,
       sessionPassword
     };
@@ -81,12 +85,13 @@ export const createCommunitySession = async (req, res) => {
 
 export const deleteCommunitySession = async (req, res) => {
   const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
 
   const { sessionID, sessionPassword } = req.body || {};
 
   // Check text is supplied for ID, password and museumID
-  if (!museumID || !sessionID || !sessionPassword) {
-    return res.status(400).json({ message: "Missing parameter. Either museumID, sessionID or sessionPassword." });
+  if (!museumID || !roomID || !sessionID || !sessionPassword) {
+    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, sessionID or sessionPassword." });
   }  
 
   try {
@@ -111,10 +116,11 @@ export const deleteCommunitySession = async (req, res) => {
 
 export const joinCommunitySession = async (req, res) => {
   const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
   const { sessionID, sessionPassword } = req.body || {};
 
-  if (!museumID) {
-    return res.status(400).json({ message: "Missing parameter museumID." });
+  if (!museumID || !roomID) {
+    return res.status(400).json({ message: "Missing parameter museumID or roomID." });
   }
 
   if (!sessionID || !sessionPassword) {
@@ -125,6 +131,7 @@ export const joinCommunitySession = async (req, res) => {
     // Query the CommunitySessionData collection for a document matching both museumID and sessionID
     const snapshot = await db.collection("CommunitySessionData")
       .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
       .where("sessionID", "==", sessionID)
       .limit(1)
       .get();

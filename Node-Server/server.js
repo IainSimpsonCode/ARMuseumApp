@@ -44,10 +44,10 @@ app.get("/api/:museumID/:roomID/community/:sessionID/availablePanels", getAvaila
 app.get("/api/:museumID/:roomID/panel/:panelID", getPanelByID)
 
 /* Creating/Joining Community Sessions */
-app.get("/api/:museumID/community", getCommunitySessions)
-app.post("/api/:museumID/community", createCommunitySession)
-app.delete("/api/:museumID/community", deleteCommunitySession)
-app.post("/api/:museumID/community/join", joinCommunitySession)
+app.get("/api/:museumID/:roomID/community", getCommunitySessions)
+app.post("/api/:museumID/:roomID/community", createCommunitySession)
+app.delete("/api/:museumID/:roomID/community", deleteCommunitySession)
+app.post("/api/:museumID/:roomID/community/join", joinCommunitySession)
 
 /* CRUD Functions for Creating Community Panels */
 app.post("/api/:museumID/:roomID/community/:accessToken/panel", createNewCommunityPanel)
