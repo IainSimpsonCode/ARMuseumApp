@@ -49,13 +49,15 @@ export const createNewCuratorPanel = async (req, res) => {
       icon
     };
 
-    // Add the document to Firestore
-    const docRef = await db.collection("CuratorPanelData").add(panelData);
+    // Build a deterministic document ID to avoid duplicates
+    const docID = `${museumID}_${roomID}_${panelID}`;
 
-    // Return the new document ID
-    return res.status(201).json({ message: `Panel ${panelID} created. Document ${docRef}` });
+    // Create or overwrite the document
+    await db.collection("CuratorPanelData").doc(docID).set(panelData, { merge: false });
+
+    return res.status(201).json({ message: `Panel ${panelID} created/updated. Document ID: ${docID}` });
   } catch (e) {
-    console.error("Error creating document:", e);
+    console.error("Error creating/updating document:", e);
     return res.status(503).json({ message: "Server could not connect to the database." });
   }
 };
