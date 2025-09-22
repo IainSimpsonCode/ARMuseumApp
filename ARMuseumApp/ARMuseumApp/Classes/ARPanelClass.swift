@@ -50,10 +50,11 @@ class ARPanel {
     let currentRoom: String
     let panelID: String
     let panelIconName: String
+    var detailedText:String?
     
     var isTemporarilyExpanded = false
 
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String) {
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String?) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -90,6 +91,7 @@ class ARPanel {
         self.displayActive = true // expanded at start
         self.panelState = 2
         self.panelIconName = panelIcon
+        self.detailedText = detailedText ?? "detailed text"
         
         makePanelFaceCamera()
         createDeleteButton()
@@ -262,7 +264,7 @@ class ARPanel {
         else if panelState == 3 {
             // Bigger panel to show more text
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
-                self.editTextNode(text: panelText, color: UIColor.black)
+                self.editTextNode(text: detailedText!, color: UIColor.black)
             }
             
             iconCurrentLocation = SCNVector3(x: -0.1, y: 0.0, z: 0.025)

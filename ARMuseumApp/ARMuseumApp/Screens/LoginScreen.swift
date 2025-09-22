@@ -9,20 +9,20 @@ struct CuratorLoginScreen: View {
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var showPassword: Bool = false
-
-    var comSessionID: Int? = 0
+    
+    var comSession: String? = ""
     var body: some View {
         NavigationView {
             VStack(spacing: 30) {
                 
-                if(comSessionID == 0){
+                if(comSession == ""){
                     Text("Curator Login")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.top, 50)
                 }
                 else{
-                    Text("Login to Session")
+                    Text("Login to \(comSession ?? "")") 
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.top, 50)
@@ -30,12 +30,14 @@ struct CuratorLoginScreen: View {
                 
                 
                 VStack(spacing: 15) {
-                    TextField("Username", text: $curatorID)
-                        .padding()
-                        .background(Color(UIColor.secondarySystemBackground))
-                        .cornerRadius(10)
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
+                    if(comSession == ""){
+                        TextField("Username", text: $curatorID)
+                            .padding()
+                            .background(Color(UIColor.secondarySystemBackground))
+                            .cornerRadius(10)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+                    }
                     
                     ZStack(alignment: .trailing) {
                         if showPassword {
@@ -69,26 +71,52 @@ struct CuratorLoginScreen: View {
                         .padding(.horizontal, 20)
                 }
                 
-                Button(action: login) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                    } else {
-                        Text("Login")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(10)
+                if(comSession == ""){
+                    Button(action: loginCurator) {
+                        if isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        } else {
+                            Text("Login")
+                                .foregroundColor(.white)
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
                     }
+                    .disabled(isLoading)
+                    .padding(.horizontal, 20)
                 }
-                .disabled(isLoading)
-                .padding(.horizontal, 20)
+                else{
+                    Button(action: loginCommunity) {
+                        if isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        } else {
+                            Text("Login")
+                                .foregroundColor(.white)
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
+                    }
+                    .disabled(isLoading)
+                    .padding(.horizontal, 20)
+                }
+                
+                
                 
                 Spacer()
             }
@@ -108,7 +136,7 @@ struct CuratorLoginScreen: View {
         }
     }
     
-    func login() {
+    func loginCurator() {
         Task {
             isLoading = true
             defer { isLoading = false }
@@ -121,8 +149,7 @@ struct CuratorLoginScreen: View {
                 )
                 
                 if response.contains("Login successful.") {
-                    print("Login OK")
-                    // Call next function here
+                    buttonFunctions.sessionDetails.sessionType = 3
                 } else {
                     errorMessage = "Incorrect username or password. Please try again"
                 }
@@ -131,4 +158,29 @@ struct CuratorLoginScreen: View {
             }
         }
     }
+    
+    func loginCommunity() {
+        Task {
+            isLoading = true
+            defer { isLoading = false }
+            
+            do {
+//                let response = try await loginServie(
+//                    museumID: buttonFunctions.sessionDetails.museumID,
+//                    curatorID: curatorID,
+//                    curatorPassword: curatorPassword
+//                )
+//                
+//                if response.contains("Login successful.") {
+//                    print("Login OK")
+//                    // Call next function here
+//                } else {
+//                    errorMessage = "Incorrect username or password. Please try again"
+//                }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
 }

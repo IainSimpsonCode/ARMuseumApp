@@ -9,22 +9,20 @@ struct EditPanelView: View {
     
     let panel: ARPanel
     
-    @State private var selectedText: String
     @State private var selectedColor: Color
     @State private var selectedIcon: String
 
     init(panel: ARPanel, needsClosing: Binding<Bool>) {
         self.panel = panel
         self._needsClosing = needsClosing
-        self._selectedText = State(initialValue: panel.panelText)
         self._selectedColor = State(initialValue: Color(panel.panelSides.diffuse.contents as? UIColor ?? UIColor.blue))
         self._selectedIcon = State(initialValue: panel.panelIconName)
     }
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.black.opacity(0.2)
-                .edgesIgnoringSafeArea(.all)
+            Color.gray // plain white background
+                    .edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 20) {
                 Text("Edit Panel")
@@ -35,14 +33,15 @@ struct EditPanelView: View {
                     .cornerRadius(12)
                     .shadow(radius: 4)
 
+                // Display panel text (not editable)
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Panel Text")
                         .font(.headline)
                         .foregroundColor(.white)
 
-                    TextEditor(text: $selectedText)
-                        .frame(height: 80)
+                    Text(panel.panelText)
                         .padding(8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.white.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
@@ -51,7 +50,7 @@ struct EditPanelView: View {
                 Spacer()
 
                 PreviewARPanel(
-                    text: selectedText,
+                    text: panel.panelText, // always show original text
                     borderColor: selectedColor,
                     icon: selectedIcon
                 )
@@ -107,10 +106,6 @@ struct EditPanelView: View {
 
                     // Update button
                     Button(action: {
-                        // Update panel text
-                        panel.panelText = selectedText
-                        panel.editTextNode(text: selectedText,  color: UIColor.black)
-                        
                         // Update border only
                         panel.panelSides.diffuse.contents = UIColor(selectedColor)
                         panel.currentGeometry.materials = [

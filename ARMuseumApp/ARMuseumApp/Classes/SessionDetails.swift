@@ -8,7 +8,7 @@
 import Foundation
 
 struct SessionDetails{
-    var sessionType: Int
+    var sessionType: Int // 0 - none, 1 - private, 2- com, 3 - curator
     var museumID: String
     var roomID: String
     var communitySessionID: Int

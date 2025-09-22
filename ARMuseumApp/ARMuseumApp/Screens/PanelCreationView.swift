@@ -99,10 +99,11 @@ struct PanelCreatorView: View {
                         .foregroundColor(.white)
 
                     Picker("Text Option", selection: $selectedOption) {
-                        ForEach(exhibit.textOptions, id: \.self) { option in
-                            Text(option.text).tag(option) // tag now matches type of selectedOption
+                        ForEach(exhibit.textOptions) { option in
+                            Text(option.text).tag(option as TextAndID?) // optional works with Binding
                         }
                     }
+
                     .pickerStyle(.menu)
                     .padding()
                     .background(Color.white.opacity(0.1))

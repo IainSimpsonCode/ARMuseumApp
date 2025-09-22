@@ -88,7 +88,7 @@ func updatePanelService(panel: Panel) async -> String {
 
         // Wrap with docID
         let jsonObject: [String: Any] = [
-            "panelID": panel.panelID,
+            "docID": panel.panelID,
             "fields": fields
         ]
 
