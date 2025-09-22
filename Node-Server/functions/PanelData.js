@@ -167,6 +167,7 @@ export const getAvailableCuratorPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
+      longText: doc.data().longText
     }));
 
     // Get already used panels
@@ -210,6 +211,7 @@ export const getPanelByID = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
+      longText: doc.data().longText
     }));
 
     return res.status(200).json(allPanels[0]);
@@ -240,6 +242,7 @@ export const getAllPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
+      longText: doc.data().longText
     }));
 
     return res.status(200).json(allPanels);
@@ -251,7 +254,7 @@ export const getAllPanels = async (req, res) => {
 };
 
 // Helper function
-const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
+export const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
   try {
     // Get all panels for this museum/room
     const allPanelsSnapshot = await db.collection("PanelData")
