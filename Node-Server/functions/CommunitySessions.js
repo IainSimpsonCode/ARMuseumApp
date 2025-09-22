@@ -141,7 +141,7 @@ export const joinCommunitySession = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password for this session." });
     }
 
-    return res.status(200).json({ accessToken: accessToken });
+    return res.status(200).json({ message: accessToken });
 
   } catch (e) {
     console.error("Error verifying session:", e);
