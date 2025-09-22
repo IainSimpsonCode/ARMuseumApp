@@ -166,12 +166,13 @@
       }
     },
 
-    "/api/{museumID}/community": {
+    "/api/{museumID}/{roomID}/community": {
       "get": {
         "tags": ["Community Sessions"],
         "summary": "Get community sessions",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" }
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
         ],
         "responses": { "200": { "description": "List of session IDs" } }
       },
@@ -179,7 +180,8 @@
         "tags": ["Community Sessions"],
         "summary": "Create a community session",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" }
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
         ],
         "requestBody": {
           "content": {
@@ -194,7 +196,8 @@
         "tags": ["Community Sessions"],
         "summary": "Delete a community session",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" }
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
         ],
         "requestBody": {
           "content": {
@@ -207,12 +210,13 @@
       }
     },
 
-    "/api/{museumID}/community/join": {
+    "/api/{museumID}/{roomID}/community/join": {
       "post": {
         "tags": ["Community Sessions"],
         "summary": "Join a community session",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" }
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
         ],
         "requestBody": {
           "content": {
