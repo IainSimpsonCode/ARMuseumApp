@@ -1,5 +1,5 @@
 import { db } from "../firebaseAdmin.js";
-import { getTextFieldFromPanelID } from "./PanelData.js";
+import { getLongTextFieldFromPanelID, getTextFieldFromPanelID } from "./PanelData.js";
 
 export const getCommunitySessions = async (req, res) => {
 
@@ -240,10 +240,12 @@ export const getCommunityPanels = async (req, res) => {
     const curatorPanels = await Promise.all(curatorSnapshot.docs.map(async (doc) => {
       const data = doc.data();
       const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
+      const longText = await getLongTextFieldFromPanelID(museumID, roomID, data.panelID);
       return {
         id: doc.id,
         ...data,
         text,
+        longText,
       };
     }));
 
@@ -281,6 +283,56 @@ export const getCommunityPanels = async (req, res) => {
     const mergedPanels = Array.from(panelMap.values());
 
     return res.status(200).json(mergedPanels);
+  } catch (e) {
+    console.error("Error getting documents:", e);
+    return res.status(500).json({ message: "Server could not connect to the database." });
+  }
+};
+
+export const getAvailableCommunityPanels = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+  const sessionID = req.params.accessToken;
+
+  try {
+    // --- Get all panels for this museum/room ---
+    const allPanelsSnapshot = await db.collection("PanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .get();
+
+    const allPanels = allPanelsSnapshot.docs.map(doc => ({
+      panelID: doc.data().panelID,
+      title: doc.data().title,
+      text: doc.data().text,
+      longText: doc.data().longText
+    }));
+
+    // --- Get used panels from CuratorPanelData ---
+    const curatorSnapshot = await db.collection("CuratorPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .get();
+
+    const curatorPanelIDs = curatorSnapshot.docs.map(doc => doc.data().panelID);
+
+    // --- Get used panels from CommunityPanelData for this session ---
+    const communitySnapshot = await db.collection("CommunityPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("sessionID", "==", sessionID)
+      .get();
+
+    const communityPanelIDs = communitySnapshot.docs.map(doc => doc.data().panelID);
+
+    // --- Merge used IDs ---
+    const usedPanelIDs = new Set([...curatorPanelIDs, ...communityPanelIDs]);
+
+    // --- Filter out panels that are already used ---
+    const availablePanels = allPanels.filter(panel => !usedPanelIDs.has(panel.panelID));
+
+    return res.status(200).json(availablePanels);
+
   } catch (e) {
     console.error("Error getting documents:", e);
     return res.status(500).json({ message: "Server could not connect to the database." });

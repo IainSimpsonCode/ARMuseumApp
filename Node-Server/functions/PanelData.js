@@ -277,3 +277,27 @@ export const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
 
   return "";
 }
+
+export const getLongTextFieldFromPanelID = async (museumID, roomID, panelID) => {
+  try {
+    // Get all panels for this museum/room
+    const allPanelsSnapshot = await db.collection("PanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("panelID", "==", panelID)
+      .get();
+
+    // Extract full panel objects
+    const allPanels = allPanelsSnapshot.docs.map(doc => ({
+      panelID: doc.data().panelID,
+      title: doc.data().title,
+      longText: doc.data().longText,
+    }));
+
+    return allPanels[0].longText;
+  } catch (e) {
+
+  }
+
+  return "";
+}
