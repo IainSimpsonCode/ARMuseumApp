@@ -2,13 +2,12 @@
 //  ButtonBar.swift
 //  ARMuseumApp
 //
-//  Created by Imaginarium UCLan on 22/01/2025.
-//
 
 import SwiftUI
 
 struct ButtonBar: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
+    @State private var showingChangeRoomConfirmation = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -18,18 +17,7 @@ struct ButtonBar: View {
             HStack {
                 Spacer()
 
-//                // End Session Button
-//                Button(action: { buttonFunctions.endSession() }) {
-//                    ButtonBarItemDesign(
-//                        iconName: "xmark.circle.fill",
-//                        buttonText: "End"
-//                    )
-//                }
-//                .disabled(!buttonFunctions.sessionRunning)
-//                .opacity(buttonFunctions.sessionRunning ? 1.0 : 0.4)
-//                
-//                Spacer()
-
+                // Add Panel Button
                 NavigationLink(
                     destination: AddPanelView(buttonFunctions: _buttonFunctions, needsClosing: false)
                 ) {
@@ -37,14 +25,14 @@ struct ButtonBar: View {
                 }
                 .disabled(!buttonFunctions.sessionRunning)
                 .opacity(buttonFunctions.sessionRunning ? 1.0 : 0.5)
-                
-                Spacer()
-                
-                // Capture Button
-                NavigationLink(destination: ScreenShotView(buttonFunctions: _buttonFunctions)) {
-                    ButtonBarItemDesign(iconName: "camera.fill", buttonText: "Capture")
-                }
 
+                Spacer()
+
+                Button(action: {
+                    showingChangeRoomConfirmation = true
+                }) {
+                    ButtonBarItemDesign(iconName: "arrow.right.arrow.left", buttonText: "Change Room")
+                }
                 Spacer()
 
                 // Draw / Stop Drawing Button
@@ -75,6 +63,13 @@ struct ButtonBar: View {
             .background(.ultraThinMaterial)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        // Confirmation dialog for Change Room
+        .confirmationDialog("Are you sure you want to change rooms? You will have to go to the starting point to come back to this room", isPresented: $showingChangeRoomConfirmation, titleVisibility: .visible) {
+            Button("Yes, change room", role: .destructive) {
+                changeRoom()
+            }
+            Button("Cancel", role: .cancel) { }
+        }
     }
 }
 
@@ -89,8 +84,10 @@ struct ButtonBarItemDesign: View {
             Text(buttonText)
                 .font(.caption2)
         }
-        .frame(minWidth: 50) // keep items uniform
+        .frame(minWidth: 50)
     }
 }
 
-
+func changeRoom() {
+    print("Room changed!")
+}

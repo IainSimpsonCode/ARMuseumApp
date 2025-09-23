@@ -18,7 +18,7 @@ struct TopBarButtons: View {
                     VStack(spacing: 4) {
                         Button(action: {
                             buttonFunctions.endSession()
-                            buttonFunctions.sessionDetails.sessionType = 0 
+                            buttonFunctions.SessionSelected = 0 
                         }) {
                             Image(systemName: "xmark.circle.fill")
                                 .font(.system(size: 28, weight: .medium))

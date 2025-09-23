@@ -13,7 +13,6 @@ func getPanelsByMuseumAndRoomService(museumID: String, roomID: String) async -> 
     do {
         let data = try await APIService.request(endpoint: endpoint, method: .GET)
         
-        // Decode JSON array into [MuseumItem]
         let decoded = try JSONDecoder().decode([Panel].self, from: data)
         return decoded
         
@@ -28,13 +27,11 @@ func savePanelService(panel: Panel) async -> String {
         let endpoint = "/api/\(panel.museumID)/\(panel.roomID)/panel"
         
         
-        // Convert the Codable object to [String: Any]
         let jsonData = try JSONEncoder().encode(panel)
         let jsonObject = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
         
         let data = try await APIService.request(endpoint: endpoint, method: .POST, body: jsonObject)
         
-        // Convert response Data to String for logging/return
         if let responseString = String(data: data, encoding: .utf8) {
             print("Item posted successfully: \(responseString)")
             return responseString
@@ -51,13 +48,10 @@ func deletePanelService(museumID: String, roomID: String,id: String) async -> St
     do {
         let endpoint = "/api/\(museumID)/\(roomID)/panel"
         
-        // Create dictionary directly
         let jsonObject: [String: Any] = ["panelID": id]
         
-        // Convert dictionary to Data
         let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
         
-        // Make the API request
         let data = try await APIService.request(endpoint: endpoint, method: .DELETE, body: jsonObject)
         
         // Convert response Data to String
@@ -84,6 +78,9 @@ func updatePanelService(panel: Panel) async -> String {
             "z": panel.z,
             "alpha": panel.alpha,
             "icon": panel.icon,
+            "r": panel.r,
+            "g": panel.g,
+            "b": panel.b
         ]
 
         // Wrap with docID
@@ -112,7 +109,6 @@ func getNewPanelsService(museumID: String, roomID: String) async -> [PanelDetail
     do {
         let data = try await APIService.request(endpoint: endpoint, method: .GET)
         
-        // Decode JSON array into [MuseumItem]
         let decoded = try JSONDecoder().decode([PanelDetails].self, from: data)
         return decoded
         

@@ -2,7 +2,7 @@
 //  PreviewARPanel.swift
 //  ARMuseumApp
 //
-//  Created by Imaginarium UCLan on 10/09/2025.
+//  Created by Senan on 10/09/2025.
 //
 
 import Foundation

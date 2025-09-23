@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var myNode = SCNNode()
     
     var body: some View {
-        if buttonFunctions.sessionDetails.sessionType == 0 {
+        if buttonFunctions.SessionSelected == 0 {
             SplashScreen()
         }
         else if buttonFunctions.sessionDetails.isSessionActive {

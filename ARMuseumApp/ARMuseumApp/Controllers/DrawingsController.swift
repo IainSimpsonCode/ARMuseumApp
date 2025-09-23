@@ -2,7 +2,7 @@
 //  DrawingsController.swift
 //  ARMuseumApp
 //
-//  Created by Imaginarium UCLan on 08/09/2025.
+//  Created by Senan on 08/09/2025.
 //
 
 import Foundation
@@ -60,6 +60,7 @@ func removeDrawingNode(_ node: SCNNode) {
         let pointPosition = SCNVector3(p.position[0], p.position[1], p.position[2])
         let matchesPosition = pointPosition.isAlmostEqual(to: node.position)
         let matchesRadius = CGFloat(p.radius) == (node.geometry as? SCNSphere)?.radius
+
         return matchesPosition && matchesRadius
     }
     
@@ -76,3 +77,5 @@ extension SCNVector3 {
             abs(self.z - other.z) < tolerance
     }
 }
+
+

@@ -15,7 +15,7 @@ struct EditModeButton: View {
             HStack {
                 Spacer()
                 Button(action: buttonFunctions.toggleEditMode) {
-                    Image(systemName: "square.and.arrow.down") // Save icon
+                    Image(systemName: "pencil") // Save icon
                         .font(.system(size: 28, weight: .medium))
                         .foregroundColor(.accentColor)
                         .padding(12)

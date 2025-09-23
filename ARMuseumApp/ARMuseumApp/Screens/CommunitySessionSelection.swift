@@ -1,3 +1,9 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
 
 struct CommunitySessionsScreen: View {
@@ -27,6 +33,11 @@ struct CommunitySessionsScreen: View {
                         Text(error)
                             .foregroundColor(.red)
                             .padding()
+                    } else if sessions.isEmpty {
+                        Text("No community sessions found.")
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
                     } else {
                         List(sessions, id: \.self) { session in
                             NavigationLink(
@@ -42,7 +53,6 @@ struct CommunitySessionsScreen: View {
                     }
                 }
                 
-                // Floating + button
                 VStack {
                     Spacer()
                     HStack {
@@ -86,14 +96,12 @@ struct CommunitySessionsScreen: View {
                     TextField("Session Name", text: $newSessionName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     
-                    // Password fields (always visible)
                     TextField("Password", text: $newPassword)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     
                     TextField("Confirm Password", text: $confirmPassword)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     
-                    // Error message if passwords don't match
                     if !passwordsMatch {
                         Text("Passwords do not match")
                             .foregroundColor(.red)
@@ -107,18 +115,16 @@ struct CommunitySessionsScreen: View {
                             return
                         }
                         
-                        // Capture the values before resetting
                         let sessionName = newSessionName
                         let sessionPassword = newPassword
                         
-                        // Reset and dismiss modal
+                        // Reset modal
                         newSessionName = ""
                         newPassword = ""
                         confirmPassword = ""
                         passwordsMatch = true
                         showingAddSessionModal = false
                         
-                        // Now call the async function
                         Task {
                             await addNewCommunitySession(name: sessionName, password: sessionPassword)
                         }
@@ -139,6 +145,7 @@ struct CommunitySessionsScreen: View {
     
     func fetchSessions() {
         isLoading = true
+        errorMessage = nil
         Task {
             defer { isLoading = false }
             do {
@@ -150,10 +157,9 @@ struct CommunitySessionsScreen: View {
         }
     }
     
-    // Placeholder for your function
     func addNewCommunitySession(name: String, password: String) async {
         await createSessionService(museumID: buttonFunctions.sessionDetails.museumID, name: name, password: password)
-        await fetchSessions()
+        await fetchSessionsAsync()
     }
     
     func fetchSessionsAsync() async {

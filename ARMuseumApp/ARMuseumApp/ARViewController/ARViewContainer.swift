@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ARKit
+import UIKit
 
 struct ARViewContainer: UIViewRepresentable {
     @ObservedObject var buttonFunctions: ButtonFunctions
@@ -92,7 +93,7 @@ struct ARViewContainer: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> ARSCNView {
-        print("MOoooo")
+
         let arView = ARSCNView()
         arView.delegate = context.coordinator
 

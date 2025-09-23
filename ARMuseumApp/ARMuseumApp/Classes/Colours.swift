@@ -16,7 +16,6 @@ struct Colors {
     static let yellow = UIColor.systemYellow
     static let purple = UIColor.systemPurple
     
-    // Optional: dictionary for easy lookup by name
     static let allColors: [String: UIColor] = [
         "red": red,
         "green": green,
@@ -26,7 +25,6 @@ struct Colors {
         "purple": purple
     ]
     
-    // Helper: get color by name with fallback
     static func getUIColour(named name: String) -> UIColor {
         return allColors[name.lowercased()] ?? .black
     }

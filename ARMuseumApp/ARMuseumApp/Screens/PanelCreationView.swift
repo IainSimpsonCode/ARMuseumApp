@@ -1,7 +1,12 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
 
 // MARK: - Shared Options
-
 let sharedColorOptions: [Color] = [.red, .green, .blue, .orange, .yellow, .purple]
 
 let sharedIconOptions: [String] = [
@@ -9,46 +14,54 @@ let sharedIconOptions: [String] = [
     "person.fill", "globe.europe.africa.fill", "rainbow", "flame.fill"
 ]
 
+// MARK: - AddPanelView
 struct AddPanelView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @Environment(\.presentationMode) var presentationMode
     @State var needsClosing: Bool
-    @State private var panels: [PanelDetails] = []  // Loaded panels
+    @State private var panels: [PanelDetails] = []
 
     var exhibits: [Exhibits] {
-        // Group panels by title
         let grouped = Dictionary(grouping: panels, by: { $0.title })
-        
         return grouped.map { title, panelsForTitle in
-            // Convert each panel to TextAndID
             let textOptions = panelsForTitle.map { TextAndID(text: $0.text, panelID: $0.panelID) }
             return Exhibits(title: title, textOptions: textOptions)
         }
     }
 
-
     var body: some View {
-        List {
-            ForEach(exhibits) { panel in
-                Button(action: {
-                    buttonFunctions.sessionDetails.panelCreationMode = true
-                    
-                    // Assign the selected panel to some shared object if needed
-                    buttonFunctions.sessionDetails.selectedExhibit = panel
-                    
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Text(panel.title)
-                        .font(.system(.headline, design: .rounded))
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.9)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 8)
+        Group {
+            if exhibits.isEmpty {
+                VStack {
+                    Spacer()
+                    Text("No exhibits available")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    Spacer()
                 }
-                .buttonStyle(.plain)
+            } else {
+                List {
+                    ForEach(exhibits) { panel in
+                        Button(action: {
+                            buttonFunctions.sessionDetails.panelCreationMode = true
+                            buttonFunctions.sessionDetails.selectedExhibit = panel
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Text(panel.title)
+                                .font(.system(.headline, design: .rounded))
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.9)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 8)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .listStyle(.insetGrouped)
             }
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("Exhibits")
         .onAppear {
             if needsClosing { presentationMode.wrappedValue.dismiss() }
@@ -60,17 +73,14 @@ struct AddPanelView: View {
             }
         }
     }
+
 }
 
-
-
-import SwiftUI
-
+// MARK: - PanelCreatorView
 struct PanelCreatorView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @Environment(\.presentationMode) var presentationMode
     @Binding var needsClosing: Bool
-
     let exhibit: Exhibits
 
     @State private var selectedColor: Color?
@@ -79,12 +89,10 @@ struct PanelCreatorView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            // Your AR background stays behind everything
-            Color.clear.edgesIgnoringSafeArea(.all)
-            Color.black.opacity(0.2)
-                .edgesIgnoringSafeArea(.all)
+            Color.black.opacity(0.3).ignoresSafeArea()
 
             VStack(spacing: 20) {
+                // Title with blur
                 Text("Panel Designer")
                     .font(.system(.title2, design: .rounded).weight(.bold))
                     .foregroundColor(.white)
@@ -93,6 +101,7 @@ struct PanelCreatorView: View {
                     .cornerRadius(12)
                     .shadow(radius: 4)
 
+                // Picker for text options
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Choose a text to display")
                         .font(.headline)
@@ -100,20 +109,19 @@ struct PanelCreatorView: View {
 
                     Picker("Text Option", selection: $selectedOption) {
                         ForEach(exhibit.textOptions) { option in
-                            Text(option.text).tag(option as TextAndID?) // optional works with Binding
+                            Text(option.text).tag(option as TextAndID?)
                         }
                     }
-
                     .pickerStyle(.menu)
                     .padding()
-                    .background(Color.white.opacity(0.1))
+                    .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .padding(.top, 50)
-
+                .padding(.top, 40)
 
                 Spacer()
 
+                // Preview Panel
                 PreviewARPanel(
                     text: selectedOption?.text ?? "",
                     borderColor: selectedColor ?? .blue,
@@ -125,6 +133,7 @@ struct PanelCreatorView: View {
                 Spacer()
 
                 VStack(spacing: 16) {
+                    // Color Picker
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Select Panel Color")
                             .font(.headline)
@@ -139,6 +148,7 @@ struct PanelCreatorView: View {
                         }
                     }
 
+                    // Icon Picker
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Panel Icon")
                             .font(.headline)
@@ -153,7 +163,7 @@ struct PanelCreatorView: View {
                                             .scaledToFit()
                                             .frame(width: 36, height: 36)
                                             .padding(10)
-                                            .background(selectedIcon == symbol ? Color.blue.opacity(0.5) : Color.clear)
+                                            .background(.ultraThinMaterial)
                                             .foregroundColor(selectedIcon == symbol ? .white : .primary)
                                             .clipShape(RoundedRectangle(cornerRadius: 8))
                                             .overlay(
@@ -167,14 +177,15 @@ struct PanelCreatorView: View {
                         }
                     }
 
+                    // Add to Scene Button
                     Button(action: {
-                        if selectedOption!.text != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
+                        if selectedOption?.text != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
                             Task {
                                 await buttonFunctions.addPanel(
-                                    text: exhibit.title + ":\n\n" + selectedOption!.text,
+                                    text: exhibit.title + ":\n\n" + (selectedOption?.text ?? ""),
                                     panelColor: UIColor(selectedColor),
                                     panelIcon: selectedIcon,
-                                    panelID: selectedOption!.panelID
+                                    panelID: selectedOption?.panelID ?? ""
                                 )
                                 needsClosing = true
                                 presentationMode.wrappedValue.dismiss()
@@ -189,6 +200,7 @@ struct PanelCreatorView: View {
                             .background(Color.blue.opacity(0.8))
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .shadow(radius: 3)
                     }
 
                 }
@@ -197,6 +209,7 @@ struct PanelCreatorView: View {
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
+            // Back Button
             Button(action: {
                 needsClosing = true
                 presentationMode.wrappedValue.dismiss()
@@ -219,15 +232,15 @@ struct PanelCreatorView: View {
         }
         .onAppear {
             if selectedOption == nil {
-                    selectedOption = exhibit.textOptions.first
-                }
+                selectedOption = exhibit.textOptions.first
+            }
             if selectedColor == nil { selectedColor = sharedColorOptions.first }
             if selectedIcon == "nil" { selectedIcon = sharedIconOptions.first ?? "nil" }
         }
     }
 }
 
-
+// MARK: - ColorButton
 struct ColorButton: View {
     let buttonColor: Color
     let isSelected: Bool
@@ -240,13 +253,9 @@ struct ColorButton: View {
                 .frame(width: 40, height: 40)
                 .overlay(
                     Circle()
-                        .stroke(isSelected ? Color.primary : Color.clear, lineWidth: 3)
+                        .stroke(isSelected ? Color.white : Color.clear, lineWidth: 3)
                 )
         }
         .buttonStyle(PlainButtonStyle())
     }
 }
-
-
-
-

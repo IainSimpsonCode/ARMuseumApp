@@ -9,6 +9,7 @@ class GestureHandler: NSObject {
     private var initialScale: SCNVector3?
     private var selectedNode: SCNNode?
     @ObservedObject var buttonFunctions: ButtonFunctions
+    var panelCollapseTimers: [String: Timer] = [:] // Use panelID or some unique key
 
     init(sceneView: ARSCNView, panelController: ARPanelController, buttonFunctions: ButtonFunctions) {
         self.sceneView = sceneView
@@ -44,13 +45,17 @@ class GestureHandler: NSObject {
             if node == panel.deleteButtonNode || node == panel.deleteButtonNode.childNodes.first {
                 panel.parentNode.removeFromParentNode()
                 panelController.panelsInScene.remove(at: index)
-                Task {
-                        await PanelStorageManager.deletePanelByID(
-                            museumID: buttonFunctions.sessionDetails.museumID,
-                            roomID: buttonFunctions.sessionDetails.roomID,
-                            Id: panel.panelID
-                        )
-                    }
+                if(buttonFunctions.SessionSelected != 1){
+                    Task {
+                            await PanelStorageManager.deletePanelByID(
+                                museumID: buttonFunctions.sessionDetails.museumID,
+                                roomID: buttonFunctions.sessionDetails.roomID,
+                                Id: panel.panelID,
+                                sessionSelected: buttonFunctions.SessionSelected
+                            )
+                        }
+                }
+                
                 let generator = UINotificationFeedbackGenerator()
                 generator.prepare()
                 generator.notificationOccurred(.success)
@@ -82,47 +87,67 @@ class GestureHandler: NSObject {
                 shadowPanel?.addToScene()
                 buttonFunctions.movingPanel = true
                 shadowPanel?.panelToChnage = panel
+                if(buttonFunctions.SessionSelected == 3){
+                    Task{
+                        await updatePanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
+                    }
+                }
+                else if (buttonFunctions.SessionSelected == 2){
+                    Task{
+                        await updateCommunityPanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID), accessToken:buttonFunctions.accessToken)
+                    }
+                }
                 return
             }
-            
             else if node == panel.parentNode || node == panel.iconNode {
+                let panelID = panel.panelID // Or any unique identifier for the panel
+                
                 if panel.isTemporarilyExpanded {
-                    // Panel is already expanded → revert to normal
+                    // Cancel any existing collapse timer for this panel
+                    panelCollapseTimers[panelID]?.invalidate()
+                    panelCollapseTimers[panelID] = nil
+                    
+                    // Revert panel size
                     panel.isTemporarilyExpanded = false
                     
                     let distance = self.distanceBetween(self.sceneView.pointOfView!.worldPosition,
                                                         panel.parentNode.worldPosition)
-                    if distance < 1 {
+                    if distance < 2 {
                         panel.changePanelSize(size: 2)
-                    } else if distance > 1 && distance < 2 {
+                    } else if distance > 2 && distance < 4 {
                         panel.changePanelSize(size: 1)
                     } else {
                         panel.changePanelSize(size: 0)
                     }
                 } else {
-                    // Panel is not expanded → temporarily expand
+                    // Expand panel
                     panel.isTemporarilyExpanded = true
                     panel.panelState = 3
                     let state3Geometry = SCNBox(width: 0.3, height: 0.18, length: 0.04, chamferRadius: 1)
                     panel.animatePanel(panelNode: panel.parentNode, currentGeometry: panel.currentGeometry, targetGeometry: state3Geometry)
                     
-                    // Revert after 10s
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                    // Cancel any previous timer for this panel
+                    panelCollapseTimers[panelID]?.invalidate()
+                    
+                    // Schedule a new collapse timer
+                    panelCollapseTimers[panelID] = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
                         panel.isTemporarilyExpanded = false
                         let distance = self.distanceBetween(self.sceneView.pointOfView!.worldPosition,
                                                             panel.parentNode.worldPosition)
-                        if distance < 1 {
+                        if distance < 2 {
                             panel.changePanelSize(size: 2)
-                        } else if distance > 1 && distance < 2 {
+                        } else if distance > 2 && distance < 4 {
                             panel.changePanelSize(size: 1)
                         } else {
                             panel.changePanelSize(size: 0)
                         }
+                        // Remove timer reference after it fires
+                        self.panelCollapseTimers[panelID] = nil
                     }
                 }
-                
                 return
             }
+
 
         }
     }
@@ -314,9 +339,9 @@ class GestureHandler: NSObject {
             let panelPosition = panel.parentNode.worldPosition
             let distance = distanceBetween(cameraPosition, panelPosition)
 
-            if distance < 1 {
+            if distance < 2 {
                 panel.changePanelSize(size: 2)
-            } else if distance > 1 && distance < 2 {
+            } else if distance > 2 && distance < 4 {
                 panel.changePanelSize(size: 1)
             } else {
                 panel.changePanelSize(size: 0)

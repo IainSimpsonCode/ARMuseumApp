@@ -1,3 +1,9 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
 
 struct CuratorLoginScreen: View {
@@ -5,12 +11,13 @@ struct CuratorLoginScreen: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     
     @State private var curatorID: String = ""
-    @State private var curatorPassword: String = ""
+    @State private var password: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var showPassword: Bool = false
     
-    var comSession: String? = ""
+    var comSession: String? = "" // community sess
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 30) {
@@ -41,13 +48,13 @@ struct CuratorLoginScreen: View {
                     
                     ZStack(alignment: .trailing) {
                         if showPassword {
-                            TextField("Password", text: $curatorPassword)
+                            TextField("Password", text: $password)
                                 .padding()
                                 .background(Color(UIColor.secondarySystemBackground))
                                 .cornerRadius(10)
                                 .autocapitalization(.none)
                         } else {
-                            SecureField("Password", text: $curatorPassword)
+                            SecureField("Password", text: $password)
                                 .padding()
                                 .background(Color(UIColor.secondarySystemBackground))
                                 .cornerRadius(10)
@@ -145,11 +152,11 @@ struct CuratorLoginScreen: View {
                 let response = try await loginServie(
                     museumID: buttonFunctions.sessionDetails.museumID,
                     curatorID: curatorID,
-                    curatorPassword: curatorPassword
+                    curatorPassword: password
                 )
                 
                 if response.contains("Login successful.") {
-                    buttonFunctions.sessionDetails.sessionType = 3
+                    buttonFunctions.SessionSelected = 3
                 } else {
                     errorMessage = "Incorrect username or password. Please try again"
                 }
@@ -165,22 +172,24 @@ struct CuratorLoginScreen: View {
             defer { isLoading = false }
             
             do {
-//                let response = try await loginServie(
-//                    museumID: buttonFunctions.sessionDetails.museumID,
-//                    curatorID: curatorID,
-//                    curatorPassword: curatorPassword
-//                )
-//                
-//                if response.contains("Login successful.") {
-//                    print("Login OK")
-//                    // Call next function here
-//                } else {
-//                    errorMessage = "Incorrect username or password. Please try again"
-//                }
+                let response = try await joinCommunitySessionService(
+                    museumID: buttonFunctions.sessionDetails.museumID,
+                    name: comSession!,
+                    password: password
+                )
+
+                if response.contains("Incorrect password") || response.contains("API Error"){
+                    errorMessage = "Incorrect password. Please try again"
+                } else {
+                    // store accessToken if needed
+                    buttonFunctions.SessionSelected = 2
+                    buttonFunctions.accessToken = response
+                }
             } catch {
                 errorMessage = error.localizedDescription
             }
         }
     }
+
     
 }

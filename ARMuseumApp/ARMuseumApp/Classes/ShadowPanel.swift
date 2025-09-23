@@ -57,7 +57,6 @@ class ShadowPanel {
         parentNode.addChildNode(iconNode)
         
         makePanelFaceCamera()
-        print("Test - Init Shadow panel")
     }
     
     func makePanelFaceCamera() {
@@ -68,7 +67,6 @@ class ShadowPanel {
     
     func addToScene() {
         sceneView.scene.rootNode.addChildNode(parentNode)
-        print("Add to scene")
     }
     
     func makePanelStayInFrontOfUser(distance: Float = 0.5) {

@@ -18,7 +18,6 @@ func healthCheckService() async -> String {
             print("Health Check Response: \(responseString)")
         }
         
-        // Parse JSON manually without a struct
         if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
            let message = json["message"] as? String {
             return message

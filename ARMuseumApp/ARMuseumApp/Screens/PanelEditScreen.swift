@@ -1,3 +1,9 @@
+//
+//  PanelsService.swift
+//  ARMuseumApp
+//
+//  Created by Senan on 04/09/2025.
+//
 import SwiftUI
 import SwiftUI
 import SceneKit
@@ -21,7 +27,7 @@ struct EditPanelView: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.gray // plain white background
+            Color.gray 
                     .edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 20) {
@@ -33,7 +39,7 @@ struct EditPanelView: View {
                     .cornerRadius(12)
                     .shadow(radius: 4)
 
-                // Display panel text (not editable)
+                // Display panel text
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Panel Text")
                         .font(.headline)
@@ -50,7 +56,7 @@ struct EditPanelView: View {
                 Spacer()
 
                 PreviewARPanel(
-                    text: panel.panelText, // always show original text
+                    text: panel.panelText,
                     borderColor: selectedColor,
                     icon: selectedIcon
                 )
@@ -128,9 +134,18 @@ struct EditPanelView: View {
                         needsClosing = true
                         presentationMode.wrappedValue.dismiss()
                         buttonFunctions.sessionDetails.panelCreationMode = false
-                        Task {
-                            await updatePanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
+                        
+                        if(buttonFunctions.SessionSelected == 2){
+                            Task {
+                                await updatePanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
+                            }
                         }
+                        else if(buttonFunctions.SessionSelected == 3){
+                            Task {
+                                await updateCommunityPanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID), accessToken: buttonFunctions.accessToken)
+                            }
+                        }
+                        
                     }) {
                         Text("Update Panel")
                             .font(.system(.headline, design: .rounded))

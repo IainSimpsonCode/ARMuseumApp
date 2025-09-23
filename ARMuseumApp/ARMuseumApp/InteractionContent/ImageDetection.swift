@@ -43,9 +43,6 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
             let boxWidth: Float = 2.5
             let boxHeight: Float = 2.5
             let boxCenter = SCNVector3(0, 0, 0)
-            
-//            if abs(imagePosition.x - boxCenter.x) < boxWidth / 2 &&
-//               abs(imagePosition.z - boxCenter.z) < boxHeight / 2 {
                 
                 if !self.buttonFunctions.sessionRunning {
                     buttonFunctions.sessionDetails.isSessionActive = true
@@ -57,16 +54,17 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
                     Task {
                         let allPanels = await PanelStorageManager.loadPanels(
                             museumID: self.buttonFunctions.sessionDetails.museumID,
-                            roomID: self.buttonFunctions.sessionDetails.roomID
+                            roomID: self.buttonFunctions.sessionDetails.roomID,
+                            sessionSelected: self.buttonFunctions.SessionSelected
                         )
                         for panel in allPanels {
                             self.buttonFunctions.placeLoadedPanel(panel: panel)
                         }
                     }
                 }
-//            }
         }
     }
 
 }
+
 

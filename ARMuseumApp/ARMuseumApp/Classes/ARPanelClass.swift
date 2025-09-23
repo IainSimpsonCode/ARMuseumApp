@@ -54,7 +54,7 @@ class ARPanel {
     
     var isTemporarilyExpanded = false
 
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String?) {
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String? = nil) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -91,8 +91,7 @@ class ARPanel {
         self.displayActive = true // expanded at start
         self.panelState = 2
         self.panelIconName = panelIcon
-        self.detailedText = detailedText ?? "detailed text"
-        
+        self.detailedText = detailedText ?? "Arsenal Football Club, based in London, is one of England's most successful and historic football clubs. Founded in 1886, they are known for their attacking style of play and passionate fan base. Arsenal has won multiple league titles, FA Cups, and other domestic trophies over the years. They play their home matches at the Emirates Stadium"
         makePanelFaceCamera()
         createDeleteButton()
         createEditButton()
@@ -137,7 +136,6 @@ class ARPanel {
                 iconNode.isHidden = true // keep hidden so only the dot remains
             }
     }
-    
     
     func editModeToggle() {
         deleteButtonNode.isHidden.toggle()
@@ -186,7 +184,7 @@ class ARPanel {
         editButtonNode.isHidden = true
 
         // Icon
-        let editImage = UIImage(systemName: "slider.horizontal.2.square.on.square", withConfiguration: UIImage.SymbolConfiguration(pointSize: 256, weight: .bold))
+        let editImage = UIImage(systemName: "pencil", withConfiguration: UIImage.SymbolConfiguration(pointSize: 256, weight: .bold))
         let editIconMaterial = SCNMaterial()
         editIconMaterial.diffuse.contents = editImage
         editIconMaterial.isDoubleSided = true
@@ -229,7 +227,6 @@ class ARPanel {
         parentNode.addChildNode(moveButtonNode)
     }
 
-    
     func animatePanel(panelNode: SCNNode, currentGeometry: SCNBox, targetGeometry: SCNBox) {
         let sideButtonTargetGeometry: SCNBox
         
@@ -264,17 +261,19 @@ class ARPanel {
         else if panelState == 3 {
             // Bigger panel to show more text
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
-                self.editTextNode(text: detailedText!, color: UIColor.black)
+                // Pass flag to fill the whole panel
+                self.editTextNode(text: detailedText!, color: UIColor.black, fullWidth: true)
             }
-            
-            iconCurrentLocation = SCNVector3(x: -0.1, y: 0.0, z: 0.025)
-            iconCurrentScale = SCNVector3(x: 1.5, y: 1.5, z: 1.5)
-            
-            // Move buttons to top-right
+
+            // Hide the icon completely
+            iconCurrentLocation = SCNVector3(x: 0, y: 0, z: 1)   // move behind panel
+            iconCurrentScale = SCNVector3(x: 0, y: 0, z: 0)       // shrink it completely
+
+            // Move buttons to top corners (optional)
             deleteButtonNode.position = SCNVector3(x: 0.15, y: 0.07, z: 0.03)
             editButtonNode.position = SCNVector3(x: 0.12, y: 0.07, z: 0.03)
             moveButtonNode.position = SCNVector3(x: 0.08, y: 0.07, z: 0.03)
-            
+
             sideButtonTargetGeometry = SCNBox(width: 0.025, height: 0.025, length: 0.015, chamferRadius: 1)
         }
 
@@ -291,17 +290,16 @@ class ARPanel {
         SCNTransaction.commit()
     }
 
-    func editTextNode(text: String, color: UIColor = .black) {
-        // Panel dimensions
-        let panelWidth: Float = 0.20
-        let panelHeight: Float = 0.10
+    func editTextNode(text: String, color: UIColor = .black, fullWidth: Bool = false) {
+        let panelWidth: Float = fullWidth ? 0.25 : 0.2
+        let panelHeight: Float = fullWidth ? 1.3 : 0.125
 
-        // Space for text (right 3/4 of panel)
-        let leftMargin = panelWidth * 0.25
-        let availableWidth: CGFloat = CGFloat(panelWidth - leftMargin) * 500 // scaled up for SCNText
+        // If fullWidth is true, remove left margin for icon
+        let leftMargin: Float = fullWidth ? 0 : panelWidth * 0.2
+
+        let availableWidth: CGFloat = CGFloat(panelWidth - leftMargin) * 500 // scale for SCNText
         let availableHeight: CGFloat = CGFloat(panelHeight) * 500
 
-        // Create SCNText
         let textGeometry = SCNText(string: text, extrusionDepth: 0.0)
         textGeometry.font = UIFont.systemFont(ofSize: 7)
         textGeometry.firstMaterial?.diffuse.contents = color
@@ -311,19 +309,16 @@ class ARPanel {
         textGeometry.isWrapped = true
         textGeometry.containerFrame = CGRect(x: 0, y: 0, width: availableWidth, height: availableHeight)
 
-        // Assign geometry to node
         textNode.geometry = textGeometry
 
-        // Center text vertically & offset horizontally
         let (minVec, maxVec) = textNode.boundingBox
         let textHeight = maxVec.y - minVec.y
         textNode.pivot = SCNMatrix4MakeTranslation(minVec.x, minVec.y + textHeight / 2, 0)
-        textNode.position = SCNVector3(-panelWidth/2 + leftMargin, 0, 0.021)
 
-        // Apply a fixed scale to make it visible
+        // Position text in the center horizontally
+        textNode.position = SCNVector3(-panelWidth/2 + leftMargin, 0, 0.021)
         textNode.scale = SCNVector3(0.002, 0.002, 0.002)
     }
-
 
     func getWorldPosition() -> SCNVector3 {
         return parentNode.worldPosition

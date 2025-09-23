@@ -29,23 +29,29 @@ struct LoadedPanel {
     let currentRoom: String
 }
 
-
-// MARK: - Storage Manager
-
 class PanelStorageManager {
     
-    static func savePanel(panel: Panel) async {
-        var panelToSave = panel
+    static func savePanel(panel: Panel, sessionSelected: Int, accessToken: String? = nil) async {
+        print(panel)
         
-        print(panelToSave)
-        
-        await savePanelService(panel: panelToSave)
-        
+        if(sessionSelected == 2){
+            await saveCommunityPanelService(panel: panel, museumID: panel.museumID, roomID: panel.roomID, accessToken: accessToken!)
+        }
+        else{
+            await savePanelService(panel: panel)
+
+        }
     }
 
-    /// Load and return `LoadedPanel`s with SCNVector3 positions
-    static func loadPanels(museumID: String, roomID: String) async -> [Panel] {
-        let savedPanels = await getPanelsByMuseumAndRoomService(museumID: museumID, roomID: roomID)
+    static func loadPanels(museumID: String, roomID: String, sessionSelected: Int, accessToken: String? = nil) async -> [Panel] {
+        var savedPanels: [Panel] = []
+        
+        if(sessionSelected == 2){
+            savedPanels = await getCommunityPanelsService(museumID: museumID, roomID: roomID, accessToken: accessToken!)
+        }
+        else{
+            savedPanels = await getPanelsByMuseumAndRoomService(museumID: museumID, roomID: roomID)
+        }
         print("loaded \(savedPanels.count) panels")
         
         return savedPanels.compactMap { panel in
@@ -54,11 +60,14 @@ class PanelStorageManager {
             return Panel(panelID: panel.panelID, museumID: museumID, roomID: roomID, x: panel.x, y: panel.y, z: panel.z, text: panel.text, icon: panel.icon, r: panel.r, g: panel.g, b: panel.b, alpha: panel.alpha)
         }
     }
+    
+    static func deletePanelByID(museumID: String, roomID: String, Id id: String, sessionSelected: Int, accessToken: String? = nil) async {
+        if(sessionSelected == 2){
+            let reponse = await deleteCommunityPanelService(museumID: museumID, roomID: roomID, id: id, accessToken: accessToken!)
+        }
+        else{
+            let response = await deletePanelService(museumID: museumID, roomID: roomID, id: id)
 
-    // MARK: - Internal Helpers
-    
-    static func deletePanelByID(museumID: String, roomID: String, Id id: String) async {
-        let response = await deletePanelService(museumID: museumID, roomID: roomID, id: id)
+        }
     }
-    
 }

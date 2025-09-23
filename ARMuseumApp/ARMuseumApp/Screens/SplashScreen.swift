@@ -95,7 +95,7 @@ struct SplashScreen: View {
                             }) {
                                 Text("Begin")
                                     .frame(width: 200, height: 50)
-                                    .background(Color.green)
+                                    .background(Color.blue)
                                     .foregroundColor(.white)
                                     .cornerRadius(12)
                                     .font(.title2)

@@ -18,7 +18,6 @@ func getMuseumsService() async -> [String] {
         }
         
         // Parse JSON into array of strings if API returns JSON array of objects
-        // Example JSON: ["Museum 1", "Museum 2", "Museum 3"]
         if let decoded = try? JSONDecoder().decode([String].self, from: data) {
             return decoded
         }
@@ -30,3 +29,29 @@ func getMuseumsService() async -> [String] {
         return []
     }
 }
+
+func getRoomsService(museumID: String) async -> [String] {
+    do {
+        let data = try await APIService.request(
+            endpoint: "/api/\(museumID)/rooms",
+            method: .GET
+        )
+        
+        // Parse JSON dynamically
+        if let jsonArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
+            let roomNames = jsonArray.compactMap { $0["name"] as? String }
+            return roomNames
+        }
+        
+        // Fallback if the response is already a simple array of strings
+        if let stringArray = try JSONSerialization.jsonObject(with: data, options: []) as? [String] {
+            return stringArray
+        }
+        
+        return []
+    } catch {
+        print("Error fetching rooms: \(error.localizedDescription)")
+        return []
+    }
+}
+

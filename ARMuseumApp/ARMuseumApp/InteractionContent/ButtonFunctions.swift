@@ -22,10 +22,10 @@ class ButtonFunctions: ObservableObject {
     @Published var isEraserMode = false
     @Published var currentRoom: String = ""
     @Published var sessionDetails: SessionDetails
+    @Published var accessToken: String = ""
     
     init() {
-            // Example initialization with parameters
-        self.sessionDetails = SessionDetails(sessionType: 0, museumID: "", roomID: "TestRoom", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
+        self.sessionDetails = SessionDetails(museumID: "", roomID: "TestRoom", communitySessionID: 0, isSessionActive: false, panelCreationMode: false)
         }
 
     func setupARView(_ arView: ARSCNView, panelController: ARPanelController) {
@@ -70,7 +70,7 @@ class ButtonFunctions: ObservableObject {
         )
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID, detailedText: "detailed Text")
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -81,9 +81,9 @@ class ButtonFunctions: ObservableObject {
 
         var panelToSave = newPanel.convertToPanel(museumID: sessionDetails.museumID, roomID: sessionDetails.roomID)
         
-//        if(sessionDetails.sessionType != 1){
-            await PanelStorageManager.savePanel(panel: panelToSave)
-//        }
+        if(SessionSelected != 1){
+            await PanelStorageManager.savePanel(panel: panelToSave, sessionSelected: self.SessionSelected, accessToken: self.accessToken)
+        }
     }
     
     func placeLoadedPanel(panel: Panel){
@@ -97,7 +97,7 @@ class ButtonFunctions: ObservableObject {
         let colour = convertRGBAToUIColor(r: panel.r, g: panel.g, b: panel.b)
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID, detailedText: "detailed text")
+        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -151,7 +151,7 @@ class ButtonFunctions: ObservableObject {
     
     func endSession() {
         sessionRunning = false
-        sessionDetails.sessionType = 0
+        SessionSelected = 0
         sessionDetails.isSessionActive = false
         currentRoom = ""
 

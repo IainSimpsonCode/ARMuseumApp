@@ -14,6 +14,7 @@
 		2253A35B2E71BB620019C379 /* PanelEditScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2253A35A2E71BB620019C379 /* PanelEditScreen.swift */; };
 		2253A35D2E71C0BC0019C379 /* PreviewARPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2253A35C2E71C0BC0019C379 /* PreviewARPanel.swift */; };
 		2253A35F2E71CB280019C379 /* ColourConvertionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2253A35E2E71CB280019C379 /* ColourConvertionService.swift */; };
+		227B33F32E82B3FD00494AAD /* CommunityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227B33F22E82B3FD00494AAD /* CommunityController.swift */; };
 		228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010452C53D2B3000D01B4 /* ARPanelController.swift */; };
 		228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228010472C53D3FC000D01B4 /* ImageDetection.swift */; };
 		2281E6982E6856BA0086C836 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2281E6972E6856BA0086C836 /* SplashScreen.swift */; };
@@ -63,6 +64,7 @@
 		2253A35A2E71BB620019C379 /* PanelEditScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelEditScreen.swift; sourceTree = "<group>"; };
 		2253A35C2E71C0BC0019C379 /* PreviewARPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewARPanel.swift; sourceTree = "<group>"; };
 		2253A35E2E71CB280019C379 /* ColourConvertionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColourConvertionService.swift; sourceTree = "<group>"; };
+		227B33F22E82B3FD00494AAD /* CommunityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityController.swift; sourceTree = "<group>"; };
 		228010452C53D2B3000D01B4 /* ARPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARPanelController.swift; sourceTree = "<group>"; };
 		228010472C53D3FC000D01B4 /* ImageDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetection.swift; sourceTree = "<group>"; };
 		2281E6972E6856BA0086C836 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				22FF0CB92E79B44D00CE7F31 /* LoginScreen.swift */,
 				22FF0CBD2E79BE1400CE7F31 /* CommunitySessionSelection.swift */,
 				22FF0CBF2E7AC19600CE7F31 /* SessionStartScreen.swift */,
+				22B7EC412D4A732700C7FDFD /* TutorialPages.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -168,7 +171,6 @@
 				22F271D32C512F5600609437 /* ContentView.swift */,
 				22B7EC352D408E7700C7FDFD /* PanelMovementToggle.swift */,
 				22B7EC372D41912A00C7FDFD /* ImageDetectionOverlay.swift */,
-				22B7EC412D4A732700C7FDFD /* TutorialPages.swift */,
 			);
 			path = UIContent;
 			sourceTree = "<group>";
@@ -220,6 +222,7 @@
 			children = (
 				228E548A2E6F258600B50D1F /* DrawingsController.swift */,
 				2253A3572E718C810019C379 /* PanelStorageController.swift */,
+				227B33F22E82B3FD00494AAD /* CommunityController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 				22B7EC382D41912A00C7FDFD /* ImageDetectionOverlay.swift in Sources */,
 				2253A35D2E71C0BC0019C379 /* PreviewARPanel.swift in Sources */,
 				22F271D42C512F5600609437 /* ContentView.swift in Sources */,
+				227B33F32E82B3FD00494AAD /* CommunityController.swift in Sources */,
 				2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */,
 				2281E6A72E69C6890086C836 /* PanelsService.swift in Sources */,
 				22FF0CBA2E79B44D00CE7F31 /* LoginScreen.swift in Sources */,

@@ -41,7 +41,7 @@ struct TextAndID: Identifiable, Codable, Hashable {
     let text: String
     let panelID: String
 
-    var id: String { panelID } // for Identifiable
+    var id: String { panelID } 
 }
 
 
