@@ -49,13 +49,15 @@ export const createNewCuratorPanel = async (req, res) => {
       icon
     };
 
-    // Add the document to Firestore
-    const docRef = await db.collection("CuratorPanelData").add(panelData);
+    // Build a deterministic document ID to avoid duplicates
+    const docID = `${museumID}_${roomID}_${panelID}`;
 
-    // Return the new document ID
-    return res.status(201).json({ message: `Panel ${panelID} created. Document ${docRef}` });
+    // Create or overwrite the document
+    await db.collection("CuratorPanelData").doc(docID).set(panelData, { merge: false });
+
+    return res.status(201).json({ message: `Panel ${panelID} created/updated. Document ID: ${docID}` });
   } catch (e) {
-    console.error("Error creating document:", e);
+    console.error("Error creating/updating document:", e);
     return res.status(503).json({ message: "Server could not connect to the database." });
   }
 };
@@ -165,6 +167,7 @@ export const getAvailableCuratorPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
+      longText: doc.data().longText
     }));
 
     // Get already used panels
@@ -208,6 +211,7 @@ export const getPanelByID = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
+      longText: doc.data().longText
     }));
 
     return res.status(200).json(allPanels[0]);
@@ -238,6 +242,7 @@ export const getAllPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
+      longText: doc.data().longText
     }));
 
     return res.status(200).json(allPanels);
@@ -249,7 +254,7 @@ export const getAllPanels = async (req, res) => {
 };
 
 // Helper function
-const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
+export const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
   try {
     // Get all panels for this museum/room
     const allPanelsSnapshot = await db.collection("PanelData")
@@ -266,6 +271,30 @@ const getTextFieldFromPanelID = async (museumID, roomID, panelID) => {
     }));
 
     return allPanels[0].text;
+  } catch (e) {
+
+  }
+
+  return "";
+}
+
+export const getLongTextFieldFromPanelID = async (museumID, roomID, panelID) => {
+  try {
+    // Get all panels for this museum/room
+    const allPanelsSnapshot = await db.collection("PanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("panelID", "==", panelID)
+      .get();
+
+    // Extract full panel objects
+    const allPanels = allPanelsSnapshot.docs.map(doc => ({
+      panelID: doc.data().panelID,
+      title: doc.data().title,
+      longText: doc.data().longText,
+    }));
+
+    return allPanels[0].longText;
   } catch (e) {
 
   }

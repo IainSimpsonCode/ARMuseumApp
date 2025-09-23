@@ -1,399 +1,328 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Museum Curator Panel API",
+    "title": "Museum API",
     "version": "1.0.0",
-    "description": "API for managing curator panels in museum rooms"
+    "description": "API for managing museums, rooms, curators, panels, and community sessions."
   },
+
+  "servers": [
+    { "url": "https://armuseumapp.onrender.com" }
+  ],
+
+  "tags": [
+    { "name": "Server", "description": "Server status and health endpoints" },
+    { "name": "Museums", "description": "Museum and room data" },
+    { "name": "Curators", "description": "Curator authentication and panels" },
+    { "name": "Panels", "description": "General panel data" },
+    { "name": "Curator Panels", "description": "Curator panel data" },
+    { "name": "Community Panels", "description": "Community panel data" },
+    { "name": "Community Sessions", "description": "Community sessions" }
+  ],
+
   "paths": {
-    "/api/{museumID}/{roomID}/panel": {
-      "get": {
-        "summary": "Get curator panels",
-        "tags": ["Panels"],
-        "description": "Fetch all curator panels for a given museum and room. Each panel includes its Firestore doc ID, coordinates, colour channels, alpha, icon, and the corresponding text from PanelData.",
-        "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "roomID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of panels",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "string", "example": "abc123" },
-                      "museumID": { "type": "string", "example": "TestMuseum" },
-                      "roomID": { "type": "string", "example": "MainHall" },
-                      "x": { "type": "number", "example": 1.2 },
-                      "y": { "type": "number", "example": 3.4 },
-                      "z": { "type": "number", "example": 0.5 },
-                      "r": { "type": "integer", "minimum": 0, "maximum": 255, "example": 255 },
-                      "g": { "type": "integer", "minimum": 0, "maximum": 255, "example": 128 },
-                      "b": { "type": "integer", "minimum": 0, "maximum": 255, "example": 64 },
-                      "alpha": { "type": "number", "minimum": 0, "maximum": 1, "example": 0.8 },
-                      "panelID": { "type": "string", "example": "panel_123" },
-                      "icon": { "type": "string", "example": "info" },
-                      "text": { "type": "string", "example": "This is the text for the panel from PanelData." }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "description": "Server error" }
-        }
-      },
-      "post": {
-        "summary": "Create new curator panel",
-        "tags": ["Panels"],
-        "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "roomID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["x", "y", "z", "r", "g", "b", "alpha", "panelID", "icon"],
-                "properties": {
-                  "x": { "type": "number", "example": 1.2 },
-                  "y": { "type": "number", "example": 3.4 },
-                  "z": { "type": "number", "example": 0.5 },
-                  "r": { "type": "integer", "minimum": 0, "maximum": 255, "example": 255 },
-                  "g": { "type": "integer", "minimum": 0, "maximum": 255, "example": 128 },
-                  "b": { "type": "integer", "minimum": 0, "maximum": 255, "example": 64 },
-                  "alpha": { "type": "number", "minimum": 0, "maximum": 1, "example": 0.8 },
-                  "panelID": { "type": "string", "example": "panel_123" },
-                  "icon": { "type": "string", "example": "info" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Panel created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": { "type": "string", "example": "Panel panel_123 created. Document projects/.../docRef" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "description": "Validation error" },
-          "503": { "description": "Database connection error" }
-        }
-      },
-      "patch": {
-        "summary": "Update curator panel",
-        "tags": ["Panels"],
-        "description": "Update one or more fields of a curator panel by docID.",
-        "parameters": [
-          { "name": "museumID", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "roomID", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["docID", "fields"],
-                "properties": {
-                  "docID": { "type": "string" },
-                  "fields": { "type": "object", "description": "Key-value pairs of fields to update" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Document updated successfully" },
-          "400": { "description": "Missing docID or invalid request" },
-          "500": { "description": "Server error" }
-        }
-      },
-      "delete": {
-        "summary": "Delete curator panel",
-        "tags": ["Panels"],
-        "description": "Delete a curator panel by docID.",
-        "parameters": [
-          { "name": "museumID", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "roomID", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["docID"],
-                "properties": { "docID": { "type": "string" } }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Document deleted successfully" },
-          "400": { "description": "Missing docID or document not found" },
-          "500": { "description": "Server error" }
-        }
-      }
-    },
-    "/api/{museumID}/{roomID}/curator/availablePanels": {
-      "get": {
-        "summary": "Get available curator panels",
-        "tags": ["Panels"],
-        "description": "Fetch all panels for a given museum/room that have not yet been used in CuratorPanelData. Useful for allowing curators to see what panels are still available to add.",
-        "parameters": [
-          { "name": "museumID", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "roomID", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of available panels that can be used.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "panelID": { "type": "string", "example": "panel_123" },
-                      "title": { "type": "string", "example": "Ancient Artifacts" },
-                      "text": { "type": "string", "example": "This panel describes ancient artifacts from the Bronze Age." }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "description": "Server could not connect to the database." }
-        }
-      }
-    },
-    "/api/museums": {
-      "get": {
-        "summary": "Get a list of museum IDs",
-        "tags": ["Museums"],
-        "responses": {
-          "200": {
-            "description": "A list of museum IDs.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "example": "TestMuseum"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server could not connect to the database."
-          }
-        }
-      }
-    },
-    "/api/{museumID}/authenticate": {
-      "post": {
-        "summary": "Validate curator login",
-        "tags": ["Authentication"],
-        "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The ID of the museum to authenticate against."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "curatorID": { "type": "string", "example": "iain" },
-                  "curatorPassword": { "type": "string", "example": "testPassword" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Login successful.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": { "type": "string", "example": "Login successful." }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "description": "Missing museumID, curatorID, or curatorPassword." },
-          "401": { "description": "Invalid curatorID or curatorPassword." },
-          "404": { "description": "Museum not found." },
-          "500": { "description": "Server could not connect to the database." }
-        }
-      }
-    },
-    "/api/{museumID}/sessions": {
-      "get": {
-        "summary": "Get all community session IDs for a museum",
-        "tags": ["Community Sessions"],
-        "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" },
-            "description": "The museum ID to fetch community sessions for."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of session IDs",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "type": "string", "example": "session123" }
-                }
-              }
-            }
-          },
-          "400": { "description": "Missing museumID parameter." },
-          "500": { "description": "Server could not connect to the database." }
-        }
-      },
-      "post": {
-        "summary": "Create a new community session",
-        "tags": ["Community Sessions"],
-        "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" },
-            "description": "The museum ID where this session belongs."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["sessionID", "sessionPassword"],
-                "properties": {
-                  "sessionID": { "type": "string", "example": "session123" },
-                  "sessionPassword": { "type": "string", "example": "mypassword" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Session created successfully." },
-          "400": { "description": "Missing museumID, sessionID, or sessionPassword." },
-          "409": { "description": "A session with the same sessionID already exists." },
-          "503": { "description": "Database connection error." }
-        }
-      },
-      "delete": {
-        "summary": "Delete a community session",
-        "tags": ["Community Sessions"],
-        "parameters": [
-          {
-            "name": "museumID",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" },
-            "description": "The museum ID where the session exists."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["sessionID", "sessionPassword"],
-                "properties": {
-                  "sessionID": { "type": "string", "example": "session123" },
-                  "sessionPassword": { "type": "string", "example": "mypassword" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Document deleted successfully." },
-          "400": { "description": "Missing parameters." },
-          "404": { "description": "No session found with the provided sessionID." },
-          "500": { "description": "Server could not connect to the database." }
-        }
-      }
-    },
     "/server/health": {
       "get": {
-        "summary": "Server health check",
         "tags": ["Server"],
+        "summary": "Check if server is running",
+        "responses": {
+          "200": { "description": "Server is OK" }
+        }
+      }
+    },
+
+    "/api/museums": {
+      "get": {
+        "tags": ["Museums"],
+        "summary": "Get all valid museum IDs",
         "responses": {
           "200": {
-            "description": "Server is OK and online.",
+            "description": "List of museums",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": { "type": "string", "example": "Server is OK and online." }
-                  }
-                }
+                "schema": { "type": "array", "items": { "type": "string" } }
               }
             }
           }
         }
+      }
+    },
+
+    "/api/{museumID}/rooms": {
+      "get": {
+        "tags": ["Museums"],
+        "summary": "Get all room IDs for a museum",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of rooms",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/{museumID}/authenticate": {
+      "post": {
+        "tags": ["Curators"],
+        "summary": "Curator login",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CuratorLogin" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+
+    "/api/{museumID}/{roomID}/panel": {
+      "get": {
+        "tags": ["Curator Panels"],
+        "summary": "Get curator panels",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "responses": { "200": { "description": "List of panels" } }
+      },
+      "post": {
+        "tags": ["Curator Panels"],
+        "summary": "Create new curator panel",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Panel" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Panel created" } }
+      },
+      "patch": {
+        "tags": ["Curator Panels"],
+        "summary": "Update curator panel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PanelUpdate" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Panel updated" } }
+      },
+      "delete": {
+        "tags": ["Curator Panels"],
+        "summary": "Delete curator panel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PanelDelete" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Panel deleted" } }
+      }
+    },
+
+    "/api/{museumID}/{roomID}/panel/{panelID}": {
+      "get": {
+        "tags": ["Panels"],
+        "summary": "Get panel by ID",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" },
+          { "$ref": "#/components/parameters/panelID" }
+        ],
+        "responses": { "200": { "description": "Panel details" } }
+      }
+    },
+
+    "/api/{museumID}/{roomID}/allPanels": {
+      "get": {
+        "tags": ["Panels"],
+        "summary": "Get all panels for a room",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "responses": { "200": { "description": "Panels list" } }
+      }
+    },
+
+    "/api/{museumID}/{roomID}/community": {
+      "get": {
+        "tags": ["Community Sessions"],
+        "summary": "Get community sessions",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "responses": { "200": { "description": "List of session IDs" } }
+      },
+      "post": {
+        "tags": ["Community Sessions"],
+        "summary": "Create a community session",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommunitySession" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Session created" } }
+      },
+      "delete": {
+        "tags": ["Community Sessions"],
+        "summary": "Delete a community session",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommunitySession" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Session deleted" } }
+      }
+    },
+
+    "/api/{museumID}/{roomID}/community/join": {
+      "post": {
+        "tags": ["Community Sessions"],
+        "summary": "Join a community session",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CommunitySession" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Access token returned" } }
+      }
+    },
+
+    "/api/{museumID}/{roomID}/community/{accessToken}/panel": {
+      "post": {
+        "tags": ["Community Panels"],
+        "summary": "Create a new community panel",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" },
+          { "$ref": "#/components/parameters/accessToken" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Panel" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Panel created" } }
+      }
+    }
+  },
+
+  "components": {
+    "parameters": {
+      "museumID": {
+        "name": "museumID",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      },
+      "roomID": {
+        "name": "roomID",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      },
+      "panelID": {
+        "name": "panelID",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      },
+      "accessToken": {
+        "name": "accessToken",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string" }
+      }
+    },
+    "schemas": {
+      "CuratorLogin": {
+        "type": "object",
+        "properties": {
+          "curatorID": { "type": "string" },
+          "curatorPassword": { "type": "string" }
+        },
+        "required": ["curatorID", "curatorPassword"]
+      },
+      "Panel": {
+        "type": "object",
+        "properties": {
+          "panelID": { "type": "string" },
+          "icon": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "z": { "type": "number" },
+          "r": { "type": "integer", "minimum": 0, "maximum": 255 },
+          "g": { "type": "integer", "minimum": 0, "maximum": 255 },
+          "b": { "type": "integer", "minimum": 0, "maximum": 255 },
+          "alpha": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "required": ["panelID", "icon", "x", "y", "z", "r", "g", "b", "alpha"]
+      },
+      "PanelUpdate": {
+        "type": "object",
+        "properties": {
+          "panelID": { "type": "string" },
+          "fields": { "type": "object" }
+        },
+        "required": ["panelID", "fields"]
+      },
+      "PanelDelete": {
+        "type": "object",
+        "properties": {
+          "panelID": { "type": "string" }
+        },
+        "required": ["panelID"]
+      },
+      "CommunitySession": {
+        "type": "object",
+        "properties": {
+          "sessionID": { "type": "string" },
+          "sessionPassword": { "type": "string" }
+        },
+        "required": ["sessionID", "sessionPassword"]
       }
     }
   }
