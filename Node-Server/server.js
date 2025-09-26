@@ -8,7 +8,7 @@ import { getMuseumNames, getRoomNames } from "./functions/MuseumData.js";
 import { validateCuratorLogin } from "./functions/CuratorAuth.js";
 import { createNewCuratorPanel, deleteCuratorPanel, getAllPanels, getAvailableCuratorPanels, getCuratorPanels, getPanelByID, updateCuratorPanel } from "./functions/PanelData.js";
 import { serverHealthCheck } from "./functions/healthCheck.js";
-import { createCommunitySession, createNewCommunityPanel, deleteCommunitySession, getAvailableCommunityPanels, getCommunityPanels, getCommunitySessions, joinCommunitySession } from "./functions/CommunitySessions.js";
+import { createCommunitySession, createNewCommunityPanel, deleteCommunityPanel, deleteCommunitySession, getAvailableCommunityPanels, getCommunityPanels, getCommunitySessions, joinCommunitySession, resetCommunitySessionPanels } from "./functions/CommunitySessions.js";
 import { addDrawingPoint, deleteDrawingPoint, getDrawingPoint } from "./functions/DrawingData.js";
 
 const app = express();
@@ -53,6 +53,8 @@ app.post("/api/:museumID/community/join", joinCommunitySession)//
 /* CRUD Functions for Creating Community Panels */
 app.get("/api/:museumID/:roomID/community/:accessToken/panel", getCommunityPanels)//
 app.post("/api/:museumID/:roomID/community/:accessToken/panel", createNewCommunityPanel)//
+app.delete("/api/:museumID/:roomID/community/:accessToken/panel", deleteCommunityPanel)
+app.get("/api/:museumID/:roomID/community/:accessToken/reset", resetCommunitySessionPanels)
 
 /* Adding or removing drawings */
 app.get("/api/:museumID/:roomID/community/:accessToken/drawing", getDrawingPoint)

@@ -231,7 +231,7 @@ export const getCommunityPanels = async (req, res) => {
       .where("roomID", "==", roomID)
       .get();
 
-    const curatorPanels = await Promise.all(curatorSnapshot.docs.map(async (doc) => {
+    let curatorPanels = await Promise.all(curatorSnapshot.docs.map(async (doc) => {
       const data = doc.data();
       const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
       const longText = await getLongTextFieldFromPanelID(museumID, roomID, data.panelID);
@@ -242,6 +242,18 @@ export const getCommunityPanels = async (req, res) => {
         longText,
       };
     }));
+
+    // --- Get Deleted curator panels for this session ---
+    const deletedCuratorSnapshot = await db.collection("DeletedCommunityPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("sessionID", "==", accessToken)
+      .get();
+
+    const deletedCuratorPanelIDs = deletedCuratorSnapshot.docs.map(doc => doc.data().panelID);
+
+    // --- Filter out deleted curator panels ---
+    curatorPanels = curatorPanels.filter(panel => !deletedCuratorPanelIDs.includes(panel.panelID));
 
     // --- Get Community panels (with sessionID) ---
     const communitySnapshot = await db.collection("CommunityPanelData")
@@ -263,7 +275,7 @@ export const getCommunityPanels = async (req, res) => {
     // --- Merge panels by panelID ---
     const panelMap = new Map();
 
-    // First add curator panels
+    // First add curator panels (already filtered)
     curatorPanels.forEach(panel => {
       panelMap.set(panel.panelID, panel);
     });
@@ -282,6 +294,7 @@ export const getCommunityPanels = async (req, res) => {
     return res.status(500).json({ message: "Server could not connect to the database." });
   }
 };
+
 
 export const getAvailableCommunityPanels = async (req, res) => {
   const museumID = req.params.museumID;
@@ -308,7 +321,19 @@ export const getAvailableCommunityPanels = async (req, res) => {
       .where("roomID", "==", roomID)
       .get();
 
-    const curatorPanelIDs = curatorSnapshot.docs.map(doc => doc.data().panelID);
+    let curatorPanelIDs = curatorSnapshot.docs.map(doc => doc.data().panelID);
+
+    // --- Get deleted curator panels for this session ---
+    const deletedCuratorSnapshot = await db.collection("DeletedCommunityPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("sessionID", "==", sessionID)
+      .get();
+
+    const deletedCuratorPanelIDs = deletedCuratorSnapshot.docs.map(doc => doc.data().panelID);
+
+    // --- Filter out curator panels that were deleted in this session ---
+    curatorPanelIDs = curatorPanelIDs.filter(panelID => !deletedCuratorPanelIDs.includes(panelID));
 
     // --- Get used panels from CommunityPanelData for this session ---
     const communitySnapshot = await db.collection("CommunityPanelData")
@@ -332,3 +357,71 @@ export const getAvailableCommunityPanels = async (req, res) => {
     return res.status(500).json({ message: "Server could not connect to the database." });
   }
 };
+
+export const deleteCommunityPanel = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+  const sessionID = req.params.accessToken;
+  const { panelID } = req.body || {}; 
+
+  if (!panelID) {
+    return res.status(400).json({ message: "panelID must be provided." });
+  }
+
+  try {
+
+    // Delete specified doc from CommunityPanels using deterministic ID
+    const docID = `${museumID}_${roomID}_${sessionID}_${panelID}`;
+    await db.collection("CommunityPanelData").doc(docID).delete();
+
+    // Add the panel to the deleted list to avoid the curatorPanel showing
+    await db.collection("DeletedCommunityPanelData").add({
+      museumID,
+      roomID,
+      sessionID,
+      panelID
+    });
+
+    return res.status(200).json({ message: "Panel deleted successfully." });
+  } catch (e) {
+    console.error("Error deleting panel:", e);
+    return res.status(500).json({ message: "Server could not connect to the database." });
+  }
+};
+
+export const resetCommunitySessionPanels = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+  const sessionID = req.params.accessToken;
+
+  try {
+    // --- Query DeletedCommunityPanelData ---
+    const deletedSnapshot = await db.collection("DeletedCommunityPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("sessionID", "==", sessionID)
+      .get();
+
+    // Delete each doc
+    const deletedDeletes = deletedSnapshot.docs.map(doc => doc.ref.delete());
+
+    // --- Query CommunityPanelData ---
+    const communitySnapshot = await db.collection("CommunityPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("sessionID", "==", sessionID)
+      .get();
+
+    // Delete each doc
+    const communityDeletes = communitySnapshot.docs.map(doc => doc.ref.delete());
+
+    // --- Run all deletes in parallel ---
+    await Promise.all([...deletedDeletes, ...communityDeletes]);
+
+    return res.status(200).json({ message: "Session panels cleared successfully." });
+  } catch (e) {
+    console.error("Error clearing session panels:", e);
+    return res.status(500).json({ message: "Server could not clear session panels." });
+  }
+};
+
