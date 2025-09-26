@@ -166,13 +166,12 @@
       }
     },
 
-    "/api/{museumID}/{roomID}/community": {
+    "/api/{museumID}/community": {
       "get": {
         "tags": ["Community Sessions"],
         "summary": "Get community sessions",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" },
-          { "$ref": "#/components/parameters/roomID" }
+          { "$ref": "#/components/parameters/museumID" }
         ],
         "responses": { "200": { "description": "List of session IDs" } }
       },
@@ -180,8 +179,7 @@
         "tags": ["Community Sessions"],
         "summary": "Create a community session",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" },
-          { "$ref": "#/components/parameters/roomID" }
+          { "$ref": "#/components/parameters/museumID" }
         ],
         "requestBody": {
           "content": {
@@ -196,8 +194,7 @@
         "tags": ["Community Sessions"],
         "summary": "Delete a community session",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" },
-          { "$ref": "#/components/parameters/roomID" }
+          { "$ref": "#/components/parameters/museumID" }
         ],
         "requestBody": {
           "content": {
@@ -210,13 +207,12 @@
       }
     },
 
-    "/api/{museumID}/{roomID}/community/join": {
+    "/api/{museumID}/community/join": {
       "post": {
         "tags": ["Community Sessions"],
         "summary": "Join a community session",
         "parameters": [
-          { "$ref": "#/components/parameters/museumID" },
-          { "$ref": "#/components/parameters/roomID" }
+          { "$ref": "#/components/parameters/museumID" }
         ],
         "requestBody": {
           "content": {
@@ -230,6 +226,16 @@
     },
 
     "/api/{museumID}/{roomID}/community/{accessToken}/panel": {
+      "get": {
+        "tags": ["Community Panels"],
+        "summary": "Create a new community panel",
+        "parameters": [
+          { "$ref": "#/components/parameters/museumID" },
+          { "$ref": "#/components/parameters/roomID" },
+          { "$ref": "#/components/parameters/accessToken" }
+        ],
+        "responses": { "200": { "description": "Return a list of panels" } }
+      },
       "post": {
         "tags": ["Community Panels"],
         "summary": "Create a new community panel",
@@ -286,6 +292,7 @@
         },
         "required": ["curatorID", "curatorPassword"]
       },
+      
       "Panel": {
         "type": "object",
         "properties": {
