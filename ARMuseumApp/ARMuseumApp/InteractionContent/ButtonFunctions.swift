@@ -122,24 +122,17 @@ class ButtonFunctions: ObservableObject {
         
     }
     
-    func startSession(node: SCNNode, posterName: String) {
+    func startSession() {
         sessionRunning = true
-        currentRoom = posterName
 
-        panelController!.roomSetup(imageNode: node, sceneView: arView!)
-        
-        if(posterName == "Viva Exhibit Display") {
-            panelController!.enablePanelsForRoom(roomPanels: panelController!.diningRoomPanels)
-            print("for")
+        guard let arView = arView, let panelController = panelController else {
+            print("Error: ARSCNView or PanelController is not set yet")
+            return
         }
-        else if(posterName == "KitchenRoomPoster") {
-            panelController!.enablePanelsForRoom(roomPanels: panelController!.kitchenRoomPanels)
-            print("Loop")
-        }
-        else {
-            print("No Corresponding Room")
-        }
+
+        panelController.roomSetup(sceneView: arView)
     }
+
     
     func refreshSession() {
         for panel in panelController!.panelsInScene {

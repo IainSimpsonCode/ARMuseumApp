@@ -220,7 +220,6 @@ class GestureHandler: NSObject {
     }
 
 
-
     private func drawFloatingAtTouch(location: CGPoint) {
         guard let currentFrame = sceneView.session.currentFrame else { return }
 
@@ -243,7 +242,12 @@ class GestureHandler: NSObject {
         node.position = interpolated
         sceneView.scene.rootNode.addChildNode(node)
         
-        saveDrawingNode(node)
+        Task{
+            if(buttonFunctions.SessionSelected == 2){
+                await saveDrawingNode(node, museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID, accessToken: buttonFunctions.accessToken)
+            }
+        }
+        
     }
 
 
@@ -302,7 +306,7 @@ class GestureHandler: NSObject {
         // Remove nodes from scene AND UserDefaults
         for node in nodesToErase {
             node.removeFromParentNode()
-            removeDrawingNode(node)
+//            removeDrawingNode(node)
         }
     }
     

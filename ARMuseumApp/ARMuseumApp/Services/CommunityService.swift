@@ -9,7 +9,7 @@ import Foundation
 
 
 func getCommunitySessionsService(museumID: String) async -> [String] {
-    let endpoint = "/api/\(museumID)/TestRoom/community"
+    let endpoint = "/api/\(museumID)/community"
     
     do {
         let data = try await APIService.request(endpoint: endpoint, method: .GET)
@@ -26,7 +26,7 @@ func getCommunitySessionsService(museumID: String) async -> [String] {
 
 func createSessionService(museumID: String, name: String, password: String) async -> String {
     do {
-        let endpoint = "/api/\(museumID)/TestRoom/community"
+        let endpoint = "/api/\(museumID)/community"
         
         let jsonObject: [String: Any] = ["sessionID": name, "sessionPassword": password]
         
@@ -51,7 +51,7 @@ func createSessionService(museumID: String, name: String, password: String) asyn
 
 func joinCommunitySessionService(museumID: String, name: String, password: String) async -> String {
     do {
-        let endpoint = "/api/\(museumID)/TestRoom/community/join"
+        let endpoint = "/api/\(museumID)/community/join"
         
         let jsonObject: [String: Any] = [
             "sessionID": name,

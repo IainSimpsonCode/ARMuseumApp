@@ -10,10 +10,11 @@ struct ContentView: View {
     // You need a target node for StartSessionButton
     // For now, create a placeholder node; replace with your actual node
     @State private var myNode = SCNNode()
-    
+    @StateObject private var arModel = ARViewModel()
+
     var body: some View {
         if buttonFunctions.SessionSelected == 0 {
-            SplashScreen()
+            SplashScreen(arModel: arModel)
         }
         else if buttonFunctions.sessionDetails.isSessionActive {
             NavigationView {
@@ -48,17 +49,15 @@ struct ContentView: View {
         }
         else {
             ZStack {
-                ARViewContainer(buttonFunctions: buttonFunctions, panelController: ARPanelController())
+                ARCameraForMenu(model: arModel)
                     .edgesIgnoringSafeArea(.all)
                 
-                StartSessionButton(
-                    targetNode: myNode,
-                    posterName: "SecondPoster"
-                )
+                StartSessionButton()
                 .environmentObject(buttonFunctions)
                 
                 MovingPanelButtons()
             }
+            
         }
     }
 }

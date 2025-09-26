@@ -11,9 +11,6 @@ struct StartSessionButton: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @Environment(\.dismiss) private var dismiss
     
-    let targetNode: SCNNode
-    let posterName: String
-    
     @State private var rooms: [String] = []
     @State private var selectedRoom: String? = nil
     @State private var isLoadingRooms = true
@@ -103,10 +100,7 @@ struct StartSessionButton: View {
         buttonFunctions.sessionDetails.isSessionActive = true
         
         // Start session
-        buttonFunctions.startSession(
-            node: targetNode,
-            posterName: posterName
-        )
+        buttonFunctions.startSession()
         
         Task {
             let allPanels = await PanelStorageManager.loadPanels(

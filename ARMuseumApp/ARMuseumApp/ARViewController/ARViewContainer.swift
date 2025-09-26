@@ -93,6 +93,7 @@ struct ARViewContainer: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> ARSCNView {
+        print("moo")
 
         let arView = ARSCNView()
         arView.delegate = context.coordinator
@@ -118,7 +119,12 @@ struct ARViewContainer: UIViewRepresentable {
         context.coordinator.setupSceneView(for: arView)
         context.coordinator.setupShadowPanel()
 
-        restoreDrawings(to: arView.scene)
+        if(buttonFunctions.SessionSelected == 2){
+            Task{
+                await restoreDrawings(to: arView.scene, museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID, accessToken: buttonFunctions.accessToken)
+            }
+        }
+        
         return arView
     }
 

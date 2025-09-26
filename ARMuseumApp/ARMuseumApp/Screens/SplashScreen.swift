@@ -14,7 +14,7 @@ struct SplashScreen: View {
     @State private var selectedMuseum: String? = nil
     @State private var showDropdown = false
     @State private var goToNextScreen = false
-    @StateObject private var arModel = ARViewModel()
+    @State var arModel: ARViewModel
     
     @State private var serverUp = false
     @State private var showServerModal = false
@@ -118,13 +118,14 @@ struct SplashScreen: View {
                 // MARK: - Server Down Modal
                 if showServerModal {
                         VStack(spacing: 12) {
-                            Text("Restarting Server")
+                            Text("Flipping the server switch…")
                                 .font(.headline)
 
-                            Text(serverUp ? "Server is online." :
-                                 "Server is down. Retrying...\nPlease allow up to a minute for the server to be up and running")
+                            Text(serverUp ? "And we’re live again!" :
+                                 "Server’s on a coffee break.\nGive it a minute to recharge.")
                                 .multilineTextAlignment(.center)
                                 .font(.subheadline)
+
 
                             if !serverUp {
                                 ProgressView()
