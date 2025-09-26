@@ -9,6 +9,7 @@ import { validateCuratorLogin } from "./functions/CuratorAuth.js";
 import { createNewCuratorPanel, deleteCuratorPanel, getAllPanels, getAvailableCuratorPanels, getCuratorPanels, getPanelByID, updateCuratorPanel } from "./functions/PanelData.js";
 import { serverHealthCheck } from "./functions/healthCheck.js";
 import { createCommunitySession, createNewCommunityPanel, deleteCommunitySession, getAvailableCommunityPanels, getCommunityPanels, getCommunitySessions, joinCommunitySession } from "./functions/CommunitySessions.js";
+import { addDrawingPoint, deleteDrawingPoint, getDrawingPoint } from "./functions/DrawingData.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,14 +45,19 @@ app.get("/api/:museumID/:roomID/community/:accessToken/availablePanels", getAvai
 app.get("/api/:museumID/:roomID/panel/:panelID", getPanelByID)
 
 /* Creating/Joining Community Sessions */
-app.get("/api/:museumID/:roomID/community", getCommunitySessions)
-app.post("/api/:museumID/:roomID/community", createCommunitySession)
-app.delete("/api/:museumID/:roomID/community", deleteCommunitySession)
-app.post("/api/:museumID/:roomID/community/join", joinCommunitySession)
+app.get("/api/:museumID/community", getCommunitySessions)
+app.post("/api/:museumID/community", createCommunitySession)
+app.delete("/api/:museumID/community", deleteCommunitySession)
+app.post("/api/:museumID/community/join", joinCommunitySession)
 
 /* CRUD Functions for Creating Community Panels */
 app.get("/api/:museumID/:roomID/community/:accessToken/panel", getCommunityPanels)
 app.post("/api/:museumID/:roomID/community/:accessToken/panel", createNewCommunityPanel)
+
+/* Adding or removing drawings */
+app.get("/api/:museumID/:roomID/community/:accessToken/drawing", getDrawingPoint)
+app.post("/api/:museumID/:roomID/community/:accessToken/drawing", addDrawingPoint)
+app.delete("/api/:museumID/:roomID/community/:accessToken/drawing/:drawingID", deleteDrawingPoint)
 
 /* Check server is running. Either returns 200 or nothing */
 app.get("/server/health", serverHealthCheck)
