@@ -8,7 +8,8 @@ import { getMuseumNames, getRoomNames } from "./functions/MuseumData.js";
 import { validateCuratorLogin } from "./functions/CuratorAuth.js";
 import { createNewCuratorPanel, deleteCuratorPanel, getAllPanels, getAvailableCuratorPanels, getCuratorPanels, getPanelByID, updateCuratorPanel } from "./functions/PanelData.js";
 import { serverHealthCheck } from "./functions/healthCheck.js";
-import { createCommunitySession, createNewCommunityPanel, deleteCommunitySession, getAvailableCommunityPanels, getCommunityPanels, getCommunitySessions, joinCommunitySession } from "./functions/CommunitySessions.js";
+import { createCommunitySession, createNewCommunityPanel, deleteCommunityPanel, deleteCommunitySession, getAvailableCommunityPanels, getCommunityPanels, getCommunitySessions, joinCommunitySession, resetCommunitySessionPanels } from "./functions/CommunitySessions.js";
+import { addDrawingPoint, deleteDrawingPoint, getDrawingPoint } from "./functions/DrawingData.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,37 +25,44 @@ const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /* Get all valid museumIDs and museum metadata */
-app.get("/api/museums", getMuseumNames);
-app.get("/api/:museumID/rooms", getRoomNames);
+app.get("/api/museums", getMuseumNames);//
+app.get("/api/:museumID/rooms", getRoomNames);//
 
 /* Check login details for a curator */
-app.post("/api/:museumID/authenticate", validateCuratorLogin)
+app.post("/api/:museumID/authenticate", validateCuratorLogin)//
 
 /* CRUD Functions for Creating Curator Panels */
-app.get("/api/:museumID/:roomID/panel", getCuratorPanels)
-app.post("/api/:museumID/:roomID/panel", createNewCuratorPanel)
-app.patch("/api/:museumID/:roomID/panel", updateCuratorPanel)
-app.delete("/api/:museumID/:roomID/panel", deleteCuratorPanel)
+app.get("/api/:museumID/:roomID/panel", getCuratorPanels)//
+app.post("/api/:museumID/:roomID/panel", createNewCuratorPanel)//
+app.patch("/api/:museumID/:roomID/panel", updateCuratorPanel)//
+app.delete("/api/:museumID/:roomID/panel", deleteCuratorPanel)//
 
 /* Get Panels from PanelData */
-app.get("/api/:museumID/:roomID/allPanels", getAllPanels)
+app.get("/api/:museumID/:roomID/allPanels", getAllPanels)//
 app.get("/api/:museumID/:roomID/curator/availablePanels", getAvailableCuratorPanels)
 app.get("/api/:museumID/:roomID/community/:accessToken/availablePanels", getAvailableCommunityPanels)
 
-app.get("/api/:museumID/:roomID/panel/:panelID", getPanelByID)
+app.get("/api/:museumID/:roomID/panel/:panelID", getPanelByID)//
 
 /* Creating/Joining Community Sessions */
-app.get("/api/:museumID/:roomID/community", getCommunitySessions)
-app.post("/api/:museumID/:roomID/community", createCommunitySession)
-app.delete("/api/:museumID/:roomID/community", deleteCommunitySession)
-app.post("/api/:museumID/:roomID/community/join", joinCommunitySession)
+app.get("/api/:museumID/community", getCommunitySessions)//
+app.post("/api/:museumID/community", createCommunitySession)//
+app.delete("/api/:museumID/community", deleteCommunitySession)//
+app.post("/api/:museumID/community/join", joinCommunitySession)//
 
 /* CRUD Functions for Creating Community Panels */
-app.get("/api/:museumID/:roomID/community/:accessToken/panel", getCommunityPanels)
-app.post("/api/:museumID/:roomID/community/:accessToken/panel", createNewCommunityPanel)
+app.get("/api/:museumID/:roomID/community/:accessToken/panel", getCommunityPanels)//
+app.post("/api/:museumID/:roomID/community/:accessToken/panel", createNewCommunityPanel)//
+app.delete("/api/:museumID/:roomID/community/:accessToken/panel", deleteCommunityPanel)
+app.get("/api/:museumID/:roomID/community/:accessToken/reset", resetCommunitySessionPanels)
+
+/* Adding or removing drawings */
+app.get("/api/:museumID/:roomID/community/:accessToken/drawing", getDrawingPoint)
+app.post("/api/:museumID/:roomID/community/:accessToken/drawing", addDrawingPoint)
+app.delete("/api/:museumID/:roomID/community/:accessToken/drawing/:drawingID", deleteDrawingPoint)
 
 /* Check server is running. Either returns 200 or nothing */
-app.get("/server/health", serverHealthCheck)
+app.get("/server/health", serverHealthCheck)//
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

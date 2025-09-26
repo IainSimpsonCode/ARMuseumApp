@@ -94,6 +94,8 @@ export const getCuratorPanels = async (req, res) => {
 
 
 export const updateCuratorPanel = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
   const { panelID } = req.body;
   const updateData = req.body.fields;
 
@@ -104,6 +106,8 @@ export const updateCuratorPanel = async (req, res) => {
   try {
     // Query for the document with matching panelID
     const snapshot = await db.collection("CuratorPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
       .where("panelID", "==", panelID)
       .limit(1)
       .get();
@@ -123,7 +127,9 @@ export const updateCuratorPanel = async (req, res) => {
 };
 
 export const deleteCuratorPanel = async (req, res) => {
-  const { panelID } = req.body; // or req.params, depending on how you call it
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+  const { panelID } = req.body || {};
 
   if (!panelID) {
     return res.status(400).json({ message: "panelID must be provided." });
@@ -132,6 +138,8 @@ export const deleteCuratorPanel = async (req, res) => {
   try {
     // Query for the document with matching panelID
     const snapshot = await db.collection("CuratorPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
       .where("panelID", "==", panelID)
       .limit(1)
       .get();
