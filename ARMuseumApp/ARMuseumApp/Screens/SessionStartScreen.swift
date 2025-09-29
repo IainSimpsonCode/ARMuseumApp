@@ -14,7 +14,7 @@ struct StartSessionButton: View {
     @State private var rooms: [String] = []
     @State private var selectedRoom: String? = nil
     @State private var isLoadingRooms = true
-    
+    @State var arModel: ARViewModel
     var body: some View {
         VStack {
             VStack(spacing: 16) {
@@ -113,6 +113,9 @@ struct StartSessionButton: View {
                 buttonFunctions.placeLoadedPanel(panel: panel)
             }
         }
+        
+        arModel.arView.session.pause()
+        
     }
     
     // Load rooms from service

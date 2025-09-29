@@ -14,8 +14,20 @@ struct ContentView: View {
 
     var body: some View {
         if buttonFunctions.SessionSelected == 0 {
-            SplashScreen(arModel: arModel)
+            
+//            NavigationView {
+//                ZStack {
+//                // Camera always at the back
+//                ARCameraForMenu(model: arModel)
+//                    .edgesIgnoringSafeArea(.all)
+
+                // Then overlay splash content
+                    SplashScreen(arModel: arModel)
+//                }
+//                
+//            }
         }
+
         else if buttonFunctions.sessionDetails.isSessionActive {
             NavigationView {
                 ZStack {
@@ -52,8 +64,8 @@ struct ContentView: View {
                 ARCameraForMenu(model: arModel)
                     .edgesIgnoringSafeArea(.all)
                 
-                StartSessionButton()
-                .environmentObject(buttonFunctions)
+                StartSessionButton(arModel: arModel)
+                    .environmentObject(buttonFunctions)
                 
                 MovingPanelButtons()
             }

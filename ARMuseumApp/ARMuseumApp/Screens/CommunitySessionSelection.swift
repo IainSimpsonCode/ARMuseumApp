@@ -9,7 +9,7 @@ import SwiftUI
 struct CommunitySessionsScreen: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var buttonFunctions: ButtonFunctions
-    @State private var sessions: [String] = []
+    @State private var sessions: [session] = []
     @State private var selectedSession: String? = nil
     @State private var isLoading = false
     @State private var errorMessage: String?
@@ -20,6 +20,7 @@ struct CommunitySessionsScreen: View {
     @State private var newPassword = ""
     @State private var confirmPassword = ""
     @State private var passwordsMatch = true
+    @State private var isPrivate: Bool = true // true = private, false = public
     
     var body: some View {
         NavigationView {
@@ -41,12 +42,19 @@ struct CommunitySessionsScreen: View {
                     } else {
                         List(sessions, id: \.self) { session in
                             NavigationLink(
-                                destination: CuratorLoginScreen(comSession: session)
+                                destination: CuratorLoginScreen(comSession: session.title)
                                     .environmentObject(buttonFunctions)
                             ) {
-                                Text(session)
-                                    .font(.headline)
-                                    .padding(.vertical, 5)
+                                HStack {
+                                    Text(session.title) // adjust according to your session model
+                                        .font(.headline)
+                                        .padding(.vertical, 5)
+                                    
+                                    if session.isPrivate {
+                                        Image(systemName: "lock.fill")
+                                            .foregroundColor(.gray)
+                                    }
+                                }
                             }
                         }
                         .listStyle(InsetGroupedListStyle())
@@ -102,6 +110,9 @@ struct CommunitySessionsScreen: View {
                     TextField("Confirm Password", text: $confirmPassword)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     
+                    Toggle("Private Session", isOn: $isPrivate)
+                                .padding(.vertical)
+                    
                     if !passwordsMatch {
                         Text("Passwords do not match")
                             .foregroundColor(.red)
@@ -126,7 +137,7 @@ struct CommunitySessionsScreen: View {
                         showingAddSessionModal = false
                         
                         Task {
-                            await addNewCommunitySession(name: sessionName, password: sessionPassword)
+                            await addNewCommunitySession(name: sessionName, password: sessionPassword, isPrivate: isPrivate)
                         }
                     }) {
                         Text("Create Session")
@@ -157,8 +168,8 @@ struct CommunitySessionsScreen: View {
         }
     }
     
-    func addNewCommunitySession(name: String, password: String) async {
-        await createSessionService(museumID: buttonFunctions.sessionDetails.museumID, name: name, password: password)
+    func addNewCommunitySession(name: String, password: String, isPrivate: Bool) async {
+        await createSessionService(museumID: buttonFunctions.sessionDetails.museumID, name: name, password: password, isPrivate: isPrivate)
         await fetchSessionsAsync()
     }
     

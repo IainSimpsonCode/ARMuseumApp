@@ -250,7 +250,6 @@ class GestureHandler: NSObject {
         
     }
 
-
     private func interpolate(from: SCNVector3, to: SCNVector3, factor: Float) -> SCNVector3 {
         return SCNVector3(
             from.x + (to.x - from.x) * factor,

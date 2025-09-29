@@ -17,57 +17,67 @@ struct CuratorLoginScreen: View {
     @State private var showPassword: Bool = false
     
     var comSession: String? = "" // community sess
+    var requireLogin: Bool = true
     
     var body: some View {
         NavigationView {
             VStack(spacing: 30) {
                 
-                if(comSession == ""){
+                if comSession == "" {
                     Text("Curator Login")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.top, 50)
-                }
-                else{
-                    Text("Login to \(comSession ?? "")") 
+                } else {
+                    Text("Login to \(comSession ?? "")")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.top, 50)
                 }
                 
-                
-                VStack(spacing: 15) {
-                    if(comSession == ""){
-                        TextField("Username", text: $curatorID)
-                            .padding()
-                            .background(Color(UIColor.secondarySystemBackground))
-                            .cornerRadius(10)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                    }
-                    
-                    ZStack(alignment: .trailing) {
-                        if showPassword {
-                            TextField("Password", text: $password)
+                if requireLogin {
+                    // Show username/password fields
+                    VStack(spacing: 15) {
+                        if comSession == "" {
+                            TextField("Username", text: $curatorID)
                                 .padding()
                                 .background(Color(UIColor.secondarySystemBackground))
                                 .cornerRadius(10)
                                 .autocapitalization(.none)
-                        } else {
-                            SecureField("Password", text: $password)
-                                .padding()
-                                .background(Color(UIColor.secondarySystemBackground))
-                                .cornerRadius(10)
+                                .disableAutocorrection(true)
                         }
                         
-                        Button(action: { showPassword.toggle() }) {
-                            Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                                .foregroundColor(.gray)
-                                .padding(.trailing, 15)
+                        ZStack(alignment: .trailing) {
+                            if showPassword {
+                                TextField("Password", text: $password)
+                                    .padding()
+                                    .background(Color(UIColor.secondarySystemBackground))
+                                    .cornerRadius(10)
+                                    .autocapitalization(.none)
+                            } else {
+                                SecureField("Password", text: $password)
+                                    .padding()
+                                    .background(Color(UIColor.secondarySystemBackground))
+                                    .cornerRadius(10)
+                            }
+                            
+                            Button(action: { showPassword.toggle() }) {
+                                Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing, 15)
+                            }
                         }
                     }
+                    .padding(.horizontal, 20)
+                } else {
+                    // Show text saying “Connect to session” if login not required
+                    if let sessionName = comSession {
+                        Text("Connect to \(sessionName)")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                            .padding(.vertical)
+                    }
                 }
-                .padding(.horizontal, 20)
                 
                 // Inline error message
                 if let error = errorMessage {
@@ -78,55 +88,31 @@ struct CuratorLoginScreen: View {
                         .padding(.horizontal, 20)
                 }
                 
-                if(comSession == ""){
-                    Button(action: loginCurator) {
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        } else {
-                            Text("Login")
-                                .foregroundColor(.white)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        }
+                // Login button
+                Button(action: requireLogin ? (comSession == "" ? loginCurator : loginCommunity) : loginCommunity) {
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    } else {
+                        Text("Login")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
                     }
-                    .disabled(isLoading)
-                    .padding(.horizontal, 20)
                 }
-                else{
-                    Button(action: loginCommunity) {
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        } else {
-                            Text("Login")
-                                .foregroundColor(.white)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        }
-                    }
-                    .disabled(isLoading)
-                    .padding(.horizontal, 20)
-                }
-                
-                
+                .disabled(isLoading)
+                .padding(.horizontal, 20)
                 
                 Spacer()
             }
+
             .navigationTitle("")
             .navigationBarHidden(false)
             .toolbar {

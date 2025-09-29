@@ -8,14 +8,14 @@
 import Foundation
 
 
-func getCommunitySessionsService(museumID: String) async -> [String] {
+func getCommunitySessionsService(museumID: String) async -> [session] {
     let endpoint = "/api/\(museumID)/community"
     
     do {
         let data = try await APIService.request(endpoint: endpoint, method: .GET)
         
         // Decode JSON array
-        let decoded = try JSONDecoder().decode([String].self, from: data)
+        let decoded = try JSONDecoder().decode([session].self, from: data)
         return decoded
         
     } catch {
@@ -24,7 +24,7 @@ func getCommunitySessionsService(museumID: String) async -> [String] {
     }
 }
 
-func createSessionService(museumID: String, name: String, password: String) async -> String {
+func createSessionService(museumID: String, name: String, password: String, isPrivate: Bool) async -> String {
     do {
         let endpoint = "/api/\(museumID)/community"
         

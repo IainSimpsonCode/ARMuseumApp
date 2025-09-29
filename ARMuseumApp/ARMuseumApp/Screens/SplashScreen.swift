@@ -92,6 +92,7 @@ struct SplashScreen: View {
                             Button(action: {
                                 buttonFunctions.sessionDetails.museumID = selectedMuseum!
                                 goToNextScreen = true
+                                
                             }) {
                                 Text("Begin")
                                     .frame(width: 200, height: 50)
