@@ -82,18 +82,29 @@ struct ARViewContainer: UIViewRepresentable {
                         DispatchQueue.main.async {
                             self.gestureHandler?.updatePanelDistances()
                         }
-                    }           
+                    }   
+                
+                if time - self.lastDistanceUpdateTime >= 10.0 {
+                    self.lastDistanceUpdateTime = time
+                        DispatchQueue.main.async {
+                            self.gestureHandler?.updatePanelDistances()
+                        }
+                    }
             }
             
         }
     }
 
+    func checkCommunityPanels(){
+        if buttonFunctions.SessionSelected == 2 {
+            
+        }
+    }
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
     func makeUIView(context: Context) -> ARSCNView {
-
         let arView = ARSCNView()
         arView.delegate = context.coordinator
 
@@ -118,7 +129,12 @@ struct ARViewContainer: UIViewRepresentable {
         context.coordinator.setupSceneView(for: arView)
         context.coordinator.setupShadowPanel()
 
-        restoreDrawings(to: arView.scene)
+        if(buttonFunctions.SessionSelected == 2){
+            Task{
+                await restoreDrawings(to: arView.scene, museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID, accessToken: buttonFunctions.accessToken)
+            }
+        }
+        
         return arView
     }
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2235AEEE2E86ADA5003C6A61 /* DrawingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2235AEED2E86ADA4003C6A61 /* DrawingService.swift */; };
+		2235AEF02E86AE14003C6A61 /* Drawings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2235AEEF2E86AE14003C6A61 /* Drawings.swift */; };
 		2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */; };
 		2241F8932CA2682E00D8CA36 /* ScreenshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */; };
 		2241F8952CA2687A00D8CA36 /* PanelCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */; };
@@ -42,6 +44,7 @@
 		22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CDDF7A2D7E496D0099B223 /* MongoController.swift */; };
 		22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */; };
 		22DE18962E5F451200BC8575 /* SaveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DE18952E5F451200BC8575 /* SaveButton.swift */; };
+		22E4B8BF2E8AE18000E93CEC /* CommunitySessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E4B8BE2E8AE18000E93CEC /* CommunitySessions.swift */; };
 		22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D12C512F5600609437 /* ARMuseumApp.swift */; };
 		22F271D42C512F5600609437 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F271D32C512F5600609437 /* ContentView.swift */; };
 		22F271D62C512F5800609437 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F271D52C512F5800609437 /* Assets.xcassets */; };
@@ -57,6 +60,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2235AEED2E86ADA4003C6A61 /* DrawingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingService.swift; sourceTree = "<group>"; };
+		2235AEEF2E86AE14003C6A61 /* Drawings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawings.swift; sourceTree = "<group>"; };
 		2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARWebViewPanel.swift; sourceTree = "<group>"; };
 		2241F8922CA2682E00D8CA36 /* ScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotView.swift; sourceTree = "<group>"; };
 		2241F8942CA2687A00D8CA36 /* PanelCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelCreationView.swift; sourceTree = "<group>"; };
@@ -92,6 +97,7 @@
 		22CDDF7A2D7E496D0099B223 /* MongoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MongoController.swift; sourceTree = "<group>"; };
 		22DE18932E5F3F9A00BC8575 /* AddPanelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPanelButton.swift; sourceTree = "<group>"; };
 		22DE18952E5F451200BC8575 /* SaveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveButton.swift; sourceTree = "<group>"; };
+		22E4B8BE2E8AE18000E93CEC /* CommunitySessions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySessions.swift; sourceTree = "<group>"; };
 		22F271CE2C512F5600609437 /* ARMuseumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMuseumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22F271D12C512F5600609437 /* ARMuseumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMuseumApp.swift; sourceTree = "<group>"; };
 		22F271D32C512F5600609437 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -129,6 +135,8 @@
 				22B7EC392D430C3A00C7FDFD /* ShadowPanel.swift */,
 				2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */,
 				22FF0CB52E78497100CE7F31 /* Colours.swift */,
+				2235AEEF2E86AE14003C6A61 /* Drawings.swift */,
+				22E4B8BE2E8AE18000E93CEC /* CommunitySessions.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -213,6 +221,7 @@
 				22B7EC3B2D4312A300C7FDFD /* PanelTextNodeCreator.swift */,
 				22FF0CBB2E79B86700CE7F31 /* AuthenticationService.swift */,
 				22FF0CC12E7AE1E300CE7F31 /* CommunityService.swift */,
+				2235AEED2E86ADA4003C6A61 /* DrawingService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -343,6 +352,7 @@
 				22F271E32C5131CD00609437 /* GestureHandler.swift in Sources */,
 				22B7EC422D4A732700C7FDFD /* TutorialPages.swift in Sources */,
 				22B7EC342D408A6D00C7FDFD /* ButtonBar.swift in Sources */,
+				22E4B8BF2E8AE18000E93CEC /* CommunitySessions.swift in Sources */,
 				22CDDF7B2D7E496D0099B223 /* MongoController.swift in Sources */,
 				2281E69A2E685A2E0086C836 /* SessionSelectionScreen.swift in Sources */,
 				22B7EC382D41912A00C7FDFD /* ImageDetectionOverlay.swift in Sources */,
@@ -353,11 +363,13 @@
 				2281E6A72E69C6890086C836 /* PanelsService.swift in Sources */,
 				22FF0CBA2E79B44D00CE7F31 /* LoginScreen.swift in Sources */,
 				22F271D22C512F5600609437 /* ARMuseumApp.swift in Sources */,
+				2235AEEE2E86ADA5003C6A61 /* DrawingService.swift in Sources */,
 				22FF0CC22E7AE1E300CE7F31 /* CommunityService.swift in Sources */,
 				22B7EC302D4088FD00C7FDFD /* EndSessionButton.swift in Sources */,
 				22F271E52C5148A400609437 /* ARPanelClass.swift in Sources */,
 				228010482C53D3FC000D01B4 /* ImageDetection.swift in Sources */,
 				22DE18962E5F451200BC8575 /* SaveButton.swift in Sources */,
+				2235AEF02E86AE14003C6A61 /* Drawings.swift in Sources */,
 				2253A35B2E71BB620019C379 /* PanelEditScreen.swift in Sources */,
 				22B079EE2C5A769B00BCA37E /* ButtonFunctions.swift in Sources */,
 				2281E69C2E6860E10086C836 /* SessionDetails.swift in Sources */,

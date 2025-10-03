@@ -7,7 +7,7 @@ struct TutorialPages: View {
         if buttonFunctions.tutorialVisible {
             VStack {
                 TabView {
-                    TutorialWelcomePage()
+//                    TutorialWelcomePage()
                     ViewingPanels()
                     AddingAndEditing()
                     TutorialEditMode()
@@ -80,6 +80,7 @@ struct ViewingPanels: View {
                 .bold()
                 .multilineTextAlignment(.center)
 
+                        
             Text("Panels are placed across the room.")
                 .multilineTextAlignment(.leading)
                 .padding()
@@ -96,12 +97,6 @@ struct ViewingPanels: View {
                 .multilineTextAlignment(.leading)
                 .padding()
             
-            // image at the bottom
-            Image("batman")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 100)
-                .padding(.bottom, 20)
         }
     }
 }
@@ -136,12 +131,7 @@ struct AddingAndEditing: View {
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
             
-            // image at the bottom
-            Image("batman")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 100)
-                .padding(.bottom, 20)
+            
         }
     }
 }
@@ -167,6 +157,14 @@ struct TutorialEditMode: View {
             Text("Edit Content - you can press the edit button next to the delete button to change aspects of each panel.")
                 .multilineTextAlignment(.leading)
                 .padding()
+            
+//            // image at the bottom
+//            Image("EditPanelImage")
+//                .resizable()
+//                .scaledToFit()
+//                .frame(height: 100)
+//                .padding(.bottom, 20)
+            
             Button(action: {
                 withAnimation {
                     buttonFunctions.tutorialVisible = false

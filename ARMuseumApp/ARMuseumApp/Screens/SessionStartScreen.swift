@@ -11,13 +11,10 @@ struct StartSessionButton: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @Environment(\.dismiss) private var dismiss
     
-    let targetNode: SCNNode
-    let posterName: String
-    
     @State private var rooms: [String] = []
     @State private var selectedRoom: String? = nil
     @State private var isLoadingRooms = true
-    
+    @State var arModel: ARViewModel
     var body: some View {
         VStack {
             VStack(spacing: 16) {
@@ -103,10 +100,7 @@ struct StartSessionButton: View {
         buttonFunctions.sessionDetails.isSessionActive = true
         
         // Start session
-        buttonFunctions.startSession(
-            node: targetNode,
-            posterName: posterName
-        )
+        buttonFunctions.startSession()
         
         Task {
             let allPanels = await PanelStorageManager.loadPanels(
@@ -119,6 +113,9 @@ struct StartSessionButton: View {
                 buttonFunctions.placeLoadedPanel(panel: panel)
             }
         }
+        
+        arModel.arView.session.pause()
+        
     }
     
     // Load rooms from service

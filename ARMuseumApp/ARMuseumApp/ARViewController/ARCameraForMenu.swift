@@ -31,4 +31,10 @@ struct ARCameraForMenu: UIViewRepresentable {
         // Optional: Pause only if you want to completely stop AR
         // model.arView.session.pause()
     }
+    
+//    func resume(){
+//        arView = ARView(frame: .zero)
+//        let config = ARWorldTrackingConfiguration()
+//        arView.session.run(config)
+//    }
 }

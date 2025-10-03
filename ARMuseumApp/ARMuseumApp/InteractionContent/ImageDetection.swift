@@ -46,10 +46,7 @@ class ImageDetection: NSObject, ARSCNViewDelegate {
                 
                 if !self.buttonFunctions.sessionRunning {
                     buttonFunctions.sessionDetails.isSessionActive = true
-                    self.buttonFunctions.startSession(
-                        node: targetNode,
-                        posterName: imageName
-                    )
+                    self.buttonFunctions.startSession()
                     
                     Task {
                         let allPanels = await PanelStorageManager.loadPanels(
