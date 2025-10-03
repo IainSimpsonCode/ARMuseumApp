@@ -142,7 +142,7 @@ export const joinCommunitySession = async (req, res) => {
     const data = doc.data();
     const accessToken = doc.id;
 
-    if (data.sessionPassword !== sessionPassword) {
+    if (data.sessionPassword !== sessionPassword && data.isPrivate) {
       return res.status(401).json({ message: "Incorrect password for this session." });
     }
 
