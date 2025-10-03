@@ -14,14 +14,17 @@ export const getCommunitySessions = async (req, res) => {
       .where("museumID", "==", museumID)
       .get();
 
-    const sessions = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const sessions = snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      sessionID: data.sessionID,
+      isPrivate: data.isPrivate
+    };
+  });
 
     const sessionIDs = sessions.map(session => session.sessionID);
 
-    return res.status(200).json(sessionIDs);
+    return res.status(200).json(sessions);
   } catch (e) {
     console.error("Error getting sessionIDs:", e);
     return res.status(500).json({ message: "Server could not connect to the database." });
