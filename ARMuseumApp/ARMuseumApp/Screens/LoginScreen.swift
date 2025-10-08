@@ -47,26 +47,26 @@ struct CuratorLoginScreen: View {
                                 .disableAutocorrection(true)
                         }
                         
-                        ZStack(alignment: .trailing) {
-                            if showPassword {
-                                TextField("Password", text: $password)
-                                    .padding()
-                                    .background(Color(UIColor.secondarySystemBackground))
-                                    .cornerRadius(10)
-                                    .autocapitalization(.none)
-                            } else {
-                                SecureField("Password", text: $password)
-                                    .padding()
-                                    .background(Color(UIColor.secondarySystemBackground))
-                                    .cornerRadius(10)
-                            }
-                            
-                            Button(action: { showPassword.toggle() }) {
-                                Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                                    .foregroundColor(.gray)
-                                    .padding(.trailing, 15)
-                            }
-                        }
+                            ZStack(alignment: .trailing) {
+                                if showPassword {
+                                    TextField("Password", text: $password)
+                                        .padding()
+                                        .background(Color(UIColor.secondarySystemBackground))
+                                        .cornerRadius(10)
+                                        .autocapitalization(.none)
+                                } else {
+                                    SecureField("Password", text: $password)
+                                        .padding()
+                                        .background(Color(UIColor.secondarySystemBackground))
+                                        .cornerRadius(10)
+                                }
+                                
+                                Button(action: { showPassword.toggle() }) {
+                                    Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                                        .foregroundColor(.gray)
+                                        .padding(.trailing, 15)
+                                }
+                            }                        
                     }
                     .padding(.horizontal, 20)
                 } else {
@@ -157,6 +157,9 @@ struct CuratorLoginScreen: View {
             isLoading = true
             defer { isLoading = false }
             
+            if(!requireLogin){
+                password = "password"
+            }
             do {
                 let response = try await joinCommunitySessionService(
                     museumID: buttonFunctions.sessionDetails.museumID,

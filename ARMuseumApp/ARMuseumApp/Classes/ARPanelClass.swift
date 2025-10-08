@@ -46,6 +46,7 @@ class ARPanel {
     var deleteButtonNode = SCNNode()
     var editButtonNode = SCNNode()
     var moveButtonNode = SCNNode()
+    var spotlightButtonNode = SCNNode()
     
     let currentRoom: String
     let panelID: String
@@ -53,6 +54,8 @@ class ARPanel {
     var detailedText:String?
     
     var isTemporarilyExpanded = false
+    var spotlight = false
+    var highlightNode: SCNNode?
 
     init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String? = nil) {
         self.panelText = text
@@ -75,7 +78,7 @@ class ARPanel {
         ) ?? UIImage(systemName: "questionmark.circle")!
         mainIconMaterial.diffuse.contents = iconImage
         
-        let iconGeometry = SCNPlane(width: 0.03, height: 0.03)
+        let iconGeometry = SCNPlane(width: 0.02, height: 0.02)
         iconGeometry.materials = [mainIconMaterial]
         
         self.iconNode = SCNNode(geometry: iconGeometry)
@@ -96,6 +99,8 @@ class ARPanel {
         createDeleteButton()
         createEditButton()
         createMoveButton()
+        createSpotlightButton()
+        createHighlight()
         
     }
     
@@ -141,6 +146,7 @@ class ARPanel {
         deleteButtonNode.isHidden.toggle()
         editButtonNode.isHidden.toggle()
         moveButtonNode.isHidden.toggle()
+        spotlightButtonNode.isHidden.toggle()
     }
     
     func createDeleteButton() {
@@ -226,6 +232,34 @@ class ARPanel {
 
         parentNode.addChildNode(moveButtonNode)
     }
+    
+    func createSpotlightButton() {
+        let buttonSize: CGFloat = 0.025
+        let iconSize: CGFloat = 0.018
+        let chamfer: CGFloat = 0.003
+
+        let spotlightButtonGeometry = SCNBox(width: buttonSize, height: buttonSize, length: 0.005, chamferRadius: chamfer)
+        spotlightButtonGeometry.materials = [transparentPanelFace, panelSides, panelSides, panelSides, panelSides, panelSides]
+
+        spotlightButtonNode.geometry = spotlightButtonGeometry
+        spotlightButtonNode.position = SCNVector3(x: 0.05, y: 0.025, z: 0.01)
+        spotlightButtonNode.isHidden = true
+
+        // Icon
+        let spotlightImage = UIImage(systemName: "lightbulb.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 256, weight: .bold))
+        let spotlightIconMaterial = SCNMaterial()
+        spotlightIconMaterial.diffuse.contents = spotlightImage
+        spotlightIconMaterial.isDoubleSided = true
+
+        let spotlightIconGeometry = SCNPlane(width: iconSize, height: iconSize)
+        spotlightIconGeometry.materials = [spotlightIconMaterial]
+
+        let spotlightIconNode = SCNNode(geometry: spotlightIconGeometry)
+        spotlightIconNode.position = SCNVector3(x: 0, y: 0, z: 0.003)
+        spotlightButtonNode.addChildNode(spotlightIconNode)
+
+        parentNode.addChildNode(spotlightButtonNode)
+    }
 
     func animatePanel(panelNode: SCNNode, currentGeometry: SCNBox, targetGeometry: SCNBox) {
         let sideButtonTargetGeometry: SCNBox
@@ -237,13 +271,14 @@ class ARPanel {
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
                 self.editTextNode(text: panelText,  color: UIColor.black)
             }
-            iconCurrentLocation = SCNVector3(x: -0.08, y: 0.0, z: 0.021)
+            iconCurrentLocation = SCNVector3(x: -0.09, y: 0.0, z: 0.021)
             iconCurrentScale = SCNVector3(x: 1.4, y: 1.4, z: 1.4)
 
             // Move buttons to the top-right when enlarged
             deleteButtonNode.position = SCNVector3(x: 0.11, y: 0.05, z: 0.025)
             editButtonNode.position = SCNVector3(x: 0.08, y: 0.05, z: 0.025)
             moveButtonNode.position = SCNVector3(x: 0.05, y: 0.05, z: 0.025)
+            spotlightButtonNode.position = SCNVector3(x: 0.02, y: 0.05, z: 0.025)
             
             sideButtonTargetGeometry = SCNBox(width: 0.020, height: 0.020, length: 0.012, chamferRadius: 1)
         }
@@ -270,9 +305,10 @@ class ARPanel {
             iconCurrentScale = SCNVector3(x: 0, y: 0, z: 0)       // shrink it completely
 
             // Move buttons to top corners (optional)
-            deleteButtonNode.position = SCNVector3(x: 0.15, y: 0.07, z: 0.03)
-            editButtonNode.position = SCNVector3(x: 0.12, y: 0.07, z: 0.03)
-            moveButtonNode.position = SCNVector3(x: 0.08, y: 0.07, z: 0.03)
+            deleteButtonNode.position = SCNVector3(x: 0.14, y: 0.1, z: 0.03)
+            editButtonNode.position = SCNVector3(x: 0.11, y: 0.1, z: 0.03)
+            moveButtonNode.position = SCNVector3(x: 0.08, y: 0.1, z: 0.03)
+            spotlightButtonNode.position = SCNVector3(x: 0.05, y: 0.1, z: 0.03)
 
             sideButtonTargetGeometry = SCNBox(width: 0.025, height: 0.025, length: 0.015, chamferRadius: 1)
         }
@@ -338,12 +374,61 @@ class ARPanel {
             x: self.parentNode.position.x,
             y: self.parentNode.position.y,
             z: self.parentNode.position.z,
+            text: self.panelText,
             icon: self.panelIconName,
             r: rgba.red,
             g: rgba.green,
             b: rgba.blue,
             alpha: rgba.alpha
         )
+    }
+    
+    func createHighlight() {
+        highlightNode?.removeFromParentNode()
+
+        let highlightWidth: CGFloat = 0.29
+        let highlightHeight: CGFloat = 0.135
+        let cornerRadius: CGFloat = 30   // corner radius in image points
+        let color = UIColor.yellow.withAlphaComponent(0.2)
+
+        // Create a rounded-corner image
+        let size = CGSize(width: 300, height: 150)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        let rect = CGRect(origin: .zero, size: size)
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+        color.setFill()
+        path.fill()
+        let roundedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        // Use a plane (simple, efficient geometry)
+        let plane = SCNPlane(width: highlightWidth, height: highlightHeight)
+
+        let material = SCNMaterial()
+        material.diffuse.contents = roundedImage
+        material.emission.contents = roundedImage
+        material.lightingModel = .constant
+        material.isDoubleSided = true
+        material.writesToDepthBuffer = false
+
+        plane.materials = [material]
+
+        let node = SCNNode(geometry: plane)
+        node.position = SCNVector3(0, 0, -0.03)
+        node.isHidden = true
+
+        // Optional: make sure it faces the camera
+        let billboard = SCNBillboardConstraint()
+        billboard.freeAxes = .Y
+        node.constraints = [billboard]
+
+        parentNode.insertChildNode(node, at: 0)
+        highlightNode = node
+    }
+
+    func setSpotlight() {
+        spotlight.toggle()
+        highlightNode?.isHidden = spotlight
     }
 
 }

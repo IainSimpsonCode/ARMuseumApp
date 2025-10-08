@@ -31,6 +31,16 @@ struct MovingPanelButtons: View {
                         // Action for the ✓ button
                         buttonFunctions.movePanelButtons(option: 1)
                         buttonFunctions.movingPanel = false
+                        if(buttonFunctions.SessionSelected == 3){
+                            Task{
+                                await updatePanelService(panel: buttonFunctions.movingPanelPanel!.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
+                            }
+                        }
+                        else if (buttonFunctions.SessionSelected == 2){
+                            Task{
+                                await updateCommunityPanelService(panel: buttonFunctions.movingPanelPanel!.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID), accessToken:buttonFunctions.accessToken)
+                            }
+                        }
                     }) {
                         Text("✓")
                             .font(.title)

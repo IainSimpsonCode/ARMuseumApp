@@ -17,6 +17,7 @@ class ButtonFunctions: ObservableObject {
     @Published var editModeActive: Bool = false
     @Published var movementModeBool: Bool = true
     @Published var movingPanel: Bool = false
+    @Published var movingPanelPanel: ARPanel? = nil
     @Published var tutorialVisible: Bool = false
     @Published var isDrawingMode = false
     @Published var isEraserMode = false
@@ -50,24 +51,26 @@ class ButtonFunctions: ObservableObject {
             return
         }
 
-        // Get the camera transform
-        let cameraTransform = await pointOfView.transform
+        
+            // Get the camera transform
+            let cameraTransform = await pointOfView.transform
 
-        // Camera's forward direction
-        let forward = SCNVector3(-cameraTransform.m31, -cameraTransform.m32, -cameraTransform.m33)
+            // Camera's forward direction
+            let forward = SCNVector3(-cameraTransform.m31, -cameraTransform.m32, -cameraTransform.m33)
 
-        // Camera's current position
-        let cameraPosition = SCNVector3(cameraTransform.m41, cameraTransform.m42, cameraTransform.m43)
+            // Camera's current position
+            let cameraPosition = SCNVector3(cameraTransform.m41, cameraTransform.m42, cameraTransform.m43)
 
-        // Distance in front of the camera to place the panel
-        let distance: Float = 0.5
+            // Distance in front of the camera to place the panel
+            let distance: Float = 0.5
 
-        // Calculate final position
-        let position = SCNVector3(
-            cameraPosition.x + forward.x * distance,
-            cameraPosition.y + forward.y * distance,
-            cameraPosition.z + forward.z * distance
-        )
+            // Calculate final position
+            let position = SCNVector3(
+                cameraPosition.x + forward.x * distance,
+                cameraPosition.y + forward.y * distance,
+                cameraPosition.z + forward.z * distance
+            )
+
         
         // Create and add the panel
         let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID)
@@ -77,7 +80,7 @@ class ButtonFunctions: ObservableObject {
         }
 
         panelController?.panelsInScene.append(newPanel)
-        panelController?.diningRoomPanels.append(newPanel)
+//        panelController?.diningRoomPanels.append(newPanel)
 
         var panelToSave = newPanel.convertToPanel(museumID: sessionDetails.museumID, roomID: sessionDetails.roomID)
         

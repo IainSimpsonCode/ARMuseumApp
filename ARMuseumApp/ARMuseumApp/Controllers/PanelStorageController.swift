@@ -39,7 +39,6 @@ class PanelStorageManager {
         }
         else{
             await savePanelService(panel: panel)
-
         }
     }
 
@@ -67,7 +66,58 @@ class PanelStorageManager {
         }
         else{
             let response = await deletePanelService(museumID: museumID, roomID: roomID, id: id)
-
         }
     }
+    
+    static func handleCommunityUpdates(_ARPanelController: ARPanelController, panels: [Panel], buttonFunctions: ButtonFunctions) async {
+        let existingPanels = _ARPanelController.panelsInScene
+        
+        // Convert existing panels into a dictionary for fast lookup
+        var existingDict = Dictionary(uniqueKeysWithValues: existingPanels.map { ($0.panelID, $0) })
+        
+        // --- Update or Add ---
+        for newPanel in panels {
+            if let existing = existingDict[newPanel.panelID] {
+                var needsUpdate = false
+                            
+                            if existing.panelText != newPanel.text {
+                                print(existing.panelText )
+                                print(newPanel.text )
+                                needsUpdate = true
+                            }
+                            if existing.panelIconName != newPanel.icon {
+                                needsUpdate = true
+                            }
+                            
+//                            if existing.panelColor != newPanel.panelColor {
+//                                needsUpdate = true
+//                            }
+//                            if existing.detailedText != newPanel.detailedText {
+//                                print("detailed")
+//                                needsUpdate = true
+//                            }
+                            
+                            if needsUpdate {
+                                print("🔄 Updating panel \(newPanel.panelID)")
+                            }
+            } else {
+//                await buttonFunctions.addPanel(text: newPanel.text!, panelColor: convertRGBAToUIColor(r: newPanel.r, g: newPanel.g, b: newPanel.b), panelIcon: newPanel.icon, panelID: newPanel.panelID, positionExisting: position, save: false)
+                await buttonFunctions.placeLoadedPanel(panel: newPanel)
+            }
+            existingDict.removeValue(forKey: newPanel.panelID)
+
+            
+        }
+        for (_, oldPanel) in existingDict {
+            print("🗑 Removing panel \(oldPanel.panelID)")
+            if let index = _ARPanelController.panelsInScene.firstIndex(where: { $0.panelID == oldPanel.panelID }) {
+                let panelToRemove = _ARPanelController.panelsInScene[index]
+                await panelToRemove.parentNode.removeFromParentNode()
+                    panelToRemove.panelNodeInScene = false
+                _ARPanelController.panelsInScene.remove(at: index)
+                }
+        }
+        
+    }
+
 }

@@ -22,10 +22,15 @@ struct ARViewContainer: UIViewRepresentable {
         var shadowPanel: ShadowPanel?
 
         private var lastDistanceUpdateTime: TimeInterval = 0
+        private var lastComUpdateTime: TimeInterval = 0
+        private var firstPass: Bool = true
 
         init(_ parent: ARViewContainer) {
             self.parent = parent
             self.panelController = parent.panelController
+            self.lastDistanceUpdateTime = CACurrentMediaTime() // or Date().timeIntervalSince1970
+            self.lastComUpdateTime = CACurrentMediaTime() // or Date().timeIntervalSince1970
+
         }
         
         func setupImageDetectionHandler(for sceneView: ARSCNView) {
@@ -73,23 +78,43 @@ struct ARViewContainer: UIViewRepresentable {
                 cameraPosition.z + cameraDirection.z * distance
             )
 
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.shadowPanel?.parentNode.position = newPosition
                 
-                // Throttle distance checks to once per second
-                if time - self.lastDistanceUpdateTime >= 1.0 {
-                    self.lastDistanceUpdateTime = time
-                        DispatchQueue.main.async {
-                            self.gestureHandler?.updatePanelDistances()
+                if(!firstPass){
+                    // Throttle distance checks to once per second
+                    if time - self.lastDistanceUpdateTime >= 1.0 {
+                        self.lastDistanceUpdateTime = time
+                            DispatchQueue.main.async {
+                                self.gestureHandler?.updatePanelDistances()
+                            }
                         }
-                    }   
+                    
+                    if time - self.lastComUpdateTime >= 10.0 {
+                        self.lastComUpdateTime = time
+                        if(parent.buttonFunctions.SessionSelected == 2){
+                            Task {
+                                                            let allPanels = await PanelStorageManager.loadPanels(
+                                                                museumID: parent.buttonFunctions.sessionDetails.museumID,
+                                                                roomID: parent.buttonFunctions.sessionDetails.roomID,
+                                                                sessionSelected: parent.buttonFunctions.SessionSelected,
+                                                                accessToken: parent.buttonFunctions.accessToken
+                                                            )
+    //                                                        for panel in allPanels {
+    //                                                            parent.buttonFunctions.placeLoadedPanel(panel: panel)
+    //                                                            print(allPanels.count)
+    //                                                        }
+                                await PanelStorageManager.handleCommunityUpdates(_ARPanelController: panelController, panels: allPanels, buttonFunctions: parent.buttonFunctions)
+
+                            }
+                        }
+                           
+                        }
+                }
+                else {
+                    firstPass = false
+                }
                 
-                if time - self.lastDistanceUpdateTime >= 10.0 {
-                    self.lastDistanceUpdateTime = time
-                        DispatchQueue.main.async {
-                            self.gestureHandler?.updatePanelDistances()
-                        }
-                    }
             }
             
         }

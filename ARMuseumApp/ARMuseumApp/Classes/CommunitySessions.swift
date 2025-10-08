@@ -8,6 +8,6 @@
 import Foundation
 
 struct session: Decodable, Hashable{
-    let title: String
+    let sessionID: String
     let isPrivate: Bool
 }

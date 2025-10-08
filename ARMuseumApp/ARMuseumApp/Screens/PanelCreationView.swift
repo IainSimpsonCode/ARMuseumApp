@@ -20,6 +20,7 @@ struct AddPanelView: View {
     @Environment(\.presentationMode) var presentationMode
     @State var needsClosing: Bool
     @State private var panels: [PanelDetails] = []
+    @State private var showResetConfirmation = false // New state for modal
 
     var exhibits: [Exhibits] {
         let grouped = Dictionary(grouping: panels, by: { $0.title })
@@ -63,6 +64,25 @@ struct AddPanelView: View {
             }
         }
         .navigationTitle("Exhibits")
+        .toolbar {
+            if buttonFunctions.SessionSelected != 3 {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Reset Panels") {
+                        showResetConfirmation = true
+                    }
+                }
+            }
+        }
+        .alert(isPresented: $showResetConfirmation) {
+            Alert(
+                title: Text("Reset Panels"),
+                message: Text("This will reset all the panels to their original state. Continue?"),
+                primaryButton: .destructive(Text("Reset")) {
+                    resetPanels()
+                },
+                secondaryButton: .cancel()
+            )
+        }
         .onAppear {
             if needsClosing { presentationMode.wrappedValue.dismiss() }
             Task {
@@ -74,6 +94,9 @@ struct AddPanelView: View {
         }
     }
 
+    // Call your actual function here
+    func resetPanels() {
+    }
 }
 
 // MARK: - PanelCreatorView
@@ -182,7 +205,7 @@ struct PanelCreatorView: View {
                         if selectedOption?.text != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
                             Task {
                                 await buttonFunctions.addPanel(
-                                    text: exhibit.title + ":\n\n" + (selectedOption?.text ?? ""),
+                                    text: (selectedOption?.text ?? ""),
                                     panelColor: UIColor(selectedColor),
                                     panelIcon: selectedIcon,
                                     panelID: selectedOption?.panelID ?? ""
