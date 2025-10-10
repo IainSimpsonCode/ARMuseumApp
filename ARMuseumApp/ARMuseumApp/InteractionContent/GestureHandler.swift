@@ -51,7 +51,8 @@ class GestureHandler: NSObject {
                                 museumID: buttonFunctions.sessionDetails.museumID,
                                 roomID: buttonFunctions.sessionDetails.roomID,
                                 Id: panel.panelID,
-                                sessionSelected: buttonFunctions.SessionSelected
+                                sessionSelected: buttonFunctions.SessionSelected,
+                                accessToken: buttonFunctions.accessToken
                             )
                         }
                 }
@@ -86,17 +87,14 @@ class GestureHandler: NSObject {
                 shadowPanel?.parentNode.geometry = panel.parentNode.geometry
                 shadowPanel?.addToScene()
                 buttonFunctions.movingPanel = true
+                buttonFunctions.movingPanelPanel = panel
                 shadowPanel?.panelToChnage = panel
-                if(buttonFunctions.SessionSelected == 3){
-                    Task{
-                        await updatePanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
-                    }
-                }
-                else if (buttonFunctions.SessionSelected == 2){
-                    Task{
-                        await updateCommunityPanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID), accessToken:buttonFunctions.accessToken)
-                    }
-                }
+               
+                return
+            }
+            else if node == panel.spotlightButtonNode || node == panel.spotlightButtonNode.childNodes.first {
+                panel.setSpotlight()
+               
                 return
             }
             else if node == panel.parentNode || node == panel.iconNode {
@@ -123,7 +121,15 @@ class GestureHandler: NSObject {
                     // Expand panel
                     panel.isTemporarilyExpanded = true
                     panel.panelState = 3
-                    let state3Geometry = SCNBox(width: 0.3, height: 0.18, length: 0.04, chamferRadius: 1)
+                    let charCount = panel.detailedText!.count / 12
+                        
+                    // Define a base height and a scaling factor
+                    let baseHeight: CGFloat = 0.1   // minimum height
+                    let heightPerChar: CGFloat = 0.005 // how much height to add per character
+                        
+                    // Compute dynamic height
+                    let dynamicHeight = baseHeight + (CGFloat(charCount) * heightPerChar)
+                    let state3Geometry = SCNBox(width: 0.3, height: dynamicHeight, length: 0.04, chamferRadius: 1)
                     panel.animatePanel(panelNode: panel.parentNode, currentGeometry: panel.currentGeometry, targetGeometry: state3Geometry)
                     
                     // Cancel any previous timer for this panel
@@ -305,7 +311,7 @@ class GestureHandler: NSObject {
         // Remove nodes from scene AND UserDefaults
         for node in nodesToErase {
             node.removeFromParentNode()
-//            removeDrawingNode(node)
+            removeDrawingNode(node)
         }
     }
     

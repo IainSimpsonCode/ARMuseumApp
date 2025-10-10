@@ -42,11 +42,11 @@ struct CommunitySessionsScreen: View {
                     } else {
                         List(sessions, id: \.self) { session in
                             NavigationLink(
-                                destination: CuratorLoginScreen(comSession: session.title)
+                                destination: CuratorLoginScreen(comSession: session.sessionID, requireLogin: session.isPrivate)
                                     .environmentObject(buttonFunctions)
                             ) {
                                 HStack {
-                                    Text(session.title) // adjust according to your session model
+                                    Text(session.sessionID) // adjust according to your session model
                                         .font(.headline)
                                         .padding(.vertical, 5)
                                     

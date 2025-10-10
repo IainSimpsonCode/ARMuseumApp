@@ -15,7 +15,7 @@ struct Panel: Codable {
     var x: Float
     var y: Float
     var z: Float
-    var text: String?
+    var text: String
     var icon: String
     var r: Int
     var g: Int

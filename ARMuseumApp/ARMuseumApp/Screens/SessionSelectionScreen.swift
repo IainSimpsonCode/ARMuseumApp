@@ -88,6 +88,7 @@ struct SessionSelectionScreen: View {
             CommunitySessionsScreen()
         }
         .fullScreenCover(isPresented: $showLoginScreen) {
+            
             CuratorLoginScreen()
         }
     }
