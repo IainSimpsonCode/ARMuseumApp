@@ -323,7 +323,8 @@ export const getAvailableCommunityPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     // --- Get used panels from CuratorPanelData ---
@@ -380,7 +381,6 @@ export const deleteCommunityPanel = async (req, res) => {
   }
 
   try {
-
     // Delete specified doc from CommunityPanels using deterministic ID
     const docIDToDelete = `${museumID}_${roomID}_${sessionID}_${panelID}`;
     await db.collection("CommunityPanelData").doc(docIDToDelete).delete();

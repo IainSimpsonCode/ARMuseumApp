@@ -179,7 +179,8 @@ export const getAvailableCuratorPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     // Get already used panels
@@ -223,7 +224,8 @@ export const getPanelByID = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     return res.status(200).json(allPanels[0]);
@@ -254,7 +256,8 @@ export const getAllPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     return res.status(200).json(allPanels);
