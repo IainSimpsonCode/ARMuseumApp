@@ -1,5 +1,5 @@
 import { db } from "../firebaseAdmin.js";
-import { getLongTextFieldFromPanelID, getTextFieldFromPanelID } from "./PanelData.js";
+import { getIconFieldFromPanelID, getLongTextFieldFromPanelID, getTextFieldFromPanelID } from "./PanelData.js";
 
 export const getCommunitySessions = async (req, res) => {
 
@@ -163,7 +163,7 @@ export const createNewCommunityPanel = async (req, res) => {
   const roomID = req.params.roomID;
   const accessToken = req.params.accessToken;
 
-  const { x, y, z, r, g, b, alpha, panelID, icon } = req.body || {};
+  const { x, y, z, r, g, b, alpha, panelID } = req.body || {};
 
   // Check x, y, z are numbers and not null/undefined
   if (
@@ -188,8 +188,8 @@ export const createNewCommunityPanel = async (req, res) => {
   }
 
   // Check required parameters
-  if (!roomID || !museumID || !panelID || !icon) {
-    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, panelID or icon. Please check parameters." });
+  if (!roomID || !museumID || !panelID) {
+    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, or panelID. Please check parameters." });
   }
 
   try {
@@ -206,7 +206,7 @@ export const createNewCommunityPanel = async (req, res) => {
       b,
       alpha,
       panelID,
-      icon
+      spotlight: false,
     };
 
     // Build a deterministic document ID to avoid duplicates
@@ -238,11 +238,14 @@ export const getCommunityPanels = async (req, res) => {
       const data = doc.data();
       const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
       const longText = await getLongTextFieldFromPanelID(museumID, roomID, data.panelID);
+      const icon = await getIconFieldFromPanelID(museumID, roomID, data.panelID);
+
       return {
         id: doc.id,
         ...data,
         text,
         longText,
+        icon,
       };
     }));
 
@@ -268,10 +271,15 @@ export const getCommunityPanels = async (req, res) => {
     const communityPanels = await Promise.all(communitySnapshot.docs.map(async (doc) => {
       const data = doc.data();
       const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
+      const longText = await getLongTextFieldFromPanelID(museumID, roomID, data.panelID);
+      const icon = await getIconFieldFromPanelID(museumID, roomID, data.panelID);
+
       return {
         id: doc.id,
         ...data,
         text,
+        longText,
+        icon,
       };
     }));
 
@@ -315,7 +323,8 @@ export const getAvailableCommunityPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     // --- Get used panels from CuratorPanelData ---
@@ -372,10 +381,9 @@ export const deleteCommunityPanel = async (req, res) => {
   }
 
   try {
-
     // Delete specified doc from CommunityPanels using deterministic ID
-    const docID = `${museumID}_${roomID}_${sessionID}_${panelID}`;
-    await db.collection("CommunityPanelData").doc(docID).delete();
+    const docIDToDelete = `${museumID}_${roomID}_${sessionID}_${panelID}`;
+    await db.collection("CommunityPanelData").doc(docIDToDelete).delete();
 
     // Add the panel to the deleted list to avoid the curatorPanel showing
     await db.collection("DeletedCommunityPanelData").add({
@@ -384,6 +392,8 @@ export const deleteCommunityPanel = async (req, res) => {
       sessionID,
       panelID
     });
+    const deletedDocID = `${museumID}_${roomID}_${sessionID}_${panelID}`;
+    await db.collection("DeletedCommunityPanelData").doc(deletedDocID).set(panelData, { merge: false });
 
     return res.status(200).json({ message: "Panel deleted successfully." });
   } catch (e) {

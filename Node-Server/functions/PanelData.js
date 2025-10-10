@@ -4,7 +4,7 @@ export const createNewCuratorPanel = async (req, res) => {
   const museumID = req.params.museumID;
   const roomID = req.params.roomID;
 
-  const { x, y, z, r, g, b, alpha, panelID, icon } = req.body || {};
+  const { x, y, z, r, g, b, alpha, panelID } = req.body || {};
 
   // Check x, y, z are numbers and not null/undefined
   if (
@@ -29,8 +29,8 @@ export const createNewCuratorPanel = async (req, res) => {
   }
 
   // Check required parameters
-  if (!roomID || !museumID || !panelID || !icon) {
-    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, panelID or icon. Please check parameters." });
+  if (!roomID || !museumID || !panelID) {
+    return res.status(400).json({ message: "Missing parameter. Either museumID, roomID, or panelID. Please check parameters." });
   }
 
   try {
@@ -46,7 +46,7 @@ export const createNewCuratorPanel = async (req, res) => {
       b,
       alpha,
       panelID,
-      icon
+      spotlight: false,
     };
 
     // Build a deterministic document ID to avoid duplicates
@@ -77,11 +77,15 @@ export const getCuratorPanels = async (req, res) => {
       const data = doc.data();
 
       const text = await getTextFieldFromPanelID(museumID, roomID, data.panelID);
+      const longText = await getLongTextFieldFromPanelID(museumID, roomID, data.panelID);
+      const icon = await getIconFieldFromPanelID(museumID, roomID, data.panelID);
 
       return {
         id: doc.id,
         ...data,
         text,
+        longText,
+        icon,
       };
     }));
 
@@ -175,7 +179,8 @@ export const getAvailableCuratorPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     // Get already used panels
@@ -219,7 +224,8 @@ export const getPanelByID = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     return res.status(200).json(allPanels[0]);
@@ -250,7 +256,8 @@ export const getAllPanels = async (req, res) => {
       panelID: doc.data().panelID,
       title: doc.data().title,
       text: doc.data().text,
-      longText: doc.data().longText
+      longText: doc.data().longText,
+      icon: doc.data().icon,
     }));
 
     return res.status(200).json(allPanels);
@@ -303,6 +310,29 @@ export const getLongTextFieldFromPanelID = async (museumID, roomID, panelID) => 
     }));
 
     return allPanels[0].longText;
+  } catch (e) {
+
+  }
+
+  return "";
+}
+
+export const getIconFieldFromPanelID = async (museumID, roomID, panelID) => {
+  try {
+    // Get all panels for this museum/room
+    const allPanelsSnapshot = await db.collection("PanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .where("panelID", "==", panelID)
+      .get();
+
+    // Extract full panel objects
+    const allPanels = allPanelsSnapshot.docs.map(doc => ({
+      panelID: doc.data().panelID,
+      icon: doc.data().icon,
+    }));
+
+    return allPanels[0].icon;
   } catch (e) {
 
   }
