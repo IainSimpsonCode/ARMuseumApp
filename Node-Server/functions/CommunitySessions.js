@@ -382,8 +382,8 @@ export const deleteCommunityPanel = async (req, res) => {
   try {
 
     // Delete specified doc from CommunityPanels using deterministic ID
-    const docID = `${museumID}_${roomID}_${sessionID}_${panelID}`;
-    await db.collection("CommunityPanelData").doc(docID).delete();
+    const docIDToDelete = `${museumID}_${roomID}_${sessionID}_${panelID}`;
+    await db.collection("CommunityPanelData").doc(docIDToDelete).delete();
 
     // Add the panel to the deleted list to avoid the curatorPanel showing
     await db.collection("DeletedCommunityPanelData").add({
@@ -392,6 +392,8 @@ export const deleteCommunityPanel = async (req, res) => {
       sessionID,
       panelID
     });
+    const deletedDocID = `${museumID}_${roomID}_${sessionID}_${panelID}`;
+    await db.collection("DeletedCommunityPanelData").doc(deletedDocID).set(panelData, { merge: false });
 
     return res.status(200).json({ message: "Panel deleted successfully." });
   } catch (e) {
