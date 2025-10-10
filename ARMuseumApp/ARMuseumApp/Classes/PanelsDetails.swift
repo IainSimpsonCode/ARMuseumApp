@@ -21,7 +21,8 @@ struct Panel: Codable {
     var g: Int
     var b: Int
     var alpha: Float
-    var detailedText: String?
+    var longText: String
+    var spotlight: Bool
 }
 
 struct PanelDetails: Identifiable, Codable{
@@ -29,19 +30,31 @@ struct PanelDetails: Identifiable, Codable{
     var panelID: String
     var title: String
     var text: String
+    var icon: String? = "person.fill"
+    var longText: String
 }
 
 struct Exhibits: Identifiable, Codable {
     var id = UUID()
     let title: String
     let textOptions: [TextAndID]
+    var icon: [iconByID]
+    var longTextByID: [longTextByID]
 }
 
 struct TextAndID: Identifiable, Codable, Hashable {
     let text: String
     let panelID: String
-
-    var id: String { panelID } 
+    var id: String { panelID }
 }
 
+struct iconByID: Codable, Hashable {
+    var panelID: String
+    var icon: String
+}
+
+struct longTextByID: Codable, Hashable {
+    var panelID: String
+    var longText: String
+}
 

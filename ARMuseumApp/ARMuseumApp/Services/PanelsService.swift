@@ -71,6 +71,7 @@ func updatePanelService(panel: Panel) async -> String {
     do {
         let endpoint = "/api/\(panel.museumID)/\(panel.roomID)/panel"
 
+        print(panel.spotlight)
         // Prepare fields dictionary
         let fields: [String: Any] = [
             "x": panel.x,
@@ -80,7 +81,8 @@ func updatePanelService(panel: Panel) async -> String {
             "icon": panel.icon,
             "r": panel.r,
             "g": panel.g,
-            "b": panel.b
+            "b": panel.b,
+            "spotlight": panel.spotlight
         ]
 
         // Wrap with docID

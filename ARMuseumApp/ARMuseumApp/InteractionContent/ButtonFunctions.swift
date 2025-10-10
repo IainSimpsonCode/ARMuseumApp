@@ -45,13 +45,12 @@ class ButtonFunctions: ObservableObject {
             isEraserMode.toggle()
         }
     
-    func addPanel(text: String, panelColor: UIColor, panelIcon: String, panelID: String) async {
+    func addPanel(text: String, panelColor: UIColor, panelIcon: String, panelID: String, longText: String) async {
         guard let arView = arView, let pointOfView = await arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
 
-        
             // Get the camera transform
             let cameraTransform = await pointOfView.transform
 
@@ -71,9 +70,8 @@ class ButtonFunctions: ObservableObject {
                 cameraPosition.z + forward.z * distance
             )
 
-        
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID, detailedText: longText, spotlight: false)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -100,7 +98,8 @@ class ButtonFunctions: ObservableObject {
         let colour = convertRGBAToUIColor(r: panel.r, g: panel.g, b: panel.b)
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID)
+        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID, 
+                               detailedText: panel.longText, spotlight: panel.spotlight)
 
         if sessionRunning {
             newPanel.addToScene()

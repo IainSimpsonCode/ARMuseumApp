@@ -9,10 +9,10 @@ import SwiftUI
 // MARK: - Shared Options
 let sharedColorOptions: [Color] = [.red, .green, .blue, .orange, .yellow, .purple]
 
-let sharedIconOptions: [String] = [
-    "text.book.closed.fill", "list.bullet.clipboard.fill", "books.vertical.fill",
-    "person.fill", "globe.europe.africa.fill", "rainbow", "flame.fill"
-]
+//let sharedIconOptions: [String] = [
+//    "text.book.closed.fill", "list.bullet.clipboard.fill", "books.vertical.fill",
+//    "person.fill", "globe.europe.africa.fill", "rainbow", "flame.fill"
+//]
 
 // MARK: - AddPanelView
 struct AddPanelView: View {
@@ -25,8 +25,16 @@ struct AddPanelView: View {
     var exhibits: [Exhibits] {
         let grouped = Dictionary(grouping: panels, by: { $0.title })
         return grouped.map { title, panelsForTitle in
-            let textOptions = panelsForTitle.map { TextAndID(text: $0.text, panelID: $0.panelID) }
-            return Exhibits(title: title, textOptions: textOptions)
+            let textOptions = panelsForTitle.map {
+                TextAndID(text: $0.text, panelID: $0.panelID)
+            }
+            let icons = panelsForTitle.map {
+                iconByID(panelID: $0.panelID, icon: $0.icon ?? "person.fill")
+            }
+            let longText = panelsForTitle.map {
+                longTextByID(panelID: $0.panelID, longText: $0.longText)
+            }
+            return Exhibits(title: title, textOptions: textOptions, icon: icons, longTextByID: longText)
         }
     }
 
@@ -107,15 +115,30 @@ struct PanelCreatorView: View {
     let exhibit: Exhibits
 
     @State private var selectedColor: Color?
-    @State private var selectedIcon: String = "nil"
     @State private var selectedOption: TextAndID?
+
+    // 🧩 Automatically find the correct icon for the selected text
+    var currentIcon: String {
+        if let selected = selectedOption {
+            return exhibit.icon.first(where: { $0.panelID == selected.panelID })?.icon ?? "person.fill"
+        }
+        return "person.fill"
+    }
+
+    var longText: String {
+        if let selected = selectedOption {
+            return exhibit.longTextByID.first(where: { $0.panelID == selected.panelID })?.longText ?? "More info about this.."
+        }
+        return "More info about this.."
+    }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
+            // Background dim layer
             Color.black.opacity(0.3).ignoresSafeArea()
 
             VStack(spacing: 20) {
-                // Title with blur
+                // Title
                 Text("Panel Designer")
                     .font(.system(.title2, design: .rounded).weight(.bold))
                     .foregroundColor(.white)
@@ -144,11 +167,11 @@ struct PanelCreatorView: View {
 
                 Spacer()
 
-                // Preview Panel
+                // ✅ Preview with correct icon
                 PreviewARPanel(
                     text: selectedOption?.text ?? "",
                     borderColor: selectedColor ?? .blue,
-                    icon: selectedIcon
+                    icon: currentIcon
                 )
                 .frame(maxHeight: 200)
                 .padding(.vertical, 20)
@@ -156,59 +179,27 @@ struct PanelCreatorView: View {
                 Spacer()
 
                 VStack(spacing: 16) {
-                    // Color Picker
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Select Panel Color")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                    Text("Select Panel Color")
+                        .font(.headline)
+                        .foregroundColor(.white)
 
-                        HStack(spacing: 16) {
-                            ForEach(sharedColorOptions, id: \.self) { color in
-                                ColorButton(buttonColor: color, isSelected: selectedColor == color) {
-                                    selectedColor = color
-                                }
+                    HStack(spacing: 16) {
+                        ForEach(sharedColorOptions, id: \.self) { color in
+                            ColorButton(buttonColor: color, isSelected: selectedColor == color) {
+                                selectedColor = color
                             }
                         }
                     }
 
-                    // Icon Picker
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Panel Icon")
-                            .font(.headline)
-                            .foregroundColor(.white)
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                ForEach(sharedIconOptions, id: \.self) { symbol in
-                                    Button(action: { selectedIcon = symbol }) {
-                                        Image(systemName: symbol)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 36, height: 36)
-                                            .padding(10)
-                                            .background(.ultraThinMaterial)
-                                            .foregroundColor(selectedIcon == symbol ? .white : .primary)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
-                                            )
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 2)
-                        }
-                    }
-
-                    // Add to Scene Button
                     Button(action: {
-                        if selectedOption?.text != "nil", let selectedColor = selectedColor, selectedIcon != "nil" {
+                        if let selectedOption = selectedOption, let selectedColor = selectedColor {
                             Task {
                                 await buttonFunctions.addPanel(
-                                    text: (selectedOption?.text ?? ""),
+                                    text: selectedOption.text,
                                     panelColor: UIColor(selectedColor),
-                                    panelIcon: selectedIcon,
-                                    panelID: selectedOption?.panelID ?? ""
+                                    panelIcon: currentIcon,
+                                    panelID: selectedOption.panelID,
+                                    longText: longText
                                 )
                                 needsClosing = true
                                 presentationMode.wrappedValue.dismiss()
@@ -225,14 +216,13 @@ struct PanelCreatorView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .shadow(radius: 3)
                     }
-
                 }
                 .padding(.bottom, 20)
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
-            // Back Button
+            // ✅ BACK BUTTON
             Button(action: {
                 needsClosing = true
                 presentationMode.wrappedValue.dismiss()
@@ -254,14 +244,13 @@ struct PanelCreatorView: View {
             }
         }
         .onAppear {
-            if selectedOption == nil {
-                selectedOption = exhibit.textOptions.first
-            }
+            if selectedOption == nil { selectedOption = exhibit.textOptions.first }
             if selectedColor == nil { selectedColor = sharedColorOptions.first }
-            if selectedIcon == "nil" { selectedIcon = sharedIconOptions.first ?? "nil" }
         }
     }
 }
+
+
 
 // MARK: - ColorButton
 struct ColorButton: View {

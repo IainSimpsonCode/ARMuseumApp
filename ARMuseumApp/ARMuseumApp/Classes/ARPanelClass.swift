@@ -51,13 +51,13 @@ class ARPanel {
     let currentRoom: String
     let panelID: String
     let panelIconName: String
-    var detailedText:String?
+    var longText:String
     
     var isTemporarilyExpanded = false
-    var spotlight = false
+    var spotlight: Bool
     var highlightNode: SCNNode?
 
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String? = nil) {
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String, spotlight: Bool) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -94,7 +94,8 @@ class ARPanel {
         self.displayActive = true // expanded at start
         self.panelState = 2
         self.panelIconName = panelIcon
-        self.detailedText = detailedText ?? "Arsenal Football Club, based in London, is one of England's most successful and historic football clubs. Founded in 1886, they are known for their attacking style of play and passionate fan base. Arsenal has won multiple league titles, FA Cups, and other domestic trophies over the years. They play their home matches at the Emirates Stadium"
+        self.longText = detailedText
+        self.spotlight = spotlight
         makePanelFaceCamera()
         createDeleteButton()
         createEditButton()
@@ -297,7 +298,7 @@ class ARPanel {
             // Bigger panel to show more text
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
                 // Pass flag to fill the whole panel
-                self.editTextNode(text: detailedText!, color: UIColor.black, fullWidth: true)
+                self.editTextNode(text: longText, color: UIColor.black, fullWidth: true)
             }
 
             // Hide the icon completely
@@ -327,7 +328,7 @@ class ARPanel {
     }
 
     func editTextNode(text: String, color: UIColor = .black, fullWidth: Bool = false) {
-        let panelWidth: Float = fullWidth ? 0.25 : 0.2
+        let panelWidth: Float = fullWidth ? 0.3 : 0.2
         let panelHeight: Float = fullWidth ? 1.3 : 0.125
 
         // If fullWidth is true, remove left margin for icon
@@ -379,7 +380,9 @@ class ARPanel {
             r: rgba.red,
             g: rgba.green,
             b: rgba.blue,
-            alpha: rgba.alpha
+            alpha: rgba.alpha,
+            longText: self.longText,
+            spotlight: self.spotlight
         )
     }
     
@@ -389,7 +392,7 @@ class ARPanel {
         let highlightWidth: CGFloat = 0.29
         let highlightHeight: CGFloat = 0.135
         let cornerRadius: CGFloat = 30   // corner radius in image points
-        let color = UIColor.yellow.withAlphaComponent(0.2)
+        let color = UIColor.yellow.withAlphaComponent(0.7)
 
         // Create a rounded-corner image
         let size = CGSize(width: 300, height: 150)
@@ -424,12 +427,48 @@ class ARPanel {
 
         parentNode.insertChildNode(node, at: 0)
         highlightNode = node
+        print(spotlight)
+        if(spotlight){
+            highlightNode?.isHidden = false
+        }
     }
 
     func setSpotlight() {
         spotlight.toggle()
-        highlightNode?.isHidden = spotlight
+        highlightNode?.isHidden = !spotlight
     }
+    
+    func checkAndSetSpotlight(far:Bool){
+        if(far){
+            if(spotlight){
+                adjustSpotlightSize(isLarge: false)
+            }
+        }
+        else{
+            if(spotlight){
+                adjustSpotlightSize(isLarge: true)
+            }
+        }
+        
+    }
+    
+    func adjustSpotlightSize(isLarge: Bool) {
+        guard let plane = highlightNode?.geometry as? SCNPlane else {
+            return
+        }
+
+        // Define base sizes
+        let smallWidth: CGFloat = 0.15
+        let smallHeight: CGFloat = 0.075
+        let largeWidth: CGFloat = 0.29
+        let largeHeight: CGFloat = 0.135
+
+        // Instantly resize the geometry
+        plane.width = isLarge ? largeWidth : smallWidth
+        plane.height = isLarge ? largeHeight : smallHeight
+
+    }
+
 
 }
 

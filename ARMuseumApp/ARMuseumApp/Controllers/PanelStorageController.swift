@@ -56,7 +56,7 @@ class PanelStorageManager {
         return savedPanels.compactMap { panel in
             let position = SCNVector3(panel.x, panel.y, panel.z)
             
-            return Panel(panelID: panel.panelID, museumID: museumID, roomID: roomID, x: panel.x, y: panel.y, z: panel.z, text: panel.text, icon: panel.icon, r: panel.r, g: panel.g, b: panel.b, alpha: panel.alpha)
+            return Panel(panelID: panel.panelID, museumID: museumID, roomID: roomID, x: panel.x, y: panel.y, z: panel.z, text: panel.text, icon: panel.icon, r: panel.r, g: panel.g, b: panel.b, alpha: panel.alpha, longText: panel.longText, spotlight: panel.spotlight)
         }
     }
     

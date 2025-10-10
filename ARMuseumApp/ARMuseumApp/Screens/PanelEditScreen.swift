@@ -81,34 +81,34 @@ struct EditPanelView: View {
                         }
                     }
 
-                    // Icon picker
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Panel Icon")
-                            .font(.headline)
-                            .foregroundColor(.white)
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                ForEach(sharedIconOptions, id: \.self) { symbol in
-                                    Button(action: { selectedIcon = symbol }) {
-                                        Image(systemName: symbol)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 36, height: 36)
-                                            .padding(10)
-                                            .background(selectedIcon == symbol ? Color.blue.opacity(0.5) : Color.clear)
-                                            .foregroundColor(selectedIcon == symbol ? .white : .primary)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
-                                            )
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 2)
-                        }
-                    }
+//                    // Icon picker
+//                    VStack(alignment: .leading, spacing: 8) {
+//                        Text("Panel Icon")
+//                            .font(.headline)
+//                            .foregroundColor(.white)
+//
+//                        ScrollView(.horizontal, showsIndicators: false) {
+//                            HStack(spacing: 16) {
+//                                ForEach(sharedIconOptions, id: \.self) { symbol in
+//                                    Button(action: { selectedIcon = symbol }) {
+//                                        Image(systemName: symbol)
+//                                            .resizable()
+//                                            .scaledToFit()
+//                                            .frame(width: 36, height: 36)
+//                                            .padding(10)
+//                                            .background(selectedIcon == symbol ? Color.blue.opacity(0.5) : Color.clear)
+//                                            .foregroundColor(selectedIcon == symbol ? .white : .primary)
+//                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+//                                            .overlay(
+//                                                RoundedRectangle(cornerRadius: 8)
+//                                                    .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
+//                                            )
+//                                    }
+//                                }
+//                            }
+//                            .padding(.horizontal, 2)
+//                        }
+//                    }
 
                     // Update button
                     Button(action: {
