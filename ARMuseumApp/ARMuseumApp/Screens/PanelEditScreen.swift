@@ -135,12 +135,12 @@ struct EditPanelView: View {
                         presentationMode.wrappedValue.dismiss()
                         buttonFunctions.sessionDetails.panelCreationMode = false
                         
-                        if(buttonFunctions.SessionSelected == 2){
+                        if(buttonFunctions.SessionSelected == 3){
                             Task {
                                 await updatePanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
                             }
                         }
-                        else if(buttonFunctions.SessionSelected == 3){
+                        else if(buttonFunctions.SessionSelected == 2){
                             Task {
                                 await updateCommunityPanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID), accessToken: buttonFunctions.accessToken)
                             }

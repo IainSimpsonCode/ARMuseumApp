@@ -302,7 +302,7 @@ class ARPanel {
             }
 
             // Hide the icon completely
-            iconCurrentLocation = SCNVector3(x: 0, y: 0, z: 1)   // move behind panel
+            iconCurrentLocation = SCNVector3(x: 0, y: 0, z: -1000)   // move behind panel
             iconCurrentScale = SCNVector3(x: 0, y: 0, z: 0)       // shrink it completely
 
             // Move buttons to top corners (optional)

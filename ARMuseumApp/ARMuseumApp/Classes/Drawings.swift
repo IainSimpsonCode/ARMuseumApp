@@ -12,5 +12,5 @@ struct DrawingPoint: Codable {
     let y: Float
     let z: Float
     let radius: Float      // sphere radius
-    var drawingID: String = UUID().uuidString
-}
+    var drawingID: String }
+

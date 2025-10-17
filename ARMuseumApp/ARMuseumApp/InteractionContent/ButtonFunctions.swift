@@ -150,17 +150,38 @@ class ButtonFunctions: ObservableObject {
         sessionDetails.isSessionActive = false
         currentRoom = ""
 
-        
+        // Remove all panels from the scene
         panelController?.removePanelsInScene()
-        resetARSession()
+        
+        // ✅ Properly stop the AR session
+        if let arView = arView {
+            arView.session.pause()  // <— this actually stops camera + Metal buffer use
+            
+            // Optionally clear the scene to free GPU memory
+            arView.scene.rootNode.childNodes.forEach { $0.removeFromParentNode() }
+            
+            // Also clear delegates to avoid retain cycles
+            arView.delegate = nil
+            arView.session.delegate = nil
+        }
+
     }
+
     
     func resetARSession() {
+        guard let arView = arView else { return }
+        
         let configuration = ARWorldTrackingConfiguration()
         let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil)
         configuration.detectionImages = referenceImages
-        arView!.session.run(configuration, options: [.removeExistingAnchors])
+        
+        // This resets tracking and anchors (fresh start)
+        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        
+        sessionRunning = true
+        print("🔄 AR session restarted.")
     }
+
     
     func toggleEditMode() {
         editModeActive.toggle()
@@ -173,5 +194,7 @@ class ButtonFunctions: ObservableObject {
         shadowPanel?.shadowPanelChoice = option
         shadowPanel?.shadowPanelAction()
     }
+    
+    
 
 }

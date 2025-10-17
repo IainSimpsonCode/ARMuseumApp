@@ -167,6 +167,18 @@ struct ARViewContainer: UIViewRepresentable {
     func updateUIView(_ uiView: ARSCNView, context: Context) {
         
     }
+    
+    static func dismantleUIView(_ uiView: ARSCNView, coordinator: Coordinator) {
+        // Stop all AR updates and release GPU resources
+        uiView.session.pause()
+        
+        // Optionally remove all nodes to free SceneKit memory
+        uiView.scene.rootNode.childNodes.forEach { $0.removeFromParentNode() }
+        
+        // Clear the delegate to avoid retaining coordinator
+        uiView.delegate = nil
+    }
+
 }
 
 

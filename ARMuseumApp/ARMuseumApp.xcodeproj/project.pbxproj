@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22092C912EA2582200CDD557 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22092C902EA2582200CDD557 /* Camera.swift */; };
 		2235AEEE2E86ADA5003C6A61 /* DrawingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2235AEED2E86ADA4003C6A61 /* DrawingService.swift */; };
 		2235AEF02E86AE14003C6A61 /* Drawings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2235AEEF2E86AE14003C6A61 /* Drawings.swift */; };
 		2241F8912CA25B8B00D8CA36 /* ARWebViewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		22092C902EA2582200CDD557 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		2235AEED2E86ADA4003C6A61 /* DrawingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingService.swift; sourceTree = "<group>"; };
 		2235AEEF2E86AE14003C6A61 /* Drawings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawings.swift; sourceTree = "<group>"; };
 		2241F8902CA25B8B00D8CA36 /* ARWebViewPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARWebViewPanel.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			children = (
 				22F271E02C51319300609437 /* ARViewContainer.swift */,
 				2281E69D2E687AD60086C836 /* ARCameraForMenu.swift */,
+				22092C902EA2582200CDD557 /* Camera.swift */,
 			);
 			path = ARViewController;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				22B7EC362D408E7700C7FDFD /* PanelMovementToggle.swift in Sources */,
 				2281E6A32E69A1920086C836 /* APIService.swift in Sources */,
 				22DE18942E5F3F9A00BC8575 /* AddPanelButton.swift in Sources */,
+				22092C912EA2582200CDD557 /* Camera.swift in Sources */,
 				22B7EC3E2D4842EE00C7FDFD /* MovingPanelButtons.swift in Sources */,
 				228010462C53D2B3000D01B4 /* ARPanelController.swift in Sources */,
 				22B7EC322D4089B500C7FDFD /* EditModeButton.swift in Sources */,

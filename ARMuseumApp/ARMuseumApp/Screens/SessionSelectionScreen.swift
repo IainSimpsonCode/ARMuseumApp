@@ -1,26 +1,20 @@
-//
-//  PanelsService.swift
-//  ARMuseumApp
-//
-//  Created by Senan on 04/09/2025.
-//
 import SwiftUI
 
 struct SessionSelectionScreen: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @State private var showCommunityScreen = false
     @State private var showLoginScreen = false
-    @StateObject private var arModel = ARViewModel()
 
     var body: some View {
         ZStack {
-            ARCameraForMenu(model: arModel)
+            // Live camera background
+            CameraView()
                 .edgesIgnoringSafeArea(.all)
-            
-            Color.black
-                .opacity(0.3)
+
+            // Translucent overlay
+            Color.black.opacity(0.3)
                 .edgesIgnoringSafeArea(.all)
-            
+
             VStack(spacing: 30) {
                 Text("Select Session Type")
                     .font(.largeTitle)
@@ -30,7 +24,7 @@ struct SessionSelectionScreen: View {
                     .background(.ultraThinMaterial)
                     .cornerRadius(12)
                     .shadow(radius: 4)
-                
+
                 Text("\(buttonFunctions.sessionDetails.museumID)")
                     .font(.title3)
                     .padding()
@@ -38,7 +32,7 @@ struct SessionSelectionScreen: View {
                     .cornerRadius(12)
                     .shadow(radius: 4)
                     .padding(.bottom, 50)
-                
+
                 Button(action: privateS) {
                     Text("Curator's Tour")
                         .font(.title2)
@@ -62,11 +56,11 @@ struct SessionSelectionScreen: View {
                         .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
                 }
                 .buttonStyle(PlainButtonStyle())
-                
+
                 Spacer()
             }
             .padding(.top, 100)
-            
+
             VStack {
                 Spacer()
                 HStack {
@@ -84,19 +78,21 @@ struct SessionSelectionScreen: View {
                 .padding(.bottom, 20)
             }
         }
+        // Present Community Sessions full screen
         .fullScreenCover(isPresented: $showCommunityScreen) {
             CommunitySessionsScreen()
         }
+        // Present Curator Login full screen
         .fullScreenCover(isPresented: $showLoginScreen) {
-            
             CuratorLoginScreen()
         }
     }
-    
+
+    // MARK: - Button Actions
     func privateS() {
         buttonFunctions.SessionSelected = 1
     }
-    
+
     func community() {
         showCommunityScreen = true
     }

@@ -155,31 +155,31 @@ class GestureHandler: NSObject {
                         targetGeometry: state3Geometry
                     )
 
-                    // Cancel any previous collapse timer for this panel
-                    panelCollapseTimers[panelID]?.invalidate()
-
-                    // Schedule a new collapse timer to shrink back after 10s
-                    panelCollapseTimers[panelID] = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { _ in
-                        panel.isTemporarilyExpanded = false
-
-                        // Compute camera distance
-                        let distance = self.distanceBetween(
-                            self.sceneView.pointOfView!.worldPosition,
-                            panel.parentNode.worldPosition
-                        )
-
-                        // Adjust panel size depending on user distance
-                        if distance < 2 {
-                            panel.changePanelSize(size: 2)
-                        } else if distance > 2 && distance < 4 {
-                            panel.changePanelSize(size: 1)
-                        } else {
-                            panel.changePanelSize(size: 0)
-                        }
-
-                        // Remove timer reference after it fires
-                        self.panelCollapseTimers[panelID] = nil
-                    }
+//                    // Cancel any previous collapse timer for this panel
+//                    panelCollapseTimers[panelID]?.invalidate()
+//
+//                    // Schedule a new collapse timer to shrink back after 10s
+//                    panelCollapseTimers[panelID] = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { _ in
+//                        panel.isTemporarilyExpanded = false
+//
+//                        // Compute camera distance
+//                        let distance = self.distanceBetween(
+//                            self.sceneView.pointOfView!.worldPosition,
+//                            panel.parentNode.worldPosition
+//                        )
+//
+//                        // Adjust panel size depending on user distance
+//                        if distance < 2 {
+//                            panel.changePanelSize(size: 2)
+//                        } else if distance > 2 && distance < 4 {
+//                            panel.changePanelSize(size: 1)
+//                        } else {
+//                            panel.changePanelSize(size: 0)
+//                        }
+//
+//                        // Remove timer reference after it fires
+//                        self.panelCollapseTimers[panelID] = nil
+//                    }
                 }
                 return
             }
@@ -272,6 +272,11 @@ class GestureHandler: NSObject {
 
         let node = SCNNode(geometry: sphere)
         node.position = interpolated
+        
+        // Assign a unique ID to the node
+        let uniqueID = UUID().uuidString
+        node.name = uniqueID
+        
         sceneView.scene.rootNode.addChildNode(node)
         
         Task{
@@ -337,8 +342,13 @@ class GestureHandler: NSObject {
         // Remove nodes from scene AND UserDefaults
         for node in nodesToErase {
             node.removeFromParentNode()
-            removeDrawingNode(node)
+            Task{
+                if(buttonFunctions.SessionSelected == 2){
+                    await clearSavedDrawings(node, museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID, accessToken: buttonFunctions.accessToken)
+                }
+            }
         }
+        
     }
     
     private func addPointInFrontOfCamera() {

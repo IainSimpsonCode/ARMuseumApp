@@ -18,7 +18,8 @@ func saveDrawingNode(_ node: SCNNode, museumID: String, roomID: String, accessTo
         x: node.position.x,
         y: node.position.y,
         z: node.position.z,
-        radius: Float(sphere.radius)
+        radius: Float(sphere.radius),
+        drawingID: node.name!
     )
     
     await saveDrawingNodeService(drawingPoint: point, museumID: museumID, roomID: roomID, accessToken: accessToken)
@@ -32,13 +33,18 @@ func restoreDrawings(to scene: SCNScene, museumID: String, roomID: String, acces
             sphere.firstMaterial?.diffuse.contents = UIColor.systemBlue
             let node = SCNNode(geometry: sphere)
             node.position = SCNVector3(p.x, p.y, p.z)
+            node.name = p.drawingID
             scene.rootNode.addChildNode(node)
         }
     }
 }
 
-func clearSavedDrawings() {
-    UserDefaults.standard.removeObject(forKey: "savedDrawings")
+func clearSavedDrawings(_ node: SCNNode, museumID: String, roomID: String, accessToken: String) async {
+    guard let sphere = await node.geometry as? SCNSphere else { return }
+    
+    let id = await node.name
+    
+    await deleteDrawingNodeService(museumID: museumID, roomID: roomID, id: id!, accessToken: accessToken)
 }
 
 func removeDrawingNode(_ node: SCNNode) {
