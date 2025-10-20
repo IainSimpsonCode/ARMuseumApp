@@ -7,7 +7,7 @@
 
 import Foundation
 
-func loginServie(museumID: String, curatorID: String, curatorPassword: String) async -> String {
+func loginService(museumID: String, curatorID: String, curatorPassword: String) async -> String {
     do {
         let endpoint = "/api/\(museumID)/authenticate"
         

@@ -151,7 +151,7 @@ struct EditPanelView: View {
                             .font(.system(.headline, design: .rounded))
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green.opacity(0.8))
+                            .background(Color.blue.opacity(0.8))
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }

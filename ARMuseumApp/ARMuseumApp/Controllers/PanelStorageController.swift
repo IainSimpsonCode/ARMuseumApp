@@ -81,8 +81,6 @@ class PanelStorageManager {
                 var needsUpdate = false
                             
                             if existing.panelText != newPanel.text {
-                                print(existing.panelText )
-                                print(newPanel.text )
                                 needsUpdate = true
                             }
                             if existing.panelIconName != newPanel.icon {

@@ -30,7 +30,6 @@ struct ARViewContainer: UIViewRepresentable {
             self.panelController = parent.panelController
             self.lastDistanceUpdateTime = CACurrentMediaTime() // or Date().timeIntervalSince1970
             self.lastComUpdateTime = CACurrentMediaTime() // or Date().timeIntervalSince1970
-
         }
         
         func setupImageDetectionHandler(for sceneView: ARSCNView) {
@@ -89,21 +88,21 @@ struct ARViewContainer: UIViewRepresentable {
                                 self.gestureHandler?.updatePanelDistances()
                             }
                         }
-                    
                     if time - self.lastComUpdateTime >= 10.0 {
                         self.lastComUpdateTime = time
                         if(parent.buttonFunctions.SessionSelected == 2){
                             Task {
-                                                            let allPanels = await PanelStorageManager.loadPanels(
-                                                                museumID: parent.buttonFunctions.sessionDetails.museumID,
-                                                                roomID: parent.buttonFunctions.sessionDetails.roomID,
-                                                                sessionSelected: parent.buttonFunctions.SessionSelected,
-                                                                accessToken: parent.buttonFunctions.accessToken
-                                                            )
-    //                                                        for panel in allPanels {
-    //                                                            parent.buttonFunctions.placeLoadedPanel(panel: panel)
-    //                                                            print(allPanels.count)
-    //                                                        }
+                                let allPanels = await PanelStorageManager.loadPanels(
+                                    museumID: parent.buttonFunctions.sessionDetails.museumID,
+                                    roomID: parent.buttonFunctions.sessionDetails.roomID,
+                                    sessionSelected: parent.buttonFunctions.SessionSelected,
+                                    accessToken: parent.buttonFunctions.accessToken
+                                )
+//                                for panel in allPanels {
+//                                    parent.buttonFunctions.placeLoadedPanel(panel: panel)
+//                                    print(allPanels.count)
+//                                }
+                                                      
                                 await PanelStorageManager.handleCommunityUpdates(_ARPanelController: panelController, panels: allPanels, buttonFunctions: parent.buttonFunctions)
 
                             }

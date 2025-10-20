@@ -7,7 +7,8 @@ struct StartSessionButton: View {
     @State private var rooms: [String] = []
     @State private var selectedRoom: String? = nil
     @State private var isLoadingRooms = true
-    @State private var showAlert = false   // <-- New
+    @State private var showAlert = false
+    @State private var showPhonePositionAlert = false
 
     var body: some View {
         ZStack {
@@ -68,7 +69,6 @@ struct StartSessionButton: View {
                         .padding()
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
-//                        .padding(.horizontal)
                         .background(.ultraThinMaterial)
                         .cornerRadius(12)
                         .shadow(radius: 4)
@@ -78,7 +78,13 @@ struct StartSessionButton: View {
                 }
                 
                 // Bottom pinned button
-                Button(action: { startSession() }) {
+                Button(action: {
+                    guard selectedRoom != nil else {
+                        showAlert = true
+                        return
+                    }
+                    showPhonePositionAlert = true
+                }) {
                     Text("Calibrate And Start")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
@@ -94,23 +100,26 @@ struct StartSessionButton: View {
         .onAppear {
             Task { await loadRooms() }
         }
-        .alert(isPresented: $showAlert) {   // <-- Alert
+        .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Room Not Selected"),
                 message: Text("Please select a room before starting the session."),
                 dismissButton: .default(Text("OK"))
             )
         }
+        .alert("Is your phone in the correct start position?", isPresented: $showPhonePositionAlert) {
+            Button("Yes (Proceed)") { proceedToStartSession() }
+            Button("No (Go Back)", role: .cancel) { /* do nothing */ }
+        }
     }
-
-    func startSession() {
+    
+    func proceedToStartSession() {
         guard !buttonFunctions.sessionRunning else { return }
-        
         guard let room = selectedRoom else {
-            showAlert = true   // <-- Show prompt if no room selected
+            showAlert = true
             return
         }
-        
+
         buttonFunctions.sessionDetails.roomID = room
         buttonFunctions.sessionDetails.isSessionActive = true
         buttonFunctions.startSession()

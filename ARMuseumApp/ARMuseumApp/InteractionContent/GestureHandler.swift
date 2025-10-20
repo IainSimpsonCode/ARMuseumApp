@@ -5,12 +5,14 @@ class GestureHandler: NSObject {
     var sceneView: ARSCNView
     var panelController: ARPanelController
     var shadowPanel: ShadowPanel?
+    var distance: Float = 0
     private var panelToChange: ARPanel?
     private var initialScale: SCNVector3?
     private var selectedNode: SCNNode?
     @ObservedObject var buttonFunctions: ButtonFunctions
-    var panelCollapseTimers: [String: Timer] = [:] // Use panelID or some unique key
-
+    var panelCollapseTimers: [String: Timer] = [:] 
+    @State private var showToast = false
+    
     init(sceneView: ARSCNView, panelController: ARPanelController, buttonFunctions: ButtonFunctions) {
         self.sceneView = sceneView
         self.panelController = panelController
@@ -188,23 +190,31 @@ class GestureHandler: NSObject {
 
     @objc func handleHold(sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
-        
+
         let location = sender.location(in: sceneView)
         let hitTestResults = sceneView.hitTest(location, options: nil)
-        
-        if let hitResult = hitTestResults.first {
-            let node = hitResult.node
+
+        guard let hitResult = hitTestResults.first else { return }
+        let node = hitResult.node
+
+        for panel in panelController.panelsInScene {
+            // Check node match, not already temporarily expanded, and distance if needed
+            if (node == panel.parentNode || node == panel.iconNode) && !panel.isTemporarilyExpanded {
                 
-            for panelsInScene in panelController.panelsInScene {
-                if(node == panelsInScene.parentNode || node == panelsInScene.iconNode){
-                    panelsInScene.editModeToggle()
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                                    generator.prepare()
-                                    generator.impactOccurred()
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        panelsInScene.editModeToggle()
-                    }
+                // Mark as temporarily expanded
+                panel.isTemporarilyExpanded = true
+                
+                panel.editModeToggle()
+                
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.prepare()
+                generator.impactOccurred()
+                
+                // Safely schedule toggle back after 5 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak panel] in
+                    guard let panel = panel else { return }
+                    panel.editModeToggle()
+                    panel.isTemporarilyExpanded = false
                 }
             }
         }
@@ -382,7 +392,7 @@ class GestureHandler: NSObject {
             if panel.isTemporarilyExpanded { continue }
             
             let panelPosition = panel.parentNode.worldPosition
-            let distance = distanceBetween(cameraPosition, panelPosition)
+            distance = distanceBetween(cameraPosition, panelPosition)
             
             if distance < 2 {
                 panel.changePanelSize(size: 2)
@@ -394,6 +404,7 @@ class GestureHandler: NSObject {
                 panel.changePanelSize(size: 0)
                 panel.checkAndSetSpotlight(far: true)
             }
+
         }
     }
 
