@@ -58,15 +58,20 @@ struct AddPanelView: View {
                             buttonFunctions.sessionDetails.selectedExhibit = panel
                             presentationMode.wrappedValue.dismiss()
                         }) {
-                            Text(panel.title)
-                                .font(.system(.headline, design: .rounded))
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.9)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 8)
+                            HStack {
+                                Text(panel.title)
+                                    .font(.system(.headline, design: .rounded))
+                                    .lineLimit(2)
+                                    .minimumScaleFactor(0.9)
+                                Spacer() // pushes text to the left, fills row
+                            }
+                            .padding(.vertical, 12)
+                            .padding(.horizontal)
+                            .contentShape(Rectangle()) // makes the whole HStack tappable
                         }
                         .buttonStyle(.plain)
                     }
+
                 }
                 .listStyle(.insetGrouped)
             }
@@ -102,7 +107,6 @@ struct AddPanelView: View {
         }
     }
 
-    // Call your actual function here
     func resetPanels() {
     }
 }

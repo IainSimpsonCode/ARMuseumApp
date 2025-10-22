@@ -12,13 +12,7 @@ struct StartSessionButton: View {
 
     var body: some View {
         ZStack {
-            // Camera background
-            CameraView()
-                .edgesIgnoringSafeArea(.all)
             
-            // Semi-transparent overlay
-            Color.black.opacity(0.3)
-                .edgesIgnoringSafeArea(.all)
             
             VStack {
                 VStack(spacing: 16) {

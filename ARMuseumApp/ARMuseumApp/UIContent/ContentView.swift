@@ -61,6 +61,13 @@ struct ContentView: View {
         }
         else {
             ZStack {
+                // Camera background
+                CameraView()
+                    .edgesIgnoringSafeArea(.all)
+                
+                // Semi-transparent overlay
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
                 
                 StartSessionButton()
                     .environmentObject(buttonFunctions)

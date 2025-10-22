@@ -23,15 +23,24 @@ struct SplashScreen: View {
 
                 VStack {
                     // Welcome text
-                    Text("Welcome to \nAR Museum")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(12)
-                        .shadow(radius: 4)
-                        .padding(.top, 50)
+                    VStack {
+                        Image(systemName: "building.columns.fill") // museum-style icon
+                            .font(.system(size: 60))
+                            .foregroundColor(.accentColor)
+                            .shadow(radius: 4)
+
+                        Text("Welcome to \nAR Museum")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(12)
+                            .shadow(radius: 4)
+                            .padding(.top, 10)
+                    }
+                    .padding(.top, 50)
+
 
                     Spacer()
 
