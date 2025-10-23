@@ -162,6 +162,30 @@ export const deleteCuratorPanel = async (req, res) => {
   }
 };
 
+export const resetCuratorPanels = async (req, res) => {
+  const museumID = req.params.museumID;
+  const roomID = req.params.roomID;
+
+  try {
+    // --- Query CuratorPanelData ---
+    const communitySnapshot = await db.collection("CuratorPanelData")
+      .where("museumID", "==", museumID)
+      .where("roomID", "==", roomID)
+      .get();
+
+    // Delete each doc
+    const curatorDeletes = communitySnapshot.docs.map(doc => doc.ref.delete());
+
+    // --- Run all deletes in parallel ---
+    await Promise.all(curatorDeletes);
+
+    return res.status(200).json({ message: "Session panels cleared successfully." });
+  } catch (e) {
+    console.error("Error clearing session panels:", e);
+    return res.status(500).json({ message: "Server could not clear session panels." });
+  }
+};
+
 
 export const getAvailableCuratorPanels = async (req, res) => {
   const museumID = req.params.museumID;
