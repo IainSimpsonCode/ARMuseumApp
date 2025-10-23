@@ -10,7 +10,7 @@ struct ContentView: View {
     // You need a target node for StartSessionButton
     // For now, create a placeholder node; replace with your actual node
     @State private var myNode = SCNNode()
-    @StateObject private var arModel = ARViewModel()
+    @EnvironmentObject var arModel: ARViewModel
 
     var body: some View {
         if buttonFunctions.SessionSelected == 0 {
@@ -22,7 +22,7 @@ struct ContentView: View {
 //                    .edgesIgnoringSafeArea(.all)
 
                 // Then overlay splash content
-                    SplashScreen(arModel: arModel)
+                    SplashScreen()
 //                }
 //                
 //            }
@@ -61,10 +61,15 @@ struct ContentView: View {
         }
         else {
             ZStack {
-                ARCameraForMenu(model: arModel)
+                // Camera background
+                CameraView()
                     .edgesIgnoringSafeArea(.all)
                 
-                StartSessionButton(arModel: arModel)
+                // Semi-transparent overlay
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                
+                StartSessionButton()
                     .environmentObject(buttonFunctions)
                 
                 MovingPanelButtons()

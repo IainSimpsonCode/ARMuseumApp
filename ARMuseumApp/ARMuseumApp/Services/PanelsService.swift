@@ -80,7 +80,8 @@ func updatePanelService(panel: Panel) async -> String {
             "icon": panel.icon,
             "r": panel.r,
             "g": panel.g,
-            "b": panel.b
+            "b": panel.b,
+            "spotlight": panel.spotlight
         ]
 
         // Wrap with docID

@@ -5,12 +5,14 @@ class GestureHandler: NSObject {
     var sceneView: ARSCNView
     var panelController: ARPanelController
     var shadowPanel: ShadowPanel?
+    var distance: Float = 0
     private var panelToChange: ARPanel?
     private var initialScale: SCNVector3?
     private var selectedNode: SCNNode?
     @ObservedObject var buttonFunctions: ButtonFunctions
-    var panelCollapseTimers: [String: Timer] = [:] // Use panelID or some unique key
-
+    var panelCollapseTimers: [String: Timer] = [:] 
+    @State private var showToast = false
+    
     init(sceneView: ARSCNView, panelController: ARPanelController, buttonFunctions: ButtonFunctions) {
         self.sceneView = sceneView
         self.panelController = panelController
@@ -92,8 +94,14 @@ class GestureHandler: NSObject {
                
                 return
             }
+            // SPOTLIGHT BUTTON
             else if node == panel.spotlightButtonNode || node == panel.spotlightButtonNode.childNodes.first {
                 panel.setSpotlight()
+                if(buttonFunctions.SessionSelected != 1){
+                    Task{
+                        await updatePanelService(panel:panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
+                    }
+                }
                
                 return
             }
@@ -118,66 +126,95 @@ class GestureHandler: NSObject {
                         panel.changePanelSize(size: 0)
                     }
                 } else {
-                    // Expand panel
+                    // Expand panel safely
                     panel.isTemporarilyExpanded = true
                     panel.panelState = 3
-                    let charCount = panel.detailedText!.count / 12
-                        
-                    // Define a base height and a scaling factor
-                    let baseHeight: CGFloat = 0.1   // minimum height
-                    let heightPerChar: CGFloat = 0.005 // how much height to add per character
-                        
-                    // Compute dynamic height
-                    let dynamicHeight = baseHeight + (CGFloat(charCount) * heightPerChar)
-                    let state3Geometry = SCNBox(width: 0.3, height: dynamicHeight, length: 0.04, chamferRadius: 1)
-                    panel.animatePanel(panelNode: panel.parentNode, currentGeometry: panel.currentGeometry, targetGeometry: state3Geometry)
-                    
-                    // Cancel any previous timer for this panel
-                    panelCollapseTimers[panelID]?.invalidate()
-                    
-                    // Schedule a new collapse timer
-                    panelCollapseTimers[panelID] = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
-                        panel.isTemporarilyExpanded = false
-                        let distance = self.distanceBetween(self.sceneView.pointOfView!.worldPosition,
-                                                            panel.parentNode.worldPosition)
-                        if distance < 2 {
-                            panel.changePanelSize(size: 2)
-                        } else if distance > 2 && distance < 4 {
-                            panel.changePanelSize(size: 1)
-                        } else {
-                            panel.changePanelSize(size: 0)
-                        }
-                        // Remove timer reference after it fires
-                        self.panelCollapseTimers[panelID] = nil
-                    }
+
+                    // Calculate how many "lines" of text roughly to expect
+                    let charCount = panel.longText.count / 12
+
+                    // Define base size parameters
+                    let baseHeight: CGFloat = 0.1      // Minimum panel height
+                    let heightPerChar: CGFloat = 0.005 // How much height to add per 12 characters
+                    let maxHeight: CGFloat = 0.8       // 🧱 Maximum allowed panel height (prevents crash)
+
+                    // Compute dynamic height and clamp it safely
+                    var dynamicHeight = baseHeight + (CGFloat(charCount) * heightPerChar)
+                    dynamicHeight = min(dynamicHeight, maxHeight)
+
+                    // Create new geometry with safe height
+                    let state3Geometry = SCNBox(
+                        width: 0.4,
+                        height: dynamicHeight,
+                        length: 0.04,
+                        chamferRadius: 1
+                    )
+
+                    // Animate the geometry transition
+                    panel.animatePanel(
+                        panelNode: panel.parentNode,
+                        currentGeometry: panel.currentGeometry,
+                        targetGeometry: state3Geometry
+                    )
+
+//                    // Cancel any previous collapse timer for this panel
+//                    panelCollapseTimers[panelID]?.invalidate()
+//
+//                    // Schedule a new collapse timer to shrink back after 10s
+//                    panelCollapseTimers[panelID] = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { _ in
+//                        panel.isTemporarilyExpanded = false
+//
+//                        // Compute camera distance
+//                        let distance = self.distanceBetween(
+//                            self.sceneView.pointOfView!.worldPosition,
+//                            panel.parentNode.worldPosition
+//                        )
+//
+//                        // Adjust panel size depending on user distance
+//                        if distance < 2 {
+//                            panel.changePanelSize(size: 2)
+//                        } else if distance > 2 && distance < 4 {
+//                            panel.changePanelSize(size: 1)
+//                        } else {
+//                            panel.changePanelSize(size: 0)
+//                        }
+//
+//                        // Remove timer reference after it fires
+//                        self.panelCollapseTimers[panelID] = nil
+//                    }
                 }
                 return
             }
-
-
         }
     }
 
     @objc func handleHold(sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
-        
+
         let location = sender.location(in: sceneView)
         let hitTestResults = sceneView.hitTest(location, options: nil)
-        
-        if let hitResult = hitTestResults.first {
-            let node = hitResult.node
+
+        guard let hitResult = hitTestResults.first else { return }
+        let node = hitResult.node
+
+        for panel in panelController.panelsInScene {
+            // Check node match, not already temporarily expanded, and distance if needed
+            if (node == panel.parentNode || node == panel.iconNode) && !panel.isTemporarilyExpanded {
                 
-            for panelsInScene in panelController.panelsInScene {
-                if(node == panelsInScene.parentNode || node == panelsInScene.iconNode){
-                    panelsInScene.editModeToggle()
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                                    generator.prepare()
-                                    generator.impactOccurred()
-                    
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        panelsInScene.editModeToggle()
-                    }
+                // Mark as temporarily expanded
+                panel.isTemporarilyExpanded = true
+                
+                panel.editModeToggle()
+                
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.prepare()
+                generator.impactOccurred()
+                
+                // Safely schedule toggle back after 5 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak panel] in
+                    guard let panel = panel else { return }
+                    panel.editModeToggle()
+                    panel.isTemporarilyExpanded = false
                 }
             }
         }
@@ -225,7 +262,6 @@ class GestureHandler: NSObject {
         }
     }
 
-
     private func drawFloatingAtTouch(location: CGPoint) {
         guard let currentFrame = sceneView.session.currentFrame else { return }
 
@@ -246,6 +282,11 @@ class GestureHandler: NSObject {
 
         let node = SCNNode(geometry: sphere)
         node.position = interpolated
+        
+        // Assign a unique ID to the node
+        let uniqueID = UUID().uuidString
+        node.name = uniqueID
+        
         sceneView.scene.rootNode.addChildNode(node)
         
         Task{
@@ -311,8 +352,13 @@ class GestureHandler: NSObject {
         // Remove nodes from scene AND UserDefaults
         for node in nodesToErase {
             node.removeFromParentNode()
-            removeDrawingNode(node)
+            Task{
+                if(buttonFunctions.SessionSelected == 2){
+                    await clearSavedDrawings(node, museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID, accessToken: buttonFunctions.accessToken)
+                }
+            }
         }
+        
     }
     
     private func addPointInFrontOfCamera() {
@@ -346,15 +392,19 @@ class GestureHandler: NSObject {
             if panel.isTemporarilyExpanded { continue }
             
             let panelPosition = panel.parentNode.worldPosition
-            let distance = distanceBetween(cameraPosition, panelPosition)
-
+            distance = distanceBetween(cameraPosition, panelPosition)
+            
             if distance < 2 {
                 panel.changePanelSize(size: 2)
+                panel.checkAndSetSpotlight(far: false)
             } else if distance > 2 && distance < 4 {
                 panel.changePanelSize(size: 1)
+                panel.checkAndSetSpotlight(far: true)
             } else {
                 panel.changePanelSize(size: 0)
+                panel.checkAndSetSpotlight(far: true)
             }
+
         }
     }
 

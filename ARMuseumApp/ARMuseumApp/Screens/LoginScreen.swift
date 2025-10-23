@@ -135,7 +135,7 @@ struct CuratorLoginScreen: View {
             defer { isLoading = false }
             
             do {
-                let response = try await loginServie(
+                let response = try await loginService(
                     museumID: buttonFunctions.sessionDetails.museumID,
                     curatorID: curatorID,
                     curatorPassword: password

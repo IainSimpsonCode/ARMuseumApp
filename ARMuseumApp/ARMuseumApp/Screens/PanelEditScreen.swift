@@ -81,34 +81,34 @@ struct EditPanelView: View {
                         }
                     }
 
-                    // Icon picker
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Panel Icon")
-                            .font(.headline)
-                            .foregroundColor(.white)
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                ForEach(sharedIconOptions, id: \.self) { symbol in
-                                    Button(action: { selectedIcon = symbol }) {
-                                        Image(systemName: symbol)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 36, height: 36)
-                                            .padding(10)
-                                            .background(selectedIcon == symbol ? Color.blue.opacity(0.5) : Color.clear)
-                                            .foregroundColor(selectedIcon == symbol ? .white : .primary)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
-                                            )
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 2)
-                        }
-                    }
+//                    // Icon picker
+//                    VStack(alignment: .leading, spacing: 8) {
+//                        Text("Panel Icon")
+//                            .font(.headline)
+//                            .foregroundColor(.white)
+//
+//                        ScrollView(.horizontal, showsIndicators: false) {
+//                            HStack(spacing: 16) {
+//                                ForEach(sharedIconOptions, id: \.self) { symbol in
+//                                    Button(action: { selectedIcon = symbol }) {
+//                                        Image(systemName: symbol)
+//                                            .resizable()
+//                                            .scaledToFit()
+//                                            .frame(width: 36, height: 36)
+//                                            .padding(10)
+//                                            .background(selectedIcon == symbol ? Color.blue.opacity(0.5) : Color.clear)
+//                                            .foregroundColor(selectedIcon == symbol ? .white : .primary)
+//                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+//                                            .overlay(
+//                                                RoundedRectangle(cornerRadius: 8)
+//                                                    .stroke(Color.blue, lineWidth: selectedIcon == symbol ? 2 : 0)
+//                                            )
+//                                    }
+//                                }
+//                            }
+//                            .padding(.horizontal, 2)
+//                        }
+//                    }
 
                     // Update button
                     Button(action: {
@@ -135,12 +135,12 @@ struct EditPanelView: View {
                         presentationMode.wrappedValue.dismiss()
                         buttonFunctions.sessionDetails.panelCreationMode = false
                         
-                        if(buttonFunctions.SessionSelected == 2){
+                        if(buttonFunctions.SessionSelected == 3){
                             Task {
                                 await updatePanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID))
                             }
                         }
-                        else if(buttonFunctions.SessionSelected == 3){
+                        else if(buttonFunctions.SessionSelected == 2){
                             Task {
                                 await updateCommunityPanelService(panel: panel.convertToPanel(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID), accessToken: buttonFunctions.accessToken)
                             }
@@ -151,7 +151,7 @@ struct EditPanelView: View {
                             .font(.system(.headline, design: .rounded))
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green.opacity(0.8))
+                            .background(Color.blue.opacity(0.8))
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }

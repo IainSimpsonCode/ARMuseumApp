@@ -51,13 +51,13 @@ class ARPanel {
     let currentRoom: String
     let panelID: String
     let panelIconName: String
-    var detailedText:String?
+    var longText:String
     
     var isTemporarilyExpanded = false
-    var spotlight = false
+    var spotlight: Bool
     var highlightNode: SCNNode?
 
-    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String? = nil) {
+    init(position: SCNVector3, scene: ARSCNView, text: String, panelColor: UIColor, panelIcon: String ,currentRoom: String, panelID: String, detailedText: String, spotlight: Bool) {
         self.panelText = text
         self.currentGeometry = SCNBox(width: 0.05, height: 0.05, length: 0.01, chamferRadius: 1)
         
@@ -94,7 +94,8 @@ class ARPanel {
         self.displayActive = true // expanded at start
         self.panelState = 2
         self.panelIconName = panelIcon
-        self.detailedText = detailedText ?? "Arsenal Football Club, based in London, is one of England's most successful and historic football clubs. Founded in 1886, they are known for their attacking style of play and passionate fan base. Arsenal has won multiple league titles, FA Cups, and other domestic trophies over the years. They play their home matches at the Emirates Stadium"
+        self.longText = detailedText
+        self.spotlight = spotlight
         makePanelFaceCamera()
         createDeleteButton()
         createEditButton()
@@ -106,6 +107,8 @@ class ARPanel {
     
     func addToScene() {
         sceneView.scene.rootNode.addChildNode(parentNode)
+        sceneView.preferredFramesPerSecond = 120
+
         panelNodeInScene = true
         displayActive = true
         animatePanel(panelNode: parentNode, currentGeometry: currentGeometry, targetGeometry: SCNBox(width: 0.26, height: 0.1, length: 0.04, chamferRadius: 1))
@@ -280,6 +283,7 @@ class ARPanel {
             moveButtonNode.position = SCNVector3(x: 0.05, y: 0.05, z: 0.025)
             spotlightButtonNode.position = SCNVector3(x: 0.02, y: 0.05, z: 0.025)
             
+            setHighlightColor(UIColor.yellow.withAlphaComponent(0.3))
             sideButtonTargetGeometry = SCNBox(width: 0.020, height: 0.020, length: 0.012, chamferRadius: 1)
         }
         else if (panelState == 1 || panelState == 0) {
@@ -297,11 +301,11 @@ class ARPanel {
             // Bigger panel to show more text
             Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [self] _ in
                 // Pass flag to fill the whole panel
-                self.editTextNode(text: detailedText!, color: UIColor.black, fullWidth: true)
+                self.editTextNode(text: longText, color: UIColor.black, fullWidth: true)
             }
 
             // Hide the icon completely
-            iconCurrentLocation = SCNVector3(x: 0, y: 0, z: 1)   // move behind panel
+            iconCurrentLocation = SCNVector3(x: 0, y: 0, z: -1000)   // move behind panel
             iconCurrentScale = SCNVector3(x: 0, y: 0, z: 0)       // shrink it completely
 
             // Move buttons to top corners (optional)
@@ -310,6 +314,7 @@ class ARPanel {
             moveButtonNode.position = SCNVector3(x: 0.08, y: 0.1, z: 0.03)
             spotlightButtonNode.position = SCNVector3(x: 0.05, y: 0.1, z: 0.03)
 
+            setHighlightColor(UIColor.white.withAlphaComponent(0.0))
             sideButtonTargetGeometry = SCNBox(width: 0.025, height: 0.025, length: 0.015, chamferRadius: 1)
         }
 
@@ -327,7 +332,7 @@ class ARPanel {
     }
 
     func editTextNode(text: String, color: UIColor = .black, fullWidth: Bool = false) {
-        let panelWidth: Float = fullWidth ? 0.25 : 0.2
+        let panelWidth: Float = fullWidth ? 0.3 : 0.2
         let panelHeight: Float = fullWidth ? 1.3 : 0.125
 
         // If fullWidth is true, remove left margin for icon
@@ -379,45 +384,42 @@ class ARPanel {
             r: rgba.red,
             g: rgba.green,
             b: rgba.blue,
-            alpha: rgba.alpha
+            alpha: rgba.alpha,
+            longText: self.longText,
+            spotlight: self.spotlight
         )
     }
     
     func createHighlight() {
         highlightNode?.removeFromParentNode()
 
-        let highlightWidth: CGFloat = 0.29
-        let highlightHeight: CGFloat = 0.135
-        let cornerRadius: CGFloat = 30   // corner radius in image points
-        let color = UIColor.yellow.withAlphaComponent(0.2)
+        let highlightWidth: CGFloat = 0.35   // bigger than the panel
+        let highlightHeight: CGFloat = 0.18
+        let glowColor = UIColor.yellow.withAlphaComponent(0.3)
 
-        // Create a rounded-corner image
-        let size = CGSize(width: 300, height: 150)
+        // Use a simple, cheap way: a slightly larger rectangle with rounded corners
+        let size = CGSize(width: 256, height: 128)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         let rect = CGRect(origin: .zero, size: size)
-        let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
-        color.setFill()
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: 30)
+        glowColor.setFill()
         path.fill()
-        let roundedImage = UIGraphicsGetImageFromCurrentImageContext()
+        let glowImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        // Use a plane (simple, efficient geometry)
         let plane = SCNPlane(width: highlightWidth, height: highlightHeight)
-
         let material = SCNMaterial()
-        material.diffuse.contents = roundedImage
-        material.emission.contents = roundedImage
+        material.diffuse.contents = glowImage
+        material.emission.contents = glowImage
         material.lightingModel = .constant
         material.isDoubleSided = true
         material.writesToDepthBuffer = false
-
         plane.materials = [material]
 
         let node = SCNNode(geometry: plane)
-        node.position = SCNVector3(0, 0, -0.03)
-        node.isHidden = true
+        node.position = SCNVector3(0, 0, -0.03) // slightly behind panel
+        node.isHidden = !spotlight
 
-        // Optional: make sure it faces the camera
         let billboard = SCNBillboardConstraint()
         billboard.freeAxes = .Y
         node.constraints = [billboard]
@@ -426,9 +428,105 @@ class ARPanel {
         highlightNode = node
     }
 
+    func createRectangularHighlight() {
+        highlightNode?.removeFromParentNode()
+
+        let highlightWidth: CGFloat = 0.25   // slightly bigger than small panel
+        let highlightHeight: CGFloat = 0.12
+        let glowColor = UIColor.yellow.withAlphaComponent(0.3)
+
+        // Create a small, cheap glowing rectangle
+        let size = CGSize(width: 256, height: 128)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        let rect = CGRect(origin: .zero, size: size)
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: 20)
+        glowColor.setFill()
+        path.fill()
+        let glowImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        let plane = SCNPlane(width: highlightWidth, height: highlightHeight)
+        let material = SCNMaterial()
+        material.diffuse.contents = glowImage
+        material.emission.contents = glowImage
+        material.lightingModel = .constant
+        material.isDoubleSided = true
+        material.writesToDepthBuffer = false
+        plane.materials = [material]
+
+        let node = SCNNode(geometry: plane)
+        node.position = SCNVector3(0, 0, -0.03) // behind panel
+        node.isHidden = !spotlight
+
+        // Always face the camera
+        let billboard = SCNBillboardConstraint()
+        billboard.freeAxes = .Y
+        node.constraints = [billboard]
+
+        parentNode.insertChildNode(node, at: 0)
+        highlightNode = node
+    }
+
+    
     func setSpotlight() {
         spotlight.toggle()
-        highlightNode?.isHidden = spotlight
+        highlightNode?.isHidden = !spotlight
+    }
+    
+    func updateHighlightStyle(isCircular: Bool) {
+        if isCircular {
+            createRectangularHighlight()
+        } else {
+            createHighlight()
+        }
+    }
+    
+    func checkAndSetSpotlight(far: Bool) {
+        guard spotlight else { return }
+
+        if far {
+            // Small panel → circular highlight
+            updateHighlightStyle(isCircular: true)
+            adjustSpotlightSize(isLarge: false)
+        } else {
+            // Large panel → rectangular highlight
+            updateHighlightStyle(isCircular: false)
+            adjustSpotlightSize(isLarge: true)
+        }
+    }
+
+    func adjustSpotlightSize(isLarge: Bool) {
+        guard let plane = highlightNode?.geometry as? SCNPlane else {
+            return
+        }
+
+        // Define base sizes
+        let smallWidth: CGFloat = 0.15
+        let smallHeight: CGFloat = 0.075
+        let largeWidth: CGFloat = 0.29
+        let largeHeight: CGFloat = 0.135
+
+        // Instantly resize the geometry
+        plane.width = isLarge ? largeWidth : smallWidth
+        plane.height = isLarge ? largeHeight : smallHeight
+
+    }
+
+    func setHighlightColor(_ color: UIColor) {
+        guard let plane = highlightNode?.geometry as? SCNPlane else { return }
+        
+        // Create a new image with the desired color
+        let size = CGSize(width: 256, height: 128)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        let rect = CGRect(origin: .zero, size: size)
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: 30)
+        color.setFill()
+        path.fill()
+        let glowImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        plane.firstMaterial?.diffuse.contents = glowImage
+        plane.firstMaterial?.emission.contents = glowImage
     }
 
 }

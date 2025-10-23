@@ -45,13 +45,12 @@ class ButtonFunctions: ObservableObject {
             isEraserMode.toggle()
         }
     
-    func addPanel(text: String, panelColor: UIColor, panelIcon: String, panelID: String) async {
+    func addPanel(text: String, panelColor: UIColor, panelIcon: String, panelID: String, longText: String) async {
         guard let arView = arView, let pointOfView = await arView.pointOfView else {
             print("Error: ARSCNView or pointOfView is nil")
             return
         }
 
-        
             // Get the camera transform
             let cameraTransform = await pointOfView.transform
 
@@ -71,9 +70,8 @@ class ButtonFunctions: ObservableObject {
                 cameraPosition.z + forward.z * distance
             )
 
-        
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID)
+        let newPanel = ARPanel(position: position, scene: arView, text: text, panelColor: panelColor, panelIcon: panelIcon, currentRoom: currentRoom, panelID: panelID, detailedText: longText, spotlight: false)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -100,7 +98,8 @@ class ButtonFunctions: ObservableObject {
         let colour = convertRGBAToUIColor(r: panel.r, g: panel.g, b: panel.b)
         
         // Create and add the panel
-        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID)
+        let newPanel = ARPanel(position: position, scene: arView, text: panel.text ??  "", panelColor: colour, panelIcon: panel.icon, currentRoom: currentRoom, panelID: panel.panelID, 
+                               detailedText: panel.longText, spotlight: panel.spotlight)
 
         if sessionRunning {
             newPanel.addToScene()
@@ -151,17 +150,38 @@ class ButtonFunctions: ObservableObject {
         sessionDetails.isSessionActive = false
         currentRoom = ""
 
-        
+        // Remove all panels from the scene
         panelController?.removePanelsInScene()
-        resetARSession()
+        
+        // ✅ Properly stop the AR session
+        if let arView = arView {
+            arView.session.pause()  // <— this actually stops camera + Metal buffer use
+            
+            // Optionally clear the scene to free GPU memory
+            arView.scene.rootNode.childNodes.forEach { $0.removeFromParentNode() }
+            
+            // Also clear delegates to avoid retain cycles
+            arView.delegate = nil
+            arView.session.delegate = nil
+        }
+
     }
+
     
     func resetARSession() {
+        guard let arView = arView else { return }
+        
         let configuration = ARWorldTrackingConfiguration()
         let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil)
         configuration.detectionImages = referenceImages
-        arView!.session.run(configuration, options: [.removeExistingAnchors])
+        
+        // This resets tracking and anchors (fresh start)
+        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        
+        sessionRunning = true
+        print("🔄 AR session restarted.")
     }
+
     
     func toggleEditMode() {
         editModeActive.toggle()
@@ -174,5 +194,7 @@ class ButtonFunctions: ObservableObject {
         shadowPanel?.shadowPanelChoice = option
         shadowPanel?.shadowPanelAction()
     }
+    
+    
 
 }
