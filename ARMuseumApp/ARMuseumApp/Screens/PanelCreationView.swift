@@ -108,6 +108,17 @@ struct AddPanelView: View {
     }
 
     func resetPanels() {
+        if(buttonFunctions.SessionSelected == 2){
+            Task{
+                await resetCommunityPanelsService(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID, accessToken: buttonFunctions.accessToken)
+            }
+        }
+        else if(buttonFunctions.SessionSelected == 1){
+            Task{
+                await resetPanelsService(museumID: buttonFunctions.sessionDetails.museumID, roomID: buttonFunctions.sessionDetails.roomID)
+            }
+        }
+        
     }
 }
 

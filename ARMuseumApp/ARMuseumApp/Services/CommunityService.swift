@@ -177,3 +177,15 @@ func deleteCommunityPanelService(museumID: String, roomID: String,id: String, ac
 }
 
 
+func resetCommunityPanelsService(museumID: String, roomID: String, accessToken: String) async {
+    let endpoint = "/api/\(museumID)/\(roomID)/community/\(accessToken)/reset"
+    
+    do {
+        let data = try await APIService.request(endpoint: endpoint, method: .GET)
+        
+        
+    } catch {
+        print(error)
+    }
+}
+

@@ -153,9 +153,9 @@ class ButtonFunctions: ObservableObject {
         // Remove all panels from the scene
         panelController?.removePanelsInScene()
         
-        // ✅ Properly stop the AR session
+        // Properly stop the AR session
         if let arView = arView {
-            arView.session.pause()  // <— this actually stops camera + Metal buffer use
+            arView.session.pause() 
             
             // Optionally clear the scene to free GPU memory
             arView.scene.rootNode.childNodes.forEach { $0.removeFromParentNode() }

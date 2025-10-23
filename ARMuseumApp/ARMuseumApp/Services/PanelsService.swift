@@ -119,4 +119,14 @@ func getNewPanelsService(museumID: String, roomID: String) async -> [PanelDetail
     }
 }
 
+func resetPanelsService(museumID: String, roomID: String) async {
+    let endpoint = "/api/\(museumID)/\(roomID)/reset"
+    
+    do {
+        let data = try await APIService.request(endpoint: endpoint, method: .GET)
+        
+    } catch {
+        print(error)
+    }
+}
 
