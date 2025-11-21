@@ -2,7 +2,7 @@
 //  CommunitySessions.swift
 //  ARMuseumApp
 //
-//  Created by Imaginarium UCLan on 29/09/2025.
+//  Created by Senan on 29/09/2025.
 //
 
 import Foundation

@@ -132,7 +132,7 @@ struct PanelCreatorView: View {
     @State private var selectedColor: Color?
     @State private var selectedOption: TextAndID?
 
-    // 🧩 Automatically find the correct icon for the selected text
+    // Automatically find the correct icon for the selected text
     var currentIcon: String {
         if let selected = selectedOption {
             return exhibit.icon.first(where: { $0.panelID == selected.panelID })?.icon ?? "person.fill"
@@ -182,7 +182,7 @@ struct PanelCreatorView: View {
 
                 Spacer()
 
-                // ✅ Preview with correct icon
+                // Preview with correct icon
                 PreviewARPanel(
                     text: selectedOption?.text ?? "",
                     borderColor: selectedColor ?? .blue,
@@ -237,7 +237,7 @@ struct PanelCreatorView: View {
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
-            // ✅ BACK BUTTON
+            // BACK BUTTON
             Button(action: {
                 needsClosing = true
                 presentationMode.wrappedValue.dismiss()

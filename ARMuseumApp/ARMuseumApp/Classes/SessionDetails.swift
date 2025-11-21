@@ -14,4 +14,5 @@ struct SessionDetails{
     var isSessionActive: Bool
     var panelCreationMode: Bool
     var selectedExhibit: Exhibits?
+    var sessionID: String?
 }

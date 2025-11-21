@@ -2,7 +2,7 @@
 //  Drawings.swift
 //  ARMuseumApp
 //
-//  Created by Imaginarium UCLan on 26/09/2025.
+//  Created by Senan on 26/09/2025.
 //
 
 import Foundation

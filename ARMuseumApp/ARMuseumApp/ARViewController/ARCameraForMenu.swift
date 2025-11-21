@@ -28,7 +28,6 @@ struct ARCameraForMenu: UIViewRepresentable {
     func updateUIView(_ uiView: ARView, context: Context) {}
     
     static func dismantleUIView(_ uiView: ARView, coordinator: ()) {
-        // Optional: Pause only if you want to completely stop AR
         // model.arView.session.pause()
     }
     

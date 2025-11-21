@@ -164,10 +164,8 @@ class ButtonFunctions: ObservableObject {
             arView.delegate = nil
             arView.session.delegate = nil
         }
-
     }
 
-    
     func resetARSession() {
         guard let arView = arView else { return }
         
@@ -179,7 +177,7 @@ class ButtonFunctions: ObservableObject {
         arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         
         sessionRunning = true
-        print("🔄 AR session restarted.")
+        print("AR session restarted.")
     }
 
     

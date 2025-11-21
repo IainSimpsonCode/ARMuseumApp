@@ -173,6 +173,7 @@ struct CuratorLoginScreen: View {
                     // store accessToken if needed
                     buttonFunctions.SessionSelected = 2
                     buttonFunctions.accessToken = response
+                    buttonFunctions.sessionDetails.sessionID = response
                 }
             } catch {
                 errorMessage = error.localizedDescription

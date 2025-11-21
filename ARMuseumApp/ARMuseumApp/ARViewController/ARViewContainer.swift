@@ -177,8 +177,4 @@ struct ARViewContainer: UIViewRepresentable {
         // Clear the delegate to avoid retaining coordinator
         uiView.delegate = nil
     }
-
 }
-
-
-

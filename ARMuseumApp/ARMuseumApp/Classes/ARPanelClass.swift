@@ -435,7 +435,6 @@ class ARPanel {
         let highlightHeight: CGFloat = 0.12
         let glowColor = UIColor.yellow.withAlphaComponent(0.3)
 
-        // Create a small, cheap glowing rectangle
         let size = CGSize(width: 256, height: 128)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         let rect = CGRect(origin: .zero, size: size)

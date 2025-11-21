@@ -125,6 +125,11 @@ class GestureHandler: NSObject {
                     } else {
                         panel.changePanelSize(size: 0)
                     }
+                    
+//                    Task{
+//                        await clickedOnPanelService(sessionID: buttonFunctions.sessionDetails.sessionID!, panelID: panel.panelID, expanded: false)
+//                    }
+                    
                 } else {
                     // Expand panel safely
                     panel.isTemporarilyExpanded = true
@@ -181,6 +186,10 @@ class GestureHandler: NSObject {
 //
 //                        // Remove timer reference after it fires
 //                        self.panelCollapseTimers[panelID] = nil
+//                    }
+                    
+//                    Task{
+//                        await clickedOnPanelService(sessionID: buttonFunctions.sessionDetails.sessionID!, panelID: panel.panelID, expanded: true)
 //                    }
                 }
                 return

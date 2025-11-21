@@ -96,10 +96,9 @@ class PanelStorageManager {
 //                            }
                             
                             if needsUpdate {
-                                print("🔄 Updating panel \(newPanel.panelID)")
+                                print("Updating panel \(newPanel.panelID)")
                             }
             } else {
-//                await buttonFunctions.addPanel(text: newPanel.text!, panelColor: convertRGBAToUIColor(r: newPanel.r, g: newPanel.g, b: newPanel.b), panelIcon: newPanel.icon, panelID: newPanel.panelID, positionExisting: position, save: false)
                 await buttonFunctions.placeLoadedPanel(panel: newPanel)
             }
             existingDict.removeValue(forKey: newPanel.panelID)
@@ -107,7 +106,7 @@ class PanelStorageManager {
             
         }
         for (_, oldPanel) in existingDict {
-            print("🗑 Removing panel \(oldPanel.panelID)")
+            print("Removing panel \(oldPanel.panelID)")
             if let index = _ARPanelController.panelsInScene.firstIndex(where: { $0.panelID == oldPanel.panelID }) {
                 let panelToRemove = _ARPanelController.panelsInScene[index]
                 await panelToRemove.parentNode.removeFromParentNode()

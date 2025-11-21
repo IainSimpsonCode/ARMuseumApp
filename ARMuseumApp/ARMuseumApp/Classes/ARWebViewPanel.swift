@@ -15,8 +15,6 @@ class WebViewPanel {
     let sceneView: ARSCNView
     let url: URL
     
-    
-    
     init(sceneView: ARSCNView, url: URL) {
         self.sceneView = sceneView
         self.url = url
@@ -29,7 +27,7 @@ class WebViewPanel {
         let webViewNode = SCNNode()
         
         // Create a plane geometry for the web view
-        let plane = SCNPlane(width: 10.0, height: 10.6) // Adjust size as needed
+        let plane = SCNPlane(width: 10.0, height: 10.6)
         webViewNode.geometry = plane
         
         // Create a material to display the web view

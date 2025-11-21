@@ -15,7 +15,7 @@ struct ImageDetectionOverlay: View {
                 Color.clear
                 Rectangle()
                     .stroke(Color.blue, lineWidth: 4)
-                    .frame(width: 320, height: 500) // You can adjust the size of the box
+                    .frame(width: 320, height: 500) 
                     .overlay(
                         Text("Align Image Here")
                             .foregroundColor(.white)

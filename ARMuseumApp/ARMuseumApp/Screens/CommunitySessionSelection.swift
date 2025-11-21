@@ -46,7 +46,7 @@ struct CommunitySessionsScreen: View {
                                     .environmentObject(buttonFunctions)
                             ) {
                                 HStack {
-                                    Text(session.sessionID) // adjust according to your session model
+                                    Text(session.sessionID)
                                         .font(.headline)
                                         .padding(.vertical, 5)
                                     

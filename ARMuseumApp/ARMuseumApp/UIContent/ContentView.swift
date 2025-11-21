@@ -4,11 +4,8 @@ import SceneKit
 struct ContentView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     
-    // Add any state you need for PanelCreatorView
     @State private var needsClosing = false
 
-    // You need a target node for StartSessionButton
-    // For now, create a placeholder node; replace with your actual node
     @State private var myNode = SCNNode()
     @EnvironmentObject var arModel: ARViewModel
 
