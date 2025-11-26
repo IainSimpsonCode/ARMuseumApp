@@ -52,6 +52,13 @@ struct AddPanelView: View {
                 }
             } else {
                 List {
+                    Section {
+                            Text("Select an exhibit below to view all the available panels for the exhibit")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .padding(.vertical, 4)
+                        }
+                    
                     ForEach(exhibits) { panel in
                         Button(action: {
                             buttonFunctions.sessionDetails.panelCreationMode = true
@@ -123,6 +130,8 @@ struct AddPanelView: View {
 }
 
 // MARK: - PanelCreatorView
+import SwiftUI
+
 struct PanelCreatorView: View {
     @EnvironmentObject var buttonFunctions: ButtonFunctions
     @Environment(\.presentationMode) var presentationMode
@@ -132,7 +141,6 @@ struct PanelCreatorView: View {
     @State private var selectedColor: Color?
     @State private var selectedOption: TextAndID?
 
-    // Automatically find the correct icon for the selected text
     var currentIcon: String {
         if let selected = selectedOption {
             return exhibit.icon.first(where: { $0.panelID == selected.panelID })?.icon ?? "person.fill"
@@ -140,20 +148,20 @@ struct PanelCreatorView: View {
         return "person.fill"
     }
 
-    var longText: String {
+    var currentLongText: String {
         if let selected = selectedOption {
-            return exhibit.longTextByID.first(where: { $0.panelID == selected.panelID })?.longText ?? "More info about this.."
+            return exhibit.longTextByID.first(where: { $0.panelID == selected.panelID })?.longText ?? ""
         }
-        return "More info about this.."
+        return ""
     }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            // Background dim layer
             Color.black.opacity(0.3).ignoresSafeArea()
 
             VStack(spacing: 20) {
-                // Title
+
+                // TITLE
                 Text("Panel Designer")
                     .font(.system(.title2, design: .rounded).weight(.bold))
                     .foregroundColor(.white)
@@ -162,37 +170,70 @@ struct PanelCreatorView: View {
                     .cornerRadius(12)
                     .shadow(radius: 4)
 
-                // Picker for text options
+                // PICKER: show all panels with title + icon
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Choose a text to display")
+                    Text("Choose a panel to display")
                         .font(.headline)
                         .foregroundColor(.white)
 
-                    Picker("Text Option", selection: $selectedOption) {
+                    Menu {
                         ForEach(exhibit.textOptions) { option in
-                            Text(option.text).tag(option as TextAndID?)
+                            Button(action: {
+                                selectedOption = option
+                            }) {
+                                Label(
+                                    option.text,
+                                    systemImage: exhibit.icon.first(where: { $0.panelID == option.panelID })?.icon ?? "person.fill"
+                                )
+                                .foregroundColor(.white) // this works
+                            }
                         }
+                    } label: {
+                        HStack {
+                            Text(selectedOption?.text ?? "Select Panel")
+                                .foregroundColor(.white)
+                            Spacer()
+                            Image(systemName: "chevron.down")
+                                .foregroundColor(.white)
+                        }
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .pickerStyle(.menu)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
                 }
-                .padding(.top, 40)
+                .padding(.top, 20)
 
                 Spacer()
 
-                // Preview with correct icon
-                PreviewARPanel(
-                    text: selectedOption?.text ?? "",
-                    borderColor: selectedColor ?? .blue,
-                    icon: currentIcon
-                )
-                .frame(maxHeight: 200)
-                .padding(.vertical, 20)
+                // PREVIEW PANEL
+                VStack(spacing: 12) {
+                    PreviewARPanel(
+                        text: selectedOption?.text ?? "",
+                        borderColor: selectedColor ?? .blue,
+                        icon: currentIcon
+                    )
+                    .frame(maxHeight: 200)
+                    .padding(.vertical, 8)
+
+                    // SHOW LONGTEXT WHEN PANEL SELECTED
+                    if let _ = selectedOption {
+                        ScrollView {
+                            Text(currentLongText)
+                                .font(.body)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .frame(maxHeight: 150)
+                        .transition(.slide)
+                    }
+                }
 
                 Spacer()
 
+                // COLOR + ADD BUTTON
                 VStack(spacing: 16) {
                     Text("Select Panel Color")
                         .font(.headline)
@@ -214,7 +255,7 @@ struct PanelCreatorView: View {
                                     panelColor: UIColor(selectedColor),
                                     panelIcon: currentIcon,
                                     panelID: selectedOption.panelID,
-                                    longText: longText
+                                    longText: currentLongText
                                 )
                                 needsClosing = true
                                 presentationMode.wrappedValue.dismiss()
@@ -264,7 +305,6 @@ struct PanelCreatorView: View {
         }
     }
 }
-
 
 
 // MARK: - ColorButton

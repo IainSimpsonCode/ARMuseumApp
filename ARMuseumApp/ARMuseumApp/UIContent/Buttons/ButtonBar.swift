@@ -41,7 +41,7 @@ struct ButtonBar: View {
                         iconName: buttonFunctions.isDrawingMode ? "paintbrush.fill" : "paintbrush",
                         buttonText: buttonFunctions.isDrawingMode ? "Stop Drawing" : "Draw"
                     )
-                    .foregroundColor(buttonFunctions.isDrawingMode ? .blue : .accentColor)
+                    .foregroundColor(buttonFunctions.isDrawingMode ? .red : .blue)
                 }
 
                 Spacer()
